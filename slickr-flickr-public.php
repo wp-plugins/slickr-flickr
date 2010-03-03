@@ -2,7 +2,7 @@
 /**
  * Slickr Flickr
  *
- * Display a Flickr slideshow or a gallery in a post of widget
+ * Display a Flickr slideshow or a gallery in a post or widget
  *
  *
  * @param id -> the Flickr ID of user
