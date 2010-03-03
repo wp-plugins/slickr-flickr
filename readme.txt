@@ -88,6 +88,12 @@ You need to specify your friend's Flickr Id beside the shortcode. For example [s
 * Original version
 
 
+== Upgrade Notice ==
+
+= 1.0 = 
+* Get the first version
+
+
 == How to Use The Plugin ==
 
 The Flickr show is inserted into a post or a widget using the slickr-flickr short code
