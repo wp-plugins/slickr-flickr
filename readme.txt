@@ -84,11 +84,13 @@ You need to specify your friend's Flickr Id beside the shortcode. For example [s
 
 == Changelog ==
 
+= 1.1 =
+* Enable shortcode processing in text widgets
+
 = 1.0 =
 * Original version
 
-= 1.1 =
-* Enable shortcode processing in text widgets
+
 
 
 == Upgrade Notice ==
