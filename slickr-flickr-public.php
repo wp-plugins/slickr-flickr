@@ -2,7 +2,7 @@
 /**
  * Slickr Flickr
  *
- * Display a Flickr slideshow or a gallery in a post or widget
+ * Display a Flickr slideshow or a gallery in a post of widget
  *
  *
  * @param id -> the Flickr ID of user
@@ -73,6 +73,7 @@ EOB;
 }
 
 
+add_filter('widget_text', 'do_shortcode', SHORTCODE_PRIORITY);
 add_shortcode('slickr', 'slickr_flickr_display');
 add_shortcode('slickr-flickr', 'slickr_flickr_display');
 add_action('wp_head', 'slickr_flickr_header');
