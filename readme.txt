@@ -4,7 +4,7 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, wordpresswise
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.1
+Stable tag: 1.2
 
 Displays a set of tagged photos from your Flickr account either as gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
@@ -40,31 +40,31 @@ Displays a set of tagged photos from your Flickr account either as gallery or a 
 
 You need either to go to the Settings for slickr-flickr and enter your Flickr Id or specify id="my flickr id" beside the shortcode. For example [slickr-flickr id="23437487@N00" tag="bahamas"]
 
-1. The message "Please set up a Flickr tag for this slideshow" appears in place of a slideshow.
+2. The message "Please set up a Flickr tag for this slideshow" appears in place of a slideshow.
 
 You need to specify a tag beside the shortcode. For example [slickr-flickr tag="bahamas"]
 
-1. The message "No photos available for my tag" appears in place of a slideshow.
+3. The message "No photos available for my tag" appears in place of a slideshow.
 
 This means that Flickr cannot find any photos for the tag you supplied. Sometimes there can be a delay of up tp 30 minutes between tagging a photo on Flickr before it becomes available for a slideshow. It is therefore best to tag your photos in Flickr first before adding them to your Wordpress site.<br/>
 
-1. If I upload a new photo to Flickr and then tag using a phrase for which I have already got a slideshow or gallery, then will the new photos automatically appear on my blog.
+4. If I upload a new photo to Flickr and then tag using a phrase for which I have already got a slideshow or gallery, then will the new photos automatically appear on my blog.
 
 Yes. The Slickr Flickr will automatically show the most recent photos.
 
-1. What happens if I try to display both landscape and portrait photos on the same slideshow?
+5. What happens if I try to display both landscape and portrait photos on the same slideshow?
 
 The plugin will try and resize the photos to fit as best as possible.  Ideally you should not mix portrait and landscape photos in the same slideshow.
 
-1. I want to customize the gallery lightbox and slideshow as my the background color of my site is dark.
+6. I want to customize the gallery lightbox and slideshow as my the background color of my site is dark.
 
 You can do this by editing the supplied plugin CSS files at your own risk. For example, to change the highlight color when the cursor is moved over an image in the gallery then edit the background-color in the line: ".slickr-flickr-gallery ul a:hover img { background-color: brown; } " in the file jquery.gallery.css
 
-1. I have set the size to large and Flickr tells me there are no photos.
+7. I have set the size to large and Flickr tells me there are no photos.
 
 Flickr does not have large photos (1024 x 768) so you need to remove size=”large” parameter or alternatively you need to upload some bigger photos to Flickr and then tag them appropriately
 
-1. How do I display photos tagged with "ice cream" from one of my friends's Flickr galleries
+8. How do I display photos tagged with "ice cream" from one of my friends's Flickr galleries
 
 You need to specify your friend's Flickr Id beside the shortcode. For example [slickr-flickr id="87654321@N00" tag="ice cream"]
 
@@ -83,6 +83,9 @@ You need to specify your friend's Flickr Id beside the shortcode. For example [s
 
 
 == Changelog ==
+
+= 1.2 =
+* Corrections to Readme File and FAQ Numbering
 
 = 1.1 =
 * Enable shortcode processing in text widgets
