@@ -2,8 +2,8 @@
 /*
 Plugin Name: Slickr Flickr
 Plugin URI: http://www.wordpresswise.com/slickr-flickr
-Description: Display tagged photos from Flickr in galleries and slideshows
-Version: 1.0
+Description: Displays tagged photos from Flickr in galleries and slideshows
+Version: 1.3
 Author: Russell Jamieson
 Author URI: http://www.wordpresswise.com
 */
@@ -15,8 +15,10 @@ $slickr_flickr_defaults = array(
     'captions' => 'on',
     'size' => 'medium',
     'orientation' => 'landscape',
-    'tag' => '',
-    'id' => ''
+    'start' => '1',
+    'group' => 'n',
+    'id' => '',
+    'tag' => ''
     );
 
 function slickr_flickr_get_options () {
