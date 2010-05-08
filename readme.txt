@@ -4,7 +4,7 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.4
+Stable tag: 1.5
 Displays a set of tagged photos from your Flickr account either as gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -68,6 +68,10 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-fi
 
 == Changelog ==
 
+
+= 1.5 =
+* Fix alignment issue with gallery
+
 = 1.4 =
 * Add Galleria display which is a slideshow/gallery combo display
 * Added autoplay option for gallery lightbox
@@ -97,7 +101,7 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-fi
 
 == Upgrade Notice ==
 
-= 1.4 = 
+= 1.5 = 
 * Recommended but not mandatory
 
 

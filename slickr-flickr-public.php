@@ -59,7 +59,7 @@ NAV;
         }
    default: {
         $divstart = '<div id="'.$divid.'" class="slickr-flickr-gallery">'. $attribution . '<ul>';
-        $divend = '</ul></div>';
+        $divend = '</ul></div><div style="clear:both"></div>';
         }
   }
   $striptag = strtolower(str_replace(" ","",$params['tag']));
