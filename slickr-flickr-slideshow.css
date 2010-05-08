@@ -12,3 +12,4 @@
 .slickr-flickr-slideshow div.active p { display : block }
 .slickr-flickr-slideshow div.last-active { z-index:9; }
 .slickr-flickr-slideshow div.last-active p { display : block}
+.slickr-flickr-attribution { font-style: italic;}
