@@ -1,0 +1,15 @@
+/* Slickr Flickr Slideshow */
+.slickr-flickr-slideshow { position:relative;  }
+.slickr-flickr-slideshow.landscape { height: 400px }
+.slickr-flickr-slideshow.portrait { height: 520px }
+.slickr-flickr-slideshow.portrait.small { width: 180px height: 260px }
+.slickr-flickr-slideshow.landscape.small { height: 200px }
+.slickr-flickr-slideshow div { position:absolute; top:0; left:0; z-index:8; text-align:left;  width: 100%; height: 100%; }
+.slickr-flickr-slideshow div.active { z-index:10; }
+.slickr-flickr-slideshow div p { display : none }
+.slickr-flickr-slideshow div img { visibility : hidden }
+.slickr-flickr-slideshow div.active img { visibility : visible }
+.slickr-flickr-slideshow div.active p { display : block }
+.slickr-flickr-slideshow div.last-active { z-index:9; }
+.slickr-flickr-slideshow div.last-active p { display : block}
+.slickr-flickr-attribution { font-style: italic;}
