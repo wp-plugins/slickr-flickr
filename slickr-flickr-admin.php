@@ -42,14 +42,19 @@ $options = slickr_flickr_get_options();
 $is_user = $options['group']!="y"?"selected":"";
 $is_group = $options['group']=="y"?"selected":"";
 $is_slideshow = $options['type']=="slideshow"?"selected":"";
-$is_gallery = $options['type']=="gallery"?"selected":"";;
+$is_galleria = $options['type']=="galleria"?"selected":"";
+$is_gallery = $options['type']=="gallery"?"selected":"";
 $captions_on = $options['captions']!="off"?"selected":"";
 $captions_off = $options['captions']=="off"?"selected":"";
-
+$lightbox_slideshow = $options['lightbox']=="lightbox-slideshow"?"selected":"";
+$lightbox = $options['lightbox']=="lightbox"?"selected":"";
 
 print <<< ADMIN_PANEL
 <div class="wrap">
 <h2>Slickr Flickr Options</h2>
+
+<p>For help on gettting the best from Slickr Flickr visit the <a href="http://slickr-flickr.diywebmastery.com/">Slickr Flickr Plugin Home Page</a></p>
+
 <form method="post" id="slickr_flickr_options">
 
 <h3>Flickr Id</h3>
@@ -83,6 +88,7 @@ print <<< ADMIN_PANEL
 <p>For example [slickr-flickr tag="bahamas" type="gallery"] displays a gallery even if you have set the default display type as slideshow</p>
 <label for="flickr_type">Display as: </label><select name="flickr_type" id="flickr_type">
 <option value="gallery" {$is_gallery}>a gallery of thumbnail images</option>
+<option value="galleria" {$is_galleria}>a slideshow with a gallery of thumbnail images below</option>
 <option value="slideshow" {$is_slideshow}>a slideshow of medium size images</option>
 </select>
 
@@ -103,9 +109,18 @@ print <<< ADMIN_PANEL
 <p>For example [slickr-flickr tag="bahamas" delay="10"] displays a slideshow with a ten second delay between slides</p>
 <label for="flickr_delay">Slide Transition Delay: </label><input name="flickr_delay" type="text" id="flickr_delay" value="{$options['delay']}" />
 
+<h3>Lightbox</h3>
+<p>If you leave this blank then the plugin will use the standard lightbox.</p>
+<p>If you select lightbox slideshow then when a photo is clicked the overlaid lightbox will automatically play the slideshow.</p>
+<p>For example [slickr-flickr type="gallery" tag="bahamas" delay="6"] displays a gallery which when clicked shows a lightbox slideshow that plays automatically with a six second delay between slides</p>
+<label for="flickr_lightbox">Lightbox</label><select name="flickr_lightbox" id="flickr_lightbox">
+<option value="lightbox" {$lightbox}>lightbox with manual slideshow</option>
+<option value="lightbox-slideshow" {$lightbox_slideshow}>lightbox with autoplay slideshow option</option>
+</select>
+
 <p class="submit">
 <input type="submit" name="options_update" value="Save Changes" />
-<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_items,flickr_type,flickr_captions,flickr_delay" />
+<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_lightbox" />
 </p>
 </form>
 
@@ -117,6 +132,9 @@ print <<< ADMIN_PANEL
 <input type="image" src="https://www.paypal.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
 <img alt="" border="0" src="https://www.paypal.com/en_GB/i/scr/pixel.gif" width="1" height="1">
 </form>
+
+<h3>Help With Slickr Flickr</h3>
+<p>For help on gettting the best from Slickr Flickr visit the <a href="http://slickr-flickr.diywebmastery.com/">Slickr Flickr Plugin Home Page</a></p>
 </div>
 ADMIN_PANEL;
 }

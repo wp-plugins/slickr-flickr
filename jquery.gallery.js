@@ -1,1 +1,0 @@
-jQuery(document).ready(function() { jQuery(".slickr-flickr-gallery a, a[rel='lightbox']").lightBox(); });
