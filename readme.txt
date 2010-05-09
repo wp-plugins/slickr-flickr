@@ -4,7 +4,7 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.5
+Stable tag: 1.6
 Displays a set of tagged photos from your Flickr account either as gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -34,7 +34,7 @@ Displays a set of tagged photos from your Flickr account either as gallery or a 
 1. Type In your Flickr Id (it should look something like 12345678@N00) and then click the Save button
 1. To use the plugin in a post, page or text widget use the shortcode [slickr-flickr tag="my tag phrase"]
 1. If you have no photos in Flickr with this tag then no pictures are displayed
-1. See http://www.wordpresswise.com/slickr-flickr#install for more about the plugin installation
+1. See http://slickr-flickr.diywebmastery.com/how-to/how-to-install-slickr-flickr-plugin for more about the plugin installation
 
 == Frequently Asked Questions ==
 
@@ -69,6 +69,9 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-fi
 == Changelog ==
 
 
+= 1.6 =
+* Fix typo in the CSS that controls the height of a small slideshow
+
 = 1.5 =
 * Fix alignment issue with gallery
 
@@ -101,7 +104,7 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-fi
 
 == Upgrade Notice ==
 
-= 1.5 = 
+= 1.6 = 
 * Recommended but not mandatory
 
 
