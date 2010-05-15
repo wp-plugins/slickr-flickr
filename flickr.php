@@ -1,8 +1,8 @@
 <?php
 class flickr {
-  /* Function that removes double-quotes */
+  /* Function that removes all quotes */
   function cleanup($s = null) {
-    return $s?str_replace('"', '', $s):false;
+    return $s?str_replace('"', '', str_replace("'", "",$s)):false;
   }
 
   /* Function that returns the correctly sized photo URL. */
@@ -31,7 +31,10 @@ class flickr {
 
     preg_match_all('/<img src="([^"]*)"([^>]*)>/i', $data, $m);
     $photo['url'] = $m[1][0];
- 
+
+    preg_match_all('/<a href="([^"]*)"([^>]*)>/i', $data, $m);
+    $photo['link'] = $m[1][1];
+
     preg_match_all('/width="([^"]*)"([^>]*)>/i', $data, $m);
     $photo['width'] = $m[1][0];
 
@@ -42,7 +45,7 @@ class flickr {
 
     $enclosure = $item->get_enclosure(0);
     $photo["original"] = $enclosure==null ? $photo['url'] : $enclosure->get_link();
-
+    $photo["description"] = $enclosure==null ? "" : $enclosure->get_description();
     return $photo;
   }
 }
