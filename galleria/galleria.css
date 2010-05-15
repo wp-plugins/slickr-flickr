@@ -1,4 +1,4 @@
-.galleria {list-style:none;width:200px}
+.galleria {list-style:none; }
 .galleria li{display:block;width:80px;height:80px;overflow:hidden;float:left;margin:0 10px 10px 0}
 .galleria li a{display:none}
 .galleria li div{position:absolute;display:none;top:0;left:180px}

@@ -43,7 +43,7 @@ function slickr_flickr_display ($attr) {
     case "slideshow": {
         $link = empty($params['link'])?'next_slide(this);':("window.location='".$params['link']."';");
         $divstart = $attribution.'<div id="'.$divid.'" class="slickr-flickr-slideshow '.$params['orientation'].' '.$params['size'].'" onClick="'.$link.'">';
-        $divend = "</div><script type='text/javascript'>jQuery('#".$divid."').data('delay','".$params['delay']."');</script>";
+        $divend = '</div><script type="text/javascript">jQuery("#'.$divid.'").data("delay","'.$params['delay'].'");</script><div style="clear:both"></div>';
         break;
         }
    case "galleria": {
@@ -53,8 +53,8 @@ function slickr_flickr_display ($attr) {
 <a href="#" onclick="jQuery.galleria.stopShow(); return false;">stop</a> |
 <a href="#" onclick="jQuery.galleria.next(); return false;">next &raquo;</a></p>
 NAV;
-        $divstart = $attribution.'<div id="'.$divid.'" class="slickr-flickr-galleria">'.$nav.'<ul>';
-        $divend = '</ul></div><script type="text/javascript">jQuery("#'.$divid.'").data("delay","'.$params['delay'].'");</script><div style="clear:both;padding-top:10px;"></div>';
+        $divstart = '<div id="'.$divid.'" class="slickr-flickr-galleria '.$params['orientation'].'">'.$attribution.$nav.'<ul>';
+        $divend = '</ul><div style="clear:both;"></div><script type="text/javascript">jQuery("#'.$divid.'").data("delay","'.$params['delay'].'");</script>'.$attribution.$nav.'</div>';
         break;
         }
    default: {
@@ -89,9 +89,10 @@ NAV;
 
     $imgsize="";
     if ($oriented != $params['orientation']) $imgsize = $oriented=="landscape"?'width="80%"':'height="90%"';
-    $caption = $params['captions']=="off"?"":('<p class="slickr-flickr-caption">'.$title.'</p>');
     switch ($params['type']) {
        case "slideshow": {
+            $captiontitle = $params["flickr_link"]=="on"?("<a title='Click to see photo on Flickr' href='". $photo["link"] . "'>".$title."</a>"):$title;
+            $caption = $params['captions']=="off"?"":('<p class="slickr-flickr-caption">'.$captiontitle.'</p>');
             $s .=  '<div' . ($r==$i?' class="active"':'') .'><img '.$imgsize.' src="'.$full_url.'" alt="'.$title.'" />'.$caption.'</div>';
             break;
         }
@@ -100,11 +101,11 @@ NAV;
             break;
         }
         default: {
+            $caption = $params['captions']=="off"?"":('<p class="slickr-flickr-caption">'.$title.'</p>');
             $lightbox_title = $title;
             if ($params["flickr_link"]=="on") $lightbox_title = "<a title='Click to see photo on Flickr' href='". $photo["link"] . "'>".$lightbox_title."</a>";
             if ($params["descriptions"]=="on") $lightbox_title .= $description;
-
-            $s .= '<li><a href="'.$full_url.'" title="'.$lightbox_title.'"><img src="'.$thumb_url.'" alt="'.$title.'" />'.$caption.'</a>&nbsp;</li>';
+            $s .= '<li><a rel="sflightbox" href="'.$full_url.'" title="'.$lightbox_title.'"><img src="'.$thumb_url.'" alt="'.$title.'" />'.$caption.'</a>&nbsp;</li>';
             if (($params['photos_per_row'] > 0) && ($i % $params['photos_per_row']== 0 )) $s .= "<br/>";
         }
     }
@@ -124,17 +125,31 @@ function slickr_flickr_sort ($items, $sort, $direction) {
             }
         }
     }
-	$ordered_items = $items;
-	if ($do_sort) usort($ordered_items, 'sort_by_'.$sort.'_'.$direction);
+    if ($sort=="description") {
+        //CHECK WE HAVE A DESCRIPTION ON ALL ITEMS
+        foreach ($items as $item) {
+        if (!$item->get_enclosure(0)) {
+                $do_sort = false;
+                break;
+            }
+        }
+    }
+
+    $ordered_items = $items;
+    if ($do_sort) usort($ordered_items, 'sort_by_'.$sort.'_'.$direction);
     return $ordered_items;
 }
 
 
 function sort_by_description_descending($a, $b) {
-    return strcmp($b->get_description(),$a->get_description());
+    $enclosureA = $a->get_enclosure(0);
+    $enclosureB = $b->get_enclosure(0);
+    return strcmp($enclosureB->get_description(),$enclosureA->get_description());
 }
 function sort_by_description_ascending($a, $b) {
-    return strcmp($a->get_description(),$b->get_description());
+    $enclosureA = $a->get_enclosure(0);
+    $enclosureB = $b->get_enclosure(0);
+    return strcmp($enclosureA->get_description(),$enclosureB->get_description());
 }
 
 function sort_by_title_descending($a, $b) {

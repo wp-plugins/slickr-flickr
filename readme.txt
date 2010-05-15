@@ -4,7 +4,7 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.6
+Stable tag: 1.7
 Displays a set of tagged photos from your Flickr account either as gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -38,15 +38,22 @@ Displays a set of tagged photos from your Flickr account either as gallery or a 
 
 == Frequently Asked Questions ==
 
-See http://slickr-flickr.diywebmastery.com/slickr-flickr-help for the full list of questions and answers about Slickr Flickr
+
+* How do I find my Flickr Id
+
+See http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-find-my-flickr-id
+
 
 * Changes to my photos on Flickr do not appear instantly in the Slickr Flickr slideshow or Gallery
 
 This is due to caching of the Flickr RSS feed. No action is required. The cache will clear itself in a few hours. We hope to find a solution in the next release so we can flush the cache at will. 
 
-* How do I find my Flickr Id
+* Only 20 photos are displayed in the gallery and I have tagged more than 20 photos
 
-See http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-find-my-flickr-id
+Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only the 20 most recent tagged photos 
+
+
+See http://slickr-flickr.diywebmastery.com/slickr-flickr-help for the full list of questions and answers about Slickr Flickr
 
 
 == Screenshots ==
@@ -68,6 +75,10 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-fi
 
 == Changelog ==
 
+
+= 1.7 =
+* Make it clearer in the documentation that there is a limit of 20 photos
+* Include attribution at both top and bottom of the galleria
 
 = 1.6 =
 * Fix typo in the CSS that controls the height of a small slideshow
@@ -104,7 +115,7 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-fi
 
 == Upgrade Notice ==
 
-= 1.6 = 
+= 1.7 = 
 * Recommended but not mandatory
 
 

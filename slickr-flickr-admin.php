@@ -10,7 +10,26 @@ function add_slickr_flickr_options() {
     add_options_page('Slickr Flickr', 'Slickr Flickr', 9, basename(__FILE__), 'slickr_flickr_options_panel');
 }
 
+
+function slickr_flickr_clear_rss_cache() {
+    global $wpdb, $table_prefix;
+    $sql = sprintf("DELETE FROM %soptions WHERE option_name LIKE 'rss_%' and LENGTH(option_name) IN (36, 39)",  $table_prefix);
+    $wpdb->query($sql);
+}
+
+function slickr_flickr_clear_rss_cache_transient() {
+    global $wpdb, $table_prefix;
+    $sql = sprintf("DELETE FROM %soptions WHERE option_name LIKE '%s' or option_name LIKE '%s' or option_name LIKE '%s'",
+            $table_prefix, "\_transient\_feed\_%", "\_transient\_rss\_%", "\_transient\_timeout\_%");
+    $wpdb->query($sql);
+}
+
 function slickr_flickr_options_panel() {
+
+if (isset($_POST['cache'])) {
+   slickr_flickr_clear_rss_cache();
+   slickr_flickr_clear_rss_cache_transient();
+}
 
 // test if options should be updated
 if (isset($_POST['options_update'])) {
@@ -74,8 +93,8 @@ print <<< ADMIN_PANEL
 <option value="y" {$is_group}>group</option>
 </select>
 
-<h3>Number Of Photos To Display</h3>
-<p>If you leave this blank then the plugin will display up to 20 photos in each gallery or slideshow.</p>
+<h3>Number Of Photos To Display (Maximum is 20)</h3>
+<p>If you leave this blank then the plugin will display up to a maximum of 20 photos in each gallery or slideshow.</p>
 <p>If you supply a number it here, the plugin will remember it so you do not need to supply it for every gallery and every slideshow.</p>
 <p>You are still able to supply the number of photos to display for individual slideshow by specifying it in the post</p>
 <p>For example [slickr-flickr tag="bahamas" items="10"] displays up to ten photos tagged with bahamas</p>
@@ -123,6 +142,14 @@ print <<< ADMIN_PANEL
 <input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_lightbox" />
 </p>
 </form>
+
+<h3>Clear RSS Cache</h3>
+<p>If you have a RSS caching issue where your Flickr updates have not yet appeared on Wordpress then click the button below to clear the RSS cache</p>
+<form method="post" id="slickr_flickr_options">
+<input type="hidden" name="cache" value="clear"/>
+<input type="submit" name="clear" value="Clear Cache"/>
+</form>
+
 
 <h3>Donate</h3>
 <p>If you find this plugin useful and use it regularly please feel free to support the writer by donating a few bucks below or visit <a href="http://www.wordpresswise.com/slickr-flickr/donate">Slickr Flickr charity donation</a> page</p>

@@ -3,8 +3,8 @@ jQuery.noConflict(); jQuery(document).ready(function($) {
      $id = $(this).attr("id");
      $delay = $(this).data("delay");
      if (($delay) && ($delay > 0))
-        $("#"+$id+" a").lightBox( { slideDelay : $delay * 1000 });
+        $("#"+$id+" a[rel='sflightbox']").lightBox( { slideDelay : $delay * 1000 });
      else
-        $("#"+$id+" a").lightBox();
+        $("#"+$id+" a[rel='sflightbox']").lightBox();
   });
 });
