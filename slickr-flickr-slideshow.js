@@ -1,3 +1,6 @@
+var slickr_flickr_slideshow_timer;
+var slickr_flickr_slideshow_timer_on = false;
+
 function  slickr_flickr_next_slide(obj) {
     var j = jQuery(obj);
     var $active = j.children('div.active');
@@ -28,10 +31,23 @@ function  slickr_flickr_get_slideshow_delay() {
    return mindelay;
 }
 
+function slickr_flickr_toggle_slideshows() {
+   if (slickr_flickr_slideshow_timer_on)
+       slickr_flickr_stop_slideshows();
+   else
+       slickr_flickr_start_slideshows();
+}
+
+function slickr_flickr_stop_slideshows() {
+    clearTimeout(slickr_flickr_slideshow_timer);
+    slickr_flickr_slideshow_timer_on = false;
+}
+
 function slickr_flickr_start_slideshows() {
 var flickr_slideshow_delay =  slickr_flickr_get_slideshow_delay();
 if (flickr_slideshow_delay > 0) {
-    setInterval("slickr_flickr_next_slides()",flickr_slideshow_delay*1000);
+    slickr_flickr_slideshow_timer = setInterval("slickr_flickr_next_slides()",flickr_slideshow_delay*1000);
+    slickr_flickr_slideshow_timer_on = true;
     }
 }
 

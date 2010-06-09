@@ -1,30 +1,23 @@
 === Slickr Flickr ===
 Contributors: powerblogservice
 Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
-Tags: flickr, flickr slideshow, flickr gallery, lightbox, galleria, jquery, wordpresswise
+Tags: flickr, flickr slideshow, flickr gallery, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
 Requires at least: 2.8
-Tested up to: 2.9.2
-Stable tag: 1.7
+Tested up to: 3.0
+Stable tag: 1.8
 Displays a set of tagged photos from your Flickr account either as gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
 
 * Displays tagged Flickr photos as a gallery or an unbranded slideshow (i.e. not Flickr's own slideshow widget)
 * Uses "slickr-flickr" shortcode to make adding a Flickr show as easy as possible
-* Can display more than one gallery or slideshow on the same page/post
-* Can display slideshows in sidebar widgets
-* Can display slideshows at medium and small Flickr Photo sizes (500 by 375 and 240 by 180 px)
-* Can display slideshows as portrait or landscape
-* Best fits the slideshow if a mix of landscape and portrait photos are used
-* Can display captions for each photo in the slideshow using the photo title from Flickr
-* Can alter settings for each slideshow by including attributes after the shortcode (e.g. orientation="portrait")
-* Can use Lightbox jQuery plugin to display each full size version of the thumbnail photos in the gallery using an overlaid window
-* Can use Lightbox Slideshow jquery plugin to display a full size slideshow of photo in the thumbnails gallery using an overlaid window
-* Can use Galleria jQuery plugin to display photos as slideshow/gallery combo
-* Can select photos with different tags
-* Can click through from slideshow to specified link
-* Can sort photos by date, title or description
-* See http://slickr-flickr.diywebmastery.com for more about using the plugin
+* Works well in posts, pages and text widgets in the sidebar, at different sizes, with portrait and landscape photos
+* Sorts photos by date, title or description
+* With or without captions, descriptions and links back to Flickr
+* With manual or autoplay slideshows
+* Works with various LightBoxes 
+* Works with jQuery Galleria to display photos in a slideshow/gallery combo
+* See http://slickr-flickr.diywebmastery.com for training and support on using the plugin
 
 == Installation ==
 
@@ -38,35 +31,20 @@ Displays a set of tagged photos from your Flickr account either as gallery or a 
 
 == Frequently Asked Questions ==
 
-
-* How do I find my Flickr Id
-
-See http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-find-my-flickr-id
-
-
-* Changes to my photos on Flickr do not appear instantly in the Slickr Flickr slideshow or Gallery
-
-This is due to caching of the Flickr RSS feed. No action is required. The cache will clear itself in a few hours. We hope to find a solution in the next release so we can flush the cache at will. 
-
-* Only 20 photos are displayed in the gallery and I have tagged more than 20 photos
-
-Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only the 20 most recent tagged photos 
-
-
 See http://slickr-flickr.diywebmastery.com/slickr-flickr-help for the full list of questions and answers about Slickr Flickr
+
+* How do I find my Flickr Id? - see http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-find-my-flickr-id
+
+* Changes to my photos on Flickr do not appear instantly in the Slickr Flickr slideshow or Gallery - see http://slickr-flickr.diywebmastery.com/slickr-flickr-issues/tagged-photos-do-not-appear-in-the-blog-immediately/
+
+* Only 20 photos are displayed in the gallery and I have tagged more than 20 photos - see http://slickr-flickr.diywebmastery.com/slickr-flickr-requests/more-than-20-photos/
+
+Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only the 20 most recent tagged photos. This will be addressed in the Slickr Flickr 2.0 release. 
 
 
 == Screenshots ==
 
-1. Using the admin settings to change the plugin defaults
-
-1. How to Use Slickr Flickr to add a gallery or slideshow to a post
-
-1. Example of a slideshow in a post
-
-1. Example of a gallery in a post
-
-1. Example of a small slideshow in a sidebar widget
+1. Examples of Slickr Flickr slideshows and galleries in action
 
 1. Example of a slideshow/gallery combo in a post
 
@@ -75,10 +53,17 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-help for the full list 
 
 == Changelog ==
 
+= 1.8 =
+* More options for the LightBox: ThickBox, ShadowBox, FancyBox, LightBox Plus and Shutter Reloaded 
+* Option for large thumbnails in the gallery
+* Optional border for the slideshow
+* Automatic slideshow option for the galleria
+* Sli/ckr Flickr Resources Menu on the admin panel
+
 
 = 1.7 =
-* Make it clearer in the documentation that there is a limit of 20 photos
-* Include attribution at both top and bottom of the galleria
+* Add feature in the Slickr Flickr Admin Panel to clear the RSS cache so updates to Flickr appear more quickly on Wordpress
+* Change Galleria size to improve presentation of photos of portarit orientation
 
 = 1.6 =
 * Fix typo in the CSS that controls the height of a small slideshow
@@ -115,39 +100,18 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-help for the full list 
 
 == Upgrade Notice ==
 
-= 1.7 = 
+= 1.8 = 
 * Recommended but not mandatory
 
 
 == How to Use The Plugin ==
 
-The Flickr show is inserted into a post or a widget using the slickr-flickr short code
+The Flickr show is inserted into a post or a widget using the slickr-flickr short code.
 
-For example to show my pictures from Flickr that have been tagged with "bahamas" I would use : [slickr-flickr tag="bahamas"]
+For example, to show my pictures from Flickr that have been tagged with "bahamas" I use : [slickr-flickr tag="bahamas"]
 
-The Slickr Flickr Attributes (Parameters) are as follows: only the "tag" parameter is required
+For the full list of Slickr Flickr parameters go to http://slickr-flickr.diywebmastery.com/56/how-to-use-slickr-flickr-to-create-a-slideshow-or-gallery/
 
-* tag - identifies what photos to display
-* tagmode - set to ANY for fetching photos with different tags (default is ALL)   
-* items - maximum number photos to display in the gallery or slideshow (default is 20)
-* type - gallery or slideshow (default is gallery)
-* orientation - landscape or portrait (default is landscape)
-* size - small, medium, large or original (default is medium) 
-* captions - whether captions are on or off (default is on)
-* delay - delay in seconds between each image in the slide show (default is 5)
-* start - number of the first slide or 'random' for a random start (default is 1)
-* link - url to visit on clicking slideshow (optional) 
-* id - the Flickr ID of the user (default is set up in the admin panel)
-* group - set to 'y' if the Flickr id belongs to a group and not a user (default is n)
-* attribution - credit the photographer (optional)
-* sort - sort order of photos (optional)
-* direction - sort order of photos (optional)
-* descriptions - show descriptions beneath title on the lightbox - on or off (optional)
-* flickr_link - include a link to the photo on Flickr on the lightbox - on or off (optional)
-* photos_per_row - limit the number of photos per row in the gallery (optional)
-
-
-You can set the parameters on each individual slideshow or set default values using the Admin Settings.
 
 == How to Set Up The Plugin Defaults ==
 
@@ -155,16 +119,17 @@ If you don't want to specify all the settings for every slideshow you can set up
 
 * Go to the "Settings" section, and choose "Slickr Flickr"
 * Enter your Flickr Id (the id of the form 12345678@N00) and choose whether it is a user or group id
-* Enter the defaults number of photos to show
+* Enter the default number of photos to show (maximum is 20)
 * Select the type of display - gallery, slideshow or slideshow/gallery combo
 * Choose whether photos captions are displayed
 * Enter what the delay in seconds is before the slideshow moves on to the next slide
-* Choose the lightbox with either manual or autoplay slideshows
+* Choose the lightbox (manual play, auto play or ThickBox, ShadowBox, FancyBox or LightBox Plus)
 
 
 == Links ==
 
-Here are some of the crucial Slickr Flickr Plugin links
+Here are some of the useful Slickr Flickr Plugin links
 
 * Plugin Home Page http://slickr-flickr.diywebmastery.com/
 * Plugin Help and Support http://slickr-flickr.diywebmastery.com/slickr-flickr-help
+* Plugin Tutorials http://slickr-flickr.diywebmastery.com/slickr-flickr-videos

@@ -2,8 +2,8 @@
 /*
 Plugin Name: Slickr Flickr
 Plugin URI: http://slickr-flickr.diywebmastery.com
-Description: Displays tagged photos from Flickr in galleries and slideshows
-Version: 1.7
+Description: Displays tagged photos from Flickr in slideshows and galleries 
+Version: 1.8
 Author: Russell Jamieson
 Author URI: http://www.wordpresswise.com
 */
@@ -11,18 +11,21 @@ Author URI: http://www.wordpresswise.com
 $slickr_flickr_options = array();
 
 $slickr_flickr_defaults = array(
+    'id' => '',
+    'group' => 'n',
+    'tag' => '',
+    'tagmode' => 'all',
     'type' => 'gallery',
     'items' => '20',
     'delay' => '5',
+    'border' => 'off',
     'captions' => 'on',
     'size' => 'medium',
     'orientation' => 'landscape',
     'start' => '1',
-    'group' => 'n',
-    'id' => '',
-    'tag' => '',
-    'tagmode' => 'all',
-    'lightbox' => 'lightbox',
+    'thumbnail_size' => 'square',
+    'thumbnail_scale' => '100',
+    'lightbox' => 'sf-lbox-manual',
     'descriptions' => 'off',
     'flickr_link' => 'off',
     'link' => '',
@@ -45,7 +48,11 @@ function slickr_flickr_get_options () {
      foreach ($options as $key => $option) {
        if (isset($options[$key]) && strpos($key,"flickr_")==0)  $flickr_options[substr($key,7)] = $option;
      }
-     $slickr_flickr_options =  shortcode_atts( $slickr_flickr_defaults, $flickr_options);
+     switch ($flickr_options['lightbox']) {
+          case "lightbox-slideshow": $flickr_options['lightbox'] = 'sf-lbox-auto'; break;
+          case "lightbox": $flickr_options['lightbox'] = 'sf-lbox-manual'; break;
+     }
+     $slickr_flickr_options = shortcode_atts( $slickr_flickr_defaults, $flickr_options);
    }
    return $slickr_flickr_options;
 }

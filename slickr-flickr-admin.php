@@ -5,6 +5,16 @@ Author URI: http://www.wordpresswise.com
 Copyright &copy; 2010 &nbsp; Russell Jamieson
 */
 add_action('admin_menu', 'add_slickr_flickr_options');
+add_action('init', 'slickr_flickr_admin_header');
+
+function slickr_flickr_admin_header() {
+    if (!defined('SLICKR_FLICKR_PLUGIN_URL')) define ('SLICKR_FLICKR_PLUGIN_URL',WP_PLUGIN_URL . '/slickr-flickr');
+    $path = SLICKR_FLICKR_PLUGIN_URL;
+
+    wp_enqueue_style('slickr-flickr-admin', $path."/slickr-flickr-admin.css");
+    wp_enqueue_script('slickr-flickr-admin', $path."/slickr-flickr-admin.js");
+}
+
 
 function add_slickr_flickr_options() {
     add_options_page('Slickr Flickr', 'Slickr Flickr', 9, basename(__FILE__), 'slickr_flickr_options_panel');
@@ -65,11 +75,17 @@ $is_galleria = $options['type']=="galleria"?"selected":"";
 $is_gallery = $options['type']=="gallery"?"selected":"";
 $captions_on = $options['captions']!="off"?"selected":"";
 $captions_off = $options['captions']=="off"?"selected":"";
-$lightbox_slideshow = $options['lightbox']=="lightbox-slideshow"?"selected":"";
-$lightbox = $options['lightbox']=="lightbox"?"selected":"";
+$lightbox_auto = $options['lightbox']=="sf-lbox-auto"?"selected":"";
+$lightbox_manual = $options['lightbox']=="sf-lbox-manual"?"selected":"";
+$shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
+$thickbox = $options['lightbox']=="thickbox"?"selected":"";
+$fancybox = $options['lightbox']=="fancybox"?"selected":"";
+$colorbox = $options['lightbox']=="colorbox"?"selected":"";
+$shutter = $options['lightbox']=="shutter"?"selected":"";
 
 print <<< ADMIN_PANEL
 <div class="wrap">
+<div style="float:left; width:70%">
 <h2>Slickr Flickr Options</h2>
 
 <p>For help on gettting the best from Slickr Flickr visit the <a href="http://slickr-flickr.diywebmastery.com/">Slickr Flickr Plugin Home Page</a></p>
@@ -80,7 +96,7 @@ print <<< ADMIN_PANEL
 <p>The Flickr Id is required for you to be able to access your photos.</p>
 <p>If you supply it here, the plugin will remember it so you do not need to supply it for every gallery and every slideshow.</p>
 <p>You are still able to supply a Flickr id for an individual slideshow perhaps where you want to display photos from a friends Flickr account</p>
-<p>A Flickr Id looks something like this : 12345678@N00</p>
+<p>A Flickr Id looks something like this : 12345678@N00 and you can find your Flickr ID at <a target="_blank" href="http://idgettr.com/">idgettr.com</a></p>
 <label for="flickr_id">Flickr Id: </label><input name="flickr_id" type="text" id="flickr_id" value="{$options['id']}" />
 
 <h3>Flickr User or Group</h3>
@@ -131,10 +147,19 @@ print <<< ADMIN_PANEL
 <h3>Lightbox</h3>
 <p>If you leave this blank then the plugin will use the standard lightbox.</p>
 <p>If you select lightbox slideshow then when a photo is clicked the overlaid lightbox will automatically play the slideshow.</p>
-<p>For example [slickr-flickr type="gallery" tag="bahamas" delay="6"] displays a gallery which when clicked shows a lightbox slideshow that plays automatically with a six second delay between slides</p>
+<p>If you select ShadowBox then it will use the ShadowBox jQuery plugin which is bundled with this plugin.</p>
+<p>If you select ThickBox then it will use the standard WordPress lightbox plugin which is pre-installed with Wordpress.</p>
+<p>If you select FancyBox then it will use the FancyBox for WP lightbox plugin which you need to have installed independently from Slickr Flickr.</p>
+<p>If you select Lightbox Plus then it will use the Lightbox Plus plugin which you need to have installed independently from Slickr Flickr.</p>
+<p>If you select Shutter then it will use the Shutter Reloaded for WP lightbox plugin which you need to have installed independently from Slickr Flickr.</p>
 <label for="flickr_lightbox">Lightbox</label><select name="flickr_lightbox" id="flickr_lightbox">
-<option value="lightbox" {$lightbox}>lightbox with manual slideshow</option>
-<option value="lightbox-slideshow" {$lightbox_slideshow}>lightbox with autoplay slideshow option</option>
+<option value="sf-lbox-manual" {$lightbox_manual}>LightBox with manual slideshow</option>
+<option value="sf-lbox-auto" {$lightbox_auto}>LightBox with autoplay slideshow option</option>
+<option value="shadowbox" {$shadowbox}>Shadowbox</option>
+<option value="thickbox" {$thickbox}>Thickbox (standard lightbox pre-installed with Wordpress)</option>
+<option value="fancybox" {$fancybox}>FancyBox for Wordpress</option>
+<option value="colorbox" {$colorbox}>LightBox Plus for Wordpress</option>
+<option value="shutter" {$shutter}>Shutter Reloaded for Wordpress</option>
 </select>
 
 <p class="submit">
@@ -162,6 +187,38 @@ print <<< ADMIN_PANEL
 
 <h3>Help With Slickr Flickr</h3>
 <p>For help on gettting the best from Slickr Flickr visit the <a href="http://slickr-flickr.diywebmastery.com/">Slickr Flickr Plugin Home Page</a></p>
+</div>
+<div style="float:right; width: 180px">
+<h3>Slickr Flickr Links</h3>
+<ul>
+<li><a target="_blank" href="http://slickr-flickr.diywebmastery.com/">Plugin Home Page</a></li>
+<li><a target="_blank" href="http://slickr-flickr.diywebmastery.com/40/how-to-use-slickr-flickr-admin-settings/">How To Use Admin Settings</a></li>
+<li><a target="_blank" href="http://slickr-flickr.diywebmastery.com/56/how-to-use-slickr-flickr-to-create-a-slideshow-or-gallery/">How To Use The Plugin</a></li>
+<li><a target="_blank" href="http://slickr-flickr.diywebmastery.com/slickr-flickr-help/">Get Help</a></li>
+<li><a target="_blank" href="http://slickr-flickr.diywebmastery.com/slickr-flickr-videos/">Get FREE Video Tutorials</a></li>
+</ul>
+<p><img src="http://images.diywebmastery.com/layout/wordpress-signup.png" alt="DIY Webmastery Slickr Flickr Signup"></p>
+<form id="slickr_flickr_signup" name="slickr_flickr_signup" method="post" action="http://slickr-flickr.diywebmastery.com/form-storm"
+onSubmit="return slickr_flickr_validate_form(this)">
+<input type="hidden" name="destination" value="slickr-flickr"/>
+<label for="firstname">First Name
+<input id="firstname" name="firstname" type="text" value="" /></label><br/>
+<label for="email">Email
+<input id="email" name="email" type="text" /></label><br/>
+<label id="lsubject" for="subject">Subject
+<input id="subject" name="subject" type="text" /></label>
+<input type="submit" value="" />
+</form>
+<h3>Compatible Plugins</h3>
+<ul>
+<li><a target="_blank" href="http://wordpress.org/extend/plugins/wordpress-flickr-manager/">Flickr Manager</a></li>
+<li><a target="_blank" href="http://wordpress.org/extend/plugins/fancybox-for-wordpress/">FancyBox Lightbox for WordPress</a></li>
+<li><a target="_blank" href="http://wordpress.org/extend/plugins/lightbox-plus/">Lightbox Plus (ColorBox) for WordPress</a></li>
+<li><a target="_blank" href="http://wordpress.org/extend/plugins/shutter-reloaded/">Shutter Lightbox for WordPress</a></li>
+<li><a target="_blank" href="http://wordpress.org/extend/plugins/flickr-gallery/">Flickr Gallery</a></li>
+</ul>
+</div>
+<div style="clear:both"></div>
 </div>
 ADMIN_PANEL;
 }
