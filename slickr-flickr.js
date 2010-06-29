@@ -51,4 +51,21 @@ if (flickr_slideshow_delay > 0) {
     }
 }
 
-jQuery(document).ready( function () {  slickr_flickr_start_slideshows(); });
+jQuery.noConflict(); jQuery(document).ready(function($) {
+    $(".slickr-flickr-galleria").each(function($index){
+        $delay = $(this).data("delay");
+        $autoplay = $(this).data("autoplay")=="on"?true:false;
+        if (($delay) && ($delay > 0))
+            $(this).galleria( { slideDelay : $delay * 1000, autoPlay: $autoplay});
+        else
+            $(this).galleria();
+    });
+    $(".slickr-flickr-gallery").each( function (index) {
+        $delay = $(this).data("delay");
+        if (($delay) && ($delay > 0))
+            $(this).find('a[rel="sf-lbox-auto"]').lightBox( { nextSlideDelay : 1000 * $delay });
+        else
+            $(this).find('a[rel="sf-lbox-manual"]').lightBox();
+  });
+  slickr_flickr_start_slideshows();
+});

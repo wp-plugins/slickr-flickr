@@ -79,6 +79,7 @@ $lightbox_auto = $options['lightbox']=="sf-lbox-auto"?"selected":"";
 $lightbox_manual = $options['lightbox']=="sf-lbox-manual"?"selected":"";
 $shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
 $thickbox = $options['lightbox']=="thickbox"?"selected":"";
+$slimbox = $options['lightbox']=="slimbox"?"selected":"";
 $fancybox = $options['lightbox']=="fancybox"?"selected":"";
 $colorbox = $options['lightbox']=="colorbox"?"selected":"";
 $shutter = $options['lightbox']=="shutter"?"selected":"";
@@ -157,6 +158,7 @@ print <<< ADMIN_PANEL
 <option value="sf-lbox-auto" {$lightbox_auto}>LightBox with autoplay slideshow option</option>
 <option value="shadowbox" {$shadowbox}>Shadowbox</option>
 <option value="thickbox" {$thickbox}>Thickbox (standard lightbox pre-installed with Wordpress)</option>
+<option value="slimbox" {$slimbox}>SlimBox for Wordpress</option>
 <option value="fancybox" {$fancybox}>FancyBox for Wordpress</option>
 <option value="colorbox" {$colorbox}>LightBox Plus for Wordpress</option>
 <option value="shutter" {$shutter}>Shutter Reloaded for Wordpress</option>
@@ -214,6 +216,7 @@ onSubmit="return slickr_flickr_validate_form(this)">
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/wordpress-flickr-manager/">Flickr Manager</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/fancybox-for-wordpress/">FancyBox Lightbox for WordPress</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/lightbox-plus/">Lightbox Plus (ColorBox) for WordPress</a></li>
+<li><a target="_blank" href="http://wordpress.org/extend/plugins/slimbox-plugin/">SlimBox for WordPress</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/shutter-reloaded/">Shutter Lightbox for WordPress</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/flickr-gallery/">Flickr Gallery</a></li>
 </ul>
