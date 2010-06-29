@@ -4,8 +4,8 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.8
-Displays a set of tagged photos from your Flickr account either as gallery or a unbranded slideshow in posts, pages, or sidebar widgets
+Stable tag: 1.10
+Displays a set of tagged photos from your Flickr account either as a gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
 
@@ -17,7 +17,7 @@ Displays a set of tagged photos from your Flickr account either as gallery or a 
 * With manual or autoplay slideshows
 * Works with various LightBoxes 
 * Works with jQuery Galleria to display photos in a slideshow/gallery combo
-* See http://slickr-flickr.diywebmastery.com for training and support on using the plugin
+* See http://slickr-flickr.diywebmastery.com for tutorials and support on using the plugin
 
 == Installation ==
 
@@ -45,20 +45,31 @@ Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only 
 == Screenshots ==
 
 1. Examples of Slickr Flickr slideshows and galleries in action
-
 1. Example of a slideshow/gallery combo in a post
-
 1. Example of an overlaid lightbox which appears on clicking a thumbnail
 
 
 == Changelog ==
+
+= 1.10 =
+* Consolidated script and stylesheet files
+* More options for the LightBox: Slimbox
+* Fixed bug with the speed of play of the galleria slideshow
+* Added autoplay off option for the galleria so it does not start automatically 
+* Partial support for multiple galleria on a page (a bug remains - only the last galleria slideshow plays)
+
+
+= 1.9 =
+* Added missing stylesheet for the admin panel
+* Readme updates
+
 
 = 1.8 =
 * More options for the LightBox: ThickBox, ShadowBox, FancyBox, LightBox Plus and Shutter Reloaded 
 * Option for large thumbnails in the gallery
 * Optional border for the slideshow
 * Automatic slideshow option for the galleria
-* Sli/ckr Flickr Resources Menu on the admin panel
+* Slickr Flickr Resources Menu on the admin panel
 
 
 = 1.7 =
@@ -100,7 +111,7 @@ Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only 
 
 == Upgrade Notice ==
 
-= 1.8 = 
+= 1.10 = 
 * Recommended but not mandatory
 
 
