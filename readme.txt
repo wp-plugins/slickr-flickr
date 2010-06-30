@@ -4,7 +4,7 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.11
+Stable tag: 1.12
 Displays a set of tagged photos from your Flickr account either as a gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -51,6 +51,9 @@ Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only 
 
 == Changelog ==
 
+= 1.12 =
+* Fix bug with captions not displaying in the galleria and also allow more than one galleria slideshow per page
+
 = 1.11 =
 * Fix bug in slickr-flickr.js when using other lightboxes
 
@@ -61,11 +64,9 @@ Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only 
 * Added autoplay off option for the galleria so it does not start automatically 
 * Partial support for multiple galleria on a page (a bug remains - only the last galleria slideshow plays)
 
-
 = 1.9 =
 * Added missing stylesheet for the admin panel
 * Readme updates
-
 
 = 1.8 =
 * More options for the LightBox: ThickBox, ShadowBox, FancyBox, LightBox Plus and Shutter Reloaded 
@@ -114,7 +115,7 @@ Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only 
 
 == Upgrade Notice ==
 
-= 1.11 = 
+= 1.12 = 
 * Recommended but not mandatory
 
 

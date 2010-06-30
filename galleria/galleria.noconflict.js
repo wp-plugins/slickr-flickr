@@ -99,11 +99,7 @@ $$ = $j.fn.galleria = function(options) {
 		activeImage: 0,
         autoPlay : false,
         timer : false,
-        slideDelay: 5000,
-        nextSlide: function() { _stop_galleria_show(); _next_galleria_image(); },
-        prevSlide: function() { _stop_galleria_show(); _prev_galleria_image(); },
-        stopSlide: function() { _stop_galleria_show(); },
-        startSlide: function() { _start_galleria_show(); }
+        slideDelay: 5000
         };
 
 
@@ -256,20 +252,39 @@ $$ = $j.fn.galleria = function(options) {
 			}).attr('src', _src);
     	});
 
+        $j(this).find('.nav .nextSlide').click(function() {
+		      _stop_galleria_show();
+			  _next_galleria_image();
+              return false;
+              });
+        $j(this).find('.nav .prevSlide').click(function() {
+		      _stop_galleria_show();
+			  _prev_galleria_image();
+              return false;
+              });
+        $j(this).find('.nav .stopSlide').click(function() {
+		      _stop_galleria_show();
+              return false;
+              });
+        $j(this).find('.nav .startSlide').click(function() {
+		      _start_galleria_show();
+              return false;
+              });
+
         if($settings.autoPlay){
-	    	_start_galleria_show(jQueryMatchedObj);
+	    	_start_galleria_show();
 	    }
 
 
    function _start_galleria_show() {
   	    if ( ! $settings.timer) {
-  	        var tmFunc = function(){ _galleria_slideshow(jQueryMatchedObj.attr("id")); };
+  	        var tmFunc = function(){ _galleria_slideshow(); };
             $settings.timer = setTimeout(tmFunc, $settings.slideDelay);
             }
    }
 
    function _stop_galleria_show() {
-        clearTimeout($settings.timer);
+        if ($settings.timer) clearTimeout($settings.timer);
         $settings.timer = false;
     }
 
@@ -302,13 +317,10 @@ $$ = $j.fn.galleria = function(options) {
     }
 
 
-    function _galleria_slideshow(divid){
-        $slideshow = $j("#"+divid);
-        $slideshow.galleria.nextSlide() ;
-    	if($j('.slickr-flickr-galleria').length > 0)
-    	  	$slideshow.galleria.startSlide();
-    	else
-            $slideshow.galleria.stopSlide();
+    function _galleria_slideshow(){
+	    _next_galleria_image();
+        _stop_galleria_show();
+    	if($j('.slickr-flickr-galleria').length > 0) _start_galleria_show();
     }
 
     function _hasCSS()  {
@@ -330,7 +342,7 @@ $$ = $j.fn.galleria = function(options) {
   	    if (_src) {
 
     	    // get the thumb
-        	var _thumb = $ul.find(' .galleria img[rel="'+_src+'"]');
+        	var _thumb = $ul.find('img[rel="'+_src+'"]');
 
     		// alter the active classes
     		_thumb.parents('li').siblings('.active').removeClass('active');
@@ -343,7 +355,7 @@ $$ = $j.fn.galleria = function(options) {
     		_wrapper.empty().append(_img);
 
     		// insert the caption
-    		_wrapper.siblings('.caption').text(_thumb.attr('title'));
+    		_wrapper.siblings('.caption').html(_thumb.attr('title'));
 
             _alt = _thumb.attr('alt') != _thumb.attr('title') ? _thumb.attr('alt') : "";
     		_wrapper.siblings('.description').html(_alt);
@@ -354,7 +366,7 @@ $$ = $j.fn.galleria = function(options) {
     		// add clickable image helper
     		if($settings.clickNext) {
     			_img.css('cursor','pointer').click(function() {
-    		      if($settings.timer) clearTimeout($j.galleria.timer);
+    		      if($settings.timer) {clearTimeout($settings.timer); $settings.timer = 0; }
     			  _next_galleria_image();
                   });
     		}

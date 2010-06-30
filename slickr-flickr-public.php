@@ -12,15 +12,16 @@
  * @param items -> maximum number photos to display in the gallery or slideshow
  * @param type -> gallery or slideshow
  * @param captions -> whether captions are on or off
- * @param delay -> delay in seconds between each image in the slide show
- * @param start -> first slide in the slide show
+ * @param delay -> delay in seconds between each image in the slideshow
+ * @param autoplay -> on or off (default is on) - only applies to galleria
+ * @param start -> first slide in the slideshow
  * @param link -> url to visit on clicking slideshow (optional)
  * @param attribution -> credit the photographer (optional)
  * @param sort -> sort order of photos (optional)
  * @param direction -> sort order of photos (optional)
  * @param descriptions -> show descriptions beneath title on the lightbox - on or off (optional)
- * @param flickr_link -> include a link to the photo on Fklickr on the lightbox - on or off (optional)
- * @param photos_per_row -> include a link to the photo on Fklickr on the lightbox - on or off (optional)
+ * @param flickr_link -> include a link to the photo on Flickr on the lightbox - on or off (optional)
+ * @param photos_per_row -> include a link to the photo on Flickr on the lightbox - on or off (optional)
  * @param thumbnail_size -> default square (optional)
  * @param thumbnail_scale -> default 100% (optional)
  * @param border -> where slideshow border is on or off (optional)
@@ -53,10 +54,8 @@ function slickr_flickr_display ($attr) {
         }
    case "galleria": {
         $nav = <<<NAV
-<p class="nav {$params['size']}"><a href="#" onclick="jQuery('#{$divid}').galleria.prevSlide(); return false;">&laquo; previous</a> |
-<a href="#" onclick="jQuery('#{$divid}').galleria.startSlide(); return false;">start</a> |
-<a href="#" onclick="jQuery('#{$divid}').galleria.stopSlide(); return false;">stop</a> |
-<a href="#" onclick="jQuery('#{$divid}').galleria.nextSlide(); return false;">next &raquo;</a></p>
+<p class="nav {$params['size']}"><a href="#" class="prevSlide">&laquo; previous</a> | <a href="#" class="startSlide">start</a> | <a href="#" class="stopSlide">stop</a> |
+<a href="#" class="nextSlide">next &raquo;</a></p>
 NAV;
         $divstart = '<div id="'.$divid.'" class="slickr-flickr-galleria '.$params['orientation'].' '.$params['size'].'">'.$attribution.$nav.'<ul>';
         $divend = '</ul>'.$divclear.$attribution.$nav.'</div>'.$scriptdelay;

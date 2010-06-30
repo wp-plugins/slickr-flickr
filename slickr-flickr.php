@@ -3,7 +3,7 @@
 Plugin Name: Slickr Flickr
 Plugin URI: http://slickr-flickr.diywebmastery.com
 Description: Displays tagged photos from Flickr in slideshows and galleries
-Version: 1.11
+Version: 1.12
 Author: Russell Jamieson
 Author URI: http://www.wordpresswise.com
 */
