@@ -12,19 +12,20 @@
  * @param items -> maximum number photos to display in the gallery or slideshow
  * @param type -> gallery or slideshow
  * @param captions -> whether captions are on or off
- * @param delay -> delay in seconds between each image in the slide show
- * @param start -> first slide in the slide show
+ * @param delay -> delay in seconds between each image in the slideshow
+ * @param autoplay -> on or off (default is on) - only applies to galleria
+ * @param start -> first slide in the slideshow
  * @param link -> url to visit on clicking slideshow (optional)
  * @param attribution -> credit the photographer (optional)
  * @param sort -> sort order of photos (optional)
  * @param direction -> sort order of photos (optional)
  * @param descriptions -> show descriptions beneath title on the lightbox - on or off (optional)
- * @param flickr_link -> include a link to the photo on Fklickr on the lightbox - on or off (optional)
- * @param photos_per_row -> include a link to the photo on Fklickr on the lightbox - on or off (optional)
+ * @param flickr_link -> include a link to the photo on Flickr on the lightbox - on or off (optional)
+ * @param photos_per_row -> include a link to the photo on Flickr on the lightbox - on or off (optional)
  * @param thumbnail_size -> default square (optional)
  * @param thumbnail_scale -> default 100% (optional)
  * @param border -> where slideshow border is on or off (optional)
- */
+*/
 require_once(dirname(__FILE__).'/flickr.php');
 
 
@@ -38,27 +39,25 @@ function slickr_flickr_display ($attr) {
   $tagmode = strtolower($params['tagmode'])=="any"?"any":"all";
   $id = $params['group']=="y" ? "g" : "id" ;
 
-  $attribution = empty($params['attribution'])?"":('<p class="slickr-flickr-attribution">'.$params['attribution'].'</p>');
+  $attribution = empty($params['attribution'])?"":('<p class="slickr-flickr-attribution align'.$params['align'].'">'.$params['attribution'].'</p>');
   $rand_id = rand(1,1000);
   $divid = "flickr_".strtolower(str_replace(array(" ","-",","),"",$params['tag'])).'_'.$rand_id; //strip apostrophes, spaces and commas
-  $scriptdelay = '<script type="text/javascript">jQuery("#'.$divid.'").data("delay","'.$params['delay'].'");</script>';
+  $scriptdelay = '<script type="text/javascript">jQuery("#'.$divid.'").data("delay","'.$params['delay'].'");jQuery("#'.$divid.'").data("autoplay","'.$params['autoplay'].'");</script>';
   $divclear = '<div style="clear:both"></div>';
   switch ($params['type']) {
     case "slideshow": {
         $link = empty($params['link'])?'slickr_flickr_next_slide(this);':("window.location='".$params['link']."';");
         $border = $params['border']=='on'?' class="border"':'';
-        $divstart = $attribution.'<div id="'.$divid.'" class="slickr-flickr-slideshow '.$params['orientation'].' '.$params['size'].'"'.$style.' onClick="'.$link.'">';
+        $divstart = $attribution.'<div id="'.$divid.'" class="slickr-flickr-slideshow '.$params['orientation'].' '.$params['size'].'" onClick="'.$link.'">';
         $divend = '</div>'.$divclear.$scriptdelay;
         break;
         }
    case "galleria": {
         $nav = <<<NAV
-<p class="nav"><a href="#" onclick="jQuery.galleria.prev(); return false;">&laquo; previous</a> |
-<a href="#" onclick="jQuery.galleria.startShow(); return false;">start</a> |
-<a href="#" onclick="jQuery.galleria.stopShow(); return false;">stop</a> |
-<a href="#" onclick="jQuery.galleria.next(); return false;">next &raquo;</a></p>
+<p class="nav {$params['size']}"><a href="#" class="prevSlide">&laquo; previous</a> | <a href="#" class="startSlide">start</a> | <a href="#" class="stopSlide">stop</a> |
+<a href="#" class="nextSlide">next &raquo;</a></p>
 NAV;
-        $divstart = '<div id="'.$divid.'" class="slickr-flickr-galleria '.$params['orientation'].'">'.$attribution.$nav.'<ul>';
+        $divstart = '<div id="'.$divid.'" class="slickr-flickr-galleria '.$params['orientation'].' '.$params['size'].'">'.$attribution.$nav.'<ul>';
         $divend = '</ul>'.$divclear.$attribution.$nav.'</div>'.$scriptdelay;
         break;
         }
@@ -90,10 +89,11 @@ NAV;
         $divstart = '<div id="'.$divid.'" class="slickr-flickr-gallery">'. $attribution . '<ul'.$gallery_style.'>';
         $divend = '</ul></div>'.$divclear.($params['lightbox'] == "sf-lbox-auto" ? $scriptdelay : "");
         switch ($params['lightbox']) {
-          case "shutter":   $lightboxrel = 'rel="lightbox['.$rand_id.']"';  break;
           case "shadowbox": $lightboxrel = 'rel="shadowbox['.$rand_id.']"'; break;
-          case "colorbox": $lightboxrel = 'rel="lightbox['.$rand_id.']"'; break; 
           case "thickbox": $lightboxrel = 'rel="thickbox['.$rand_id.']" class="thickbox" '; break;
+          case "colorbox":
+          case "slimbox":
+          case "shutter":   $lightboxrel = 'rel="lightbox['.$rand_id.']"';  break;
           default: $lightboxrel = 'rel="'.$params['lightbox'].'"';
           }
         }
@@ -122,26 +122,25 @@ NAV;
     $oriented = $photo['orientation'];
     $full_url = $params['size']=="original" ? $photo['original'] : flickr::resize_photo($photo['url'], $params['size']);
     $thumb_url = flickr::resize_photo($photo['url'], $params['thumbnail_size']);
-
+    $captiontitle = $params["flickr_link"]=="on"?("<a title='Click to see photo on Flickr' href='". $photo["link"] . "'>".$title."</a>"):$title;
     $imgsize="";
     if ($oriented != $params['orientation']) $imgsize = $oriented=="landscape"?'width="80%"':'height="90%"';
     switch ($params['type']) {
        case "slideshow": {
-            $captiontitle = $params["flickr_link"]=="on"?("<a title='Click to see photo on Flickr' href='". $photo["link"] . "'>".$title."</a>"):$title;
-            $caption = $params['captions']=="off"?"":('<p class="slickr-flickr-caption">'.$captiontitle.'</p>');
+            $alt = $params["descriptions"]=="on"? $description : "";
+            $caption = $params['captions']=="off"?"":('<span'.$border.' class="slickr-flickr-caption"><p>'.$captiontitle).'</p>'.$alt.'</span>';
             $s .=  '<div' . ($r==$i?' class="active"':'') .'><img '.$imgsize.$border.' src="'.$full_url.'" alt="'.$title.'" />'.$caption.'</div>';
             break;
         }
        case "galleria": {
-            $s .= '<li' . ($r==$i?' class="active"':'') .'><img '.$imgsize.' src="'.$full_url.'" alt="'.$title.'" title="'.$title.'"/></li>';
+            $alt = $params["descriptions"]=="on"? $description : "";
+            $s .= '<li' . ($r==$i?' class="active"':'') .'><img '.$imgsize.' src="'.$full_url.'" alt="'.$alt.'" title="'.$title.'"/></li>';
             break;
         }
         default: {
-            $caption = $params['captions']=="off"?"":('<br/><span class="slickr-flickr-caption">'.$title.'</span>');
-            $lightbox_title = $title;
-            if ($params["flickr_link"]=="on") $lightbox_title = "<a title='Click to see photo on Flickr' href='". $photo["link"] . "'>".$lightbox_title."</a>";
-            if ($params["descriptions"]=="on") $lightbox_title .= $description;
-            $s .= '<li'.$li_style.'><a '.$lightboxrel.' href="'.$full_url.'" title="'.$lightbox_title.'"><img src="'.$thumb_url.'"'.$thumb_scale.' alt="'.$title.'" />'.$caption.'</a></li>';
+            $thumbcaption = $params['captions']=="off"?"":('<br/><span class="slickr-flickr-caption">'.$title.'</span>');
+            $lightbox_title = $captiontitle . ($params["descriptions"]=="on" ? $description : "");
+            $s .= '<li'.$li_style.'><a '.$lightboxrel.' href="'.$full_url.'" title="'.$lightbox_title.'"><img src="'.$thumb_url.'"'.$thumb_scale.' alt="'.$title.'" />'.$thumbcaption.'</a></li>';
         }
     }
   }
@@ -212,12 +211,10 @@ function slickr_flickr_header() {
      case 'sf-lbox-manual': {
         wp_enqueue_style('lightbox', $path."/lightbox/css/jquery.lightbox-0.5.css");
         wp_enqueue_script('lightbox', $path."/lightbox/js/jquery.lightbox-0.5.js", array('jquery'));
-        wp_enqueue_script('slickr-flickr-gallery', $path."/slickr-flickr-gallery.js", array('jquery','lightbox'));
         }
      case 'sf-lbox-auto': {
         wp_enqueue_style('lightbox', $path."/lightbox-slideshow/lightbox.css");
         wp_enqueue_script('lightbox', $path."/lightbox-slideshow/lightbox-slideshow.js", array('jquery'));
-        wp_enqueue_script('slickr-flickr-gallery', $path."/slickr-flickr-gallery.js", array('jquery','lightbox'));
         break;
         }
      case 'shadowbox': {
@@ -232,12 +229,9 @@ function slickr_flickr_header() {
     default: { break; } //use another lightbox plugin such as fancybox, shutter, colorbox
     }
     wp_enqueue_style('galleria', $path."/galleria/galleria.css");
-    wp_enqueue_style('slickr-flickr-galleria', $path."/slickr-flickr-galleria.css");
-    wp_enqueue_style('slickr-flickr-gallery', $path."/slickr-flickr-gallery.css");
-    wp_enqueue_style('slickr-flickr-slideshow', $path."/slickr-flickr-slideshow.css");
+    wp_enqueue_style('slickr-flickr', $path."/slickr-flickr.css");
     wp_enqueue_script('galleria', $path."/galleria/galleria.noconflict.js", array('jquery'));
-    wp_enqueue_script('slickr-flickr-galleria', $path."/slickr-flickr-galleria.js", array('jquery','galleria'));
-    wp_enqueue_script('slickr-flickr-slideshow', $path."/slickr-flickr-slideshow.js", array('jquery'));
+    wp_enqueue_script('slickr-flickr', $path."/slickr-flickr.js", array('jquery','galleria'));
 }
 
 add_shortcode('slickr-flickr', 'slickr_flickr_display');
