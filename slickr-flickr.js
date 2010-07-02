@@ -51,4 +51,27 @@ if (flickr_slideshow_delay > 0) {
     }
 }
 
-jQuery(document).ready( function () {  slickr_flickr_start_slideshows(); });
+jQuery.noConflict(); jQuery(document).ready(function($) {
+    $(".slickr-flickr-galleria").each(function($index){
+        $delay = $(this).data("delay");
+        $autoplay = $(this).data("autoplay")=="on"?true:false;
+        $captions = $(this).data("captions")=="on"?true:false;
+        $descriptions = $(this).data("descriptions")=="on"?true:false;
+        if (($delay) && ($delay > 0))
+            $(this).galleria( { slideDelay : $delay * 1000, autoPlay: $autoplay, captions: $captions, descriptions: $descriptions});
+        else
+            $(this).galleria();
+    });
+    if ($('a[rel="sf-lbox-auto"]').size() + $('a[rel="sf-lbox-manual"]').size() > 0) {
+        $(".slickr-flickr-gallery").each( function (index) {
+            $delay = $(this).data("delay");
+            if (($delay) && ($delay > 0)) {
+                $autoplay = $(this).data("autoplay")=="on"?true:false;
+                $(this).find('a[rel="sf-lbox-auto"]').lightBox( { nextSlideDelay : 1000 * $delay, autoPlay: $autoplay });
+            } else {
+                $(this).find('a[rel="sf-lbox-manual"]').lightBox();
+            }
+        });
+    }
+  slickr_flickr_start_slideshows();
+});
