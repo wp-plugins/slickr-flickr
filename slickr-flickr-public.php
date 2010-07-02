@@ -14,17 +14,18 @@
  * @param captions -> whether captions are on or off
  * @param delay -> delay in seconds between each image in the slideshow
  * @param autoplay -> on or off (default is on) - only applies to galleria
- * @param start -> first slide in the slideshow
+ * @param pause -> on or off (default is off) - only applies to slideshow
+ * @param start -> first slide in the slideshow (optional)
  * @param link -> url to visit on clicking slideshow (optional)
  * @param attribution -> credit the photographer (optional)
  * @param sort -> sort order of photos (optional)
  * @param direction -> sort order of photos (optional)
  * @param descriptions -> show descriptions beneath title on the lightbox - on or off (optional)
  * @param flickr_link -> include a link to the photo on Flickr on the lightbox - on or off (optional)
- * @param photos_per_row -> include a link to the photo on Flickr on the lightbox - on or off (optional)
- * @param thumbnail_size -> default square (optional)
+ * @param photos_per_row -> maximum number number of thumbnail in a gallery row (optional)
+ * @param thumbnail_size -> default is square 75x75px (optional)
  * @param thumbnail_scale -> default 100% (optional)
- * @param border -> where slideshow border is on or off (optional)
+ * @param border -> whether slideshow border is on or off (optional)
 */
 require_once(dirname(__FILE__).'/flickr.php');
 
@@ -42,17 +43,18 @@ function slickr_flickr_display ($attr) {
   $attribution = empty($params['attribution'])?"":('<p class="slickr-flickr-attribution align'.$params['align'].'">'.$params['attribution'].'</p>');
   $rand_id = rand(1,1000);
   $divid = "flickr_".strtolower(str_replace(array(" ","-",","),"",$params['tag'])).'_'.$rand_id; //strip apostrophes, spaces and commas
-  $scriptdelay = '<script type="text/javascript">jQuery("#'.$divid.'").data("delay","'.$params['delay'].'");jQuery("#'.$divid.'").data("autoplay","'.$params['autoplay'].'");</script>';
   $divclear = '<div style="clear:both"></div>';
   switch ($params['type']) {
     case "slideshow": {
-        $link = empty($params['link'])?'slickr_flickr_next_slide(this);':("window.location='".$params['link']."';");
+        $scriptdelay = '<script type="text/javascript">jQuery("#'.$divid.'").data("delay","'.$params['delay'].'");jQuery("#'.$divid.'").data("autoplay","'.$params['autoplay'].'");</script>';
+        $link = empty($params['link'])?($params['pause'] == "on"?"slickr_flickr_toggle_slideshows()":"slickr_flickr_next_slide(this)"):("window.location='".$params['link']."'");
         $border = $params['border']=='on'?' class="border"':'';
-        $divstart = $attribution.'<div id="'.$divid.'" class="slickr-flickr-slideshow '.$params['orientation'].' '.$params['size'].'" onClick="'.$link.'">';
+        $divstart = $attribution.'<div id="'.$divid.'" class="slickr-flickr-slideshow '.$params['orientation'].' '.$params['size'].'" onClick="'.$link.';">';
         $divend = '</div>'.$divclear.$scriptdelay;
         break;
         }
    case "galleria": {
+        $scriptdelay = '<script type="text/javascript">jQuery("#'.$divid.'").data("delay","'.$params['delay'].'");jQuery("#'.$divid.'").data("autoplay","'.$params['autoplay'].'");jQuery("#'.$divid.'").data("captions","'.$params['captions'].'");jQuery("#'.$divid.'").data("descriptions","'.$params['descriptions'].'");</script>';
         $nav = <<<NAV
 <p class="nav {$params['size']}"><a href="#" class="prevSlide">&laquo; previous</a> | <a href="#" class="startSlide">start</a> | <a href="#" class="stopSlide">stop</a> |
 <a href="#" class="nextSlide">next &raquo;</a></p>
@@ -87,6 +89,7 @@ NAV;
             }
 
         $divstart = '<div id="'.$divid.'" class="slickr-flickr-gallery">'. $attribution . '<ul'.$gallery_style.'>';
+        $scriptdelay = '<script type="text/javascript">jQuery("#'.$divid.'").data("delay","'.$params['delay'].'");jQuery("#'.$divid.'").data("autoplay","'.$params['autoplay'].'");</script>';
         $divend = '</ul></div>'.$divclear.($params['lightbox'] == "sf-lbox-auto" ? $scriptdelay : "");
         switch ($params['lightbox']) {
           case "shadowbox": $lightboxrel = 'rel="shadowbox['.$rand_id.']"'; break;
@@ -123,24 +126,23 @@ NAV;
     $full_url = $params['size']=="original" ? $photo['original'] : flickr::resize_photo($photo['url'], $params['size']);
     $thumb_url = flickr::resize_photo($photo['url'], $params['thumbnail_size']);
     $captiontitle = $params["flickr_link"]=="on"?("<a title='Click to see photo on Flickr' href='". $photo["link"] . "'>".$title."</a>"):$title;
+    $alt = $params["descriptions"]=="on"? $description : "";
     $imgsize="";
     if ($oriented != $params['orientation']) $imgsize = $oriented=="landscape"?'width="80%"':'height="90%"';
     switch ($params['type']) {
        case "slideshow": {
-            $alt = $params["descriptions"]=="on"? $description : "";
-            $caption = $params['captions']=="off"?"":('<span'.$border.' class="slickr-flickr-caption"><p>'.$captiontitle).'</p>'.$alt.'</span>';
-            $s .=  '<div' . ($r==$i?' class="active"':'') .'><img '.$imgsize.$border.' src="'.$full_url.'" alt="'.$title.'" />'.$caption.'</div>';
+            $caption = $params['captions']=="off"?"":('<p'.$border.'>'.$captiontitle.'</p>'.$alt);
+            $s .=  '<div' . ($r==$i?' class="active"':'') .'><img '.$imgsize.$border.' src="'.$full_url.'" alt="'.$alt.'" title="'.$title.'" />'.$caption.'</div>';
             break;
         }
        case "galleria": {
-            $alt = $params["descriptions"]=="on"? $description : "";
-            $s .= '<li' . ($r==$i?' class="active"':'') .'><img '.$imgsize.' src="'.$full_url.'" alt="'.$alt.'" title="'.$title.'"/></li>';
+            $s .= '<li' . ($r==$i?' class="active"':'') .'><img '.$imgsize.' src="'.$full_url.'" alt="'.$alt.'" title="'.$title.'" /></li>';
             break;
         }
         default: {
             $thumbcaption = $params['captions']=="off"?"":('<br/><span class="slickr-flickr-caption">'.$title.'</span>');
             $lightbox_title = $captiontitle . ($params["descriptions"]=="on" ? $description : "");
-            $s .= '<li'.$li_style.'><a '.$lightboxrel.' href="'.$full_url.'" title="'.$lightbox_title.'"><img src="'.$thumb_url.'"'.$thumb_scale.' alt="'.$title.'" />'.$thumbcaption.'</a></li>';
+            $s .= '<li'.$li_style.'><a '.$lightboxrel.' href="'.$full_url.'" title="'.$lightbox_title.'"><img src="'.$thumb_url.'"'.$thumb_scale.' alt="'.$alt.'" title="'.$title.'" />'.$thumbcaption.'</a></li>';
         }
     }
   }

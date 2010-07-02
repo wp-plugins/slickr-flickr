@@ -23,14 +23,15 @@ function add_slickr_flickr_options() {
 
 function slickr_flickr_clear_rss_cache() {
     global $wpdb, $table_prefix;
-    $sql = sprintf("DELETE FROM %soptions WHERE option_name LIKE 'rss_%' and LENGTH(option_name) IN (36, 39)",  $table_prefix);
+    $prefix = $table_prefix ? $table_prefix : "wp_";
+    $sql = "DELETE FROM ".$prefix."options WHERE option_name LIKE 'rss_%' and LENGTH(option_name) IN (36, 39)";
     $wpdb->query($sql);
 }
 
 function slickr_flickr_clear_rss_cache_transient() {
     global $wpdb, $table_prefix;
-    $sql = sprintf("DELETE FROM %soptions WHERE option_name LIKE '%s' or option_name LIKE '%s' or option_name LIKE '%s'",
-            $table_prefix, "\_transient\_feed\_%", "\_transient\_rss\_%", "\_transient\_timeout\_%");
+    $prefix = $table_prefix ? $table_prefix : "wp_";
+    $sql = "DELETE FROM ".$prefix."options WHERE option_name LIKE '_transient_feed_%' or option_name LIKE '_transient_rss_%' or option_name LIKE '_transient_timeout_%'";
     $wpdb->query($sql);
 }
 
@@ -152,15 +153,16 @@ print <<< ADMIN_PANEL
 <p>If you select ThickBox then it will use the standard WordPress lightbox plugin which is pre-installed with Wordpress.</p>
 <p>If you select FancyBox then it will use the FancyBox for WP lightbox plugin which you need to have installed independently from Slickr Flickr.</p>
 <p>If you select Lightbox Plus then it will use the Lightbox Plus plugin which you need to have installed independently from Slickr Flickr.</p>
+<p>If you select SlimBox then it will use the SlimBox for WP lightbox plugin which you need to have installed independently from Slickr Flickr.</p>
 <p>If you select Shutter then it will use the Shutter Reloaded for WP lightbox plugin which you need to have installed independently from Slickr Flickr.</p>
 <label for="flickr_lightbox">Lightbox</label><select name="flickr_lightbox" id="flickr_lightbox">
 <option value="sf-lbox-manual" {$lightbox_manual}>LightBox with manual slideshow</option>
 <option value="sf-lbox-auto" {$lightbox_auto}>LightBox with autoplay slideshow option</option>
 <option value="shadowbox" {$shadowbox}>Shadowbox</option>
 <option value="thickbox" {$thickbox}>Thickbox (standard lightbox pre-installed with Wordpress)</option>
-<option value="slimbox" {$slimbox}>SlimBox for Wordpress</option>
 <option value="fancybox" {$fancybox}>FancyBox for Wordpress</option>
 <option value="colorbox" {$colorbox}>LightBox Plus for Wordpress</option>
+<option value="slimbox" {$slimbox}>SlimBox for Wordpress</option>
 <option value="shutter" {$shutter}>Shutter Reloaded for Wordpress</option>
 </select>
 
@@ -176,7 +178,6 @@ print <<< ADMIN_PANEL
 <input type="hidden" name="cache" value="clear"/>
 <input type="submit" name="clear" value="Clear Cache"/>
 </form>
-
 
 <h3>Donate</h3>
 <p>If you find this plugin useful and use it regularly please feel free to support the writer by donating a few bucks below or visit <a href="http://www.wordpresswise.com/slickr-flickr/donate">Slickr Flickr charity donation</a> page</p>
@@ -199,9 +200,10 @@ print <<< ADMIN_PANEL
 <li><a target="_blank" href="http://slickr-flickr.diywebmastery.com/slickr-flickr-help/">Get Help</a></li>
 <li><a target="_blank" href="http://slickr-flickr.diywebmastery.com/slickr-flickr-videos/">Get FREE Video Tutorials</a></li>
 </ul>
-<p><img src="http://images.diywebmastery.com/layout/wordpress-signup.png" alt="DIY Webmastery Slickr Flickr Signup"></p>
+<p><img src="http://images.diywebmastery.com/layout/wordpress-signup.png" alt="DIY Webmastery Slickr Flickr Signup" /></p>
 <form id="slickr_flickr_signup" name="slickr_flickr_signup" method="post" action="http://slickr-flickr.diywebmastery.com/form-storm"
 onSubmit="return slickr_flickr_validate_form(this)">
+<input type="hidden" name="form_storm" value="submit"/>
 <input type="hidden" name="destination" value="slickr-flickr"/>
 <label for="firstname">First Name
 <input id="firstname" name="firstname" type="text" value="" /></label><br/>

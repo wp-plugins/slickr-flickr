@@ -99,7 +99,9 @@ $$ = $j.fn.galleria = function(options) {
 		activeImage: 0,
         autoPlay : false,
         timer : false,
-        slideDelay: 5000
+        slideDelay: 5000,
+        captions : false,
+        descriptions : false
         };
 
 
@@ -267,7 +269,7 @@ $$ = $j.fn.galleria = function(options) {
               return false;
               });
         $j(this).find('.nav .startSlide').click(function() {
-		      _start_galleria_show();
+		      _galleria_slideshow();
               return false;
               });
 
@@ -354,12 +356,15 @@ $$ = $j.fn.galleria = function(options) {
     		// empty the wrapper and insert the new image
     		_wrapper.empty().append(_img);
 
-    		// insert the caption
-    		_wrapper.siblings('.caption').html(_thumb.attr('title'));
+            if ($settings.captions) {
+                // insert the caption
+        		_wrapper.siblings('.caption').html(_thumb.attr('title'));
 
-            _alt = _thumb.attr('alt') != _thumb.attr('title') ? _thumb.attr('alt') : "";
-    		_wrapper.siblings('.description').html(_alt);
-
+                if ($settings.descriptions) {
+                    _alt = _thumb.attr('alt') != _thumb.attr('title') ? _thumb.attr('alt') : "";
+        		    _wrapper.siblings('.description').html(_alt);
+                    }
+            }
     		// fire the onImage function to customize the loaded image's features
     		$settings.onImage(_img,_wrapper.siblings('.caption'),_thumb);
 
@@ -383,5 +388,4 @@ $$ = $j.fn.galleria = function(options) {
 
 };
 
-});//(jQuery) removed @noConflict
-
+});

@@ -24,9 +24,9 @@ $$ = $js.fn.lightBox = function(options) {
 		// Settings to configure the jQuery lightBox plugin how you like
 		var $settings = jQuery.extend({
 			// Configuration related to slideshow,
-			slideshow: true,
+			autoPlay: true,
 			nextSlideDelay: 7000,
-
+            timer: false,
 			// Configuration related to overlay
 			overlayBgColor: 		'#000',		// (string) Background color to overlay; inform a hexadecimal value like: #RRGGBB. Where RR, GG, and BB are the hexadecimal values for the red, green, and blue values of the color.
 			overlayOpacity:			0.8,		// (integer) Opacity value to overlay; inform: 0.X. Where X are number from 0 to 9
@@ -49,43 +49,32 @@ $$ = $js.fn.lightBox = function(options) {
 		// Caching the jQuery object with all elements matched
 		var jQueryMatchedObj = this; // This, in this context, refer to jQuery object
 
-	// bring the options to the lightbox object
-	    for (var i in $settings) {
-		if (i) {
-			$js.lightBox[i]  = $settings[i];
-		    }
-	    }
-		/**
-		 * Initializing the plugin calling the start function
-		 *
-		 * @return boolean false
-		 */
-
 		function _initialize() {
-			if($settings.slideshow){
- 		        var tmFunc = function(){ _doSlideShow(); };
-				setTimeout(tmFunc, $settings.nextSlideDelay);
-			}
-
 			_start(this,jQueryMatchedObj); // This, in this context, refer to object (link) which the user have clicked
+            if($settings.autoPlay) _startSlideshow ();
 			return false; // Avoid the browser following the link
 		}
-		/**
-		 * Slides to next image
-		 *
-		 */
+
+        function _stopSlideshow() {
+	        if ($settings.timer) {
+	            clearTimeout($settings.timer) ;
+		        $settings.timer = false;
+            }
+        }
+
+        function _startSlideshow() {
+            if (! $settings.timer) {
+	            var tmFunc = function(){ _doSlideShow(); };
+		        $settings.timer = setTimeout(tmFunc, $settings.nextSlideDelay);
+            }
+        }
+
+		/**  Slides to next image **/
 		function _doSlideShow(){
-			$settings.activeImage++;
-			if($settings.activeImage >= $settings.imageArray.length){
-				$settings.activeImage = 0;
-			}
-
-			_set_image_to_view();
-
-			var tmFunc = function(){ _doSlideShow(); };
-			if($js('#jquery-lightbox').length > 0){
-                setTimeout(tmFunc, $settings.nextSlideDelay);
-			}
+			$settings.activeImage = ($settings.activeImage < ($settings.imageArray.length - 1)) ? ($settings.activeImage+1) : 0 ;
+  			_set_image_to_view();
+		    _stopSlideshow();
+ 			if($js('#jquery-lightbox').length > 0) _startSlideshow();
 		}
 
 		/**
@@ -387,6 +376,7 @@ $$ = $js.fn.lightBox = function(options) {
 		 *
 		 */
 		function _finish() {
+		    if ($settings.timer) clearTimeout($settings.timer);
 			$js('#jquery-lightbox').remove();
 			$js('#jquery-overlay').fadeOut(function() { $js('#jquery-overlay').remove(); });
 			// Show some elements to avoid conflict with overlay in IE. These elements appear above the overlay.
@@ -475,11 +465,4 @@ $$ = $js.fn.lightBox = function(options) {
 		// Return the jQuery object for chaining. The unbind method is used to avoid click conflict when the plugin is called more than once
 		return this.unbind('click').click(_initialize);
 	};
-
-   $js.extend({lightBox : {
-	setDelay : function(_delay) {
- 	    $js.lightBox.slideDelay = _delay * 1000;
-	}
-   }
-   });
 });
