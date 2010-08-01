@@ -4,7 +4,7 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.13
+Stable tag: 1.14
 Displays a set of tagged photos from your Flickr account either as a gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -33,13 +33,13 @@ Displays a set of tagged photos from your Flickr account either as a gallery or 
 
 See http://slickr-flickr.diywebmastery.com/slickr-flickr-help for the full list of questions and answers about Slickr Flickr
 
-* How do I find my Flickr Id? - see http://slickr-flickr.diywebmastery.com/slickr-flickr-questions/where-do-i-find-my-flickr-id
+* How do I find my Flickr Id? - see http://slickr-flickr.diywebmastery.com/support/where-do-i-find-my-flickr-id/
 
-* Changes to my photos on Flickr do not appear instantly in the Slickr Flickr slideshow or Gallery - see http://slickr-flickr.diywebmastery.com/slickr-flickr-issues/tagged-photos-do-not-appear-in-the-blog-immediately/
+* Changes to my photos on Flickr do not appear instantly in the Slickr Flickr slideshow or Gallery - see http://slickr-flickr.diywebmastery.com/support/tagged-photos-do-not-appear-in-the-blog-immediately/
 
-* Only 20 photos are displayed in the gallery and I have tagged more than 20 photos - see http://slickr-flickr.diywebmastery.com/slickr-flickr-requests/more-than-20-photos/
+* Only 20 photos are displayed in the gallery and I have tagged more than 20 photos - see http://slickr-flickr.diywebmastery.com/support/how-to-show-50-photos-in-a-flickr-gallery/
 
-Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only the 20 most recent tagged photos. This will be addressed in the Slickr Flickr 2.0 release. 
+With release 1.14 you can show up to 100 photos per gallery or slideshow if you get a Flickr API Key
 
 
 == Screenshots ==
@@ -51,22 +51,27 @@ Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only 
 
 == Changelog ==
 
+= 1.14 =
+* Added search=photos|favorites|friends|groups|sets to allow more than just tagged photos to be selected
+* Added api_key option to allow selection of up to 100 photos to be selected
+
+
 = 1.13 =
-* Add pause=on option for the slideshow so you can pause or resume the slideshow by clicking the photo
-* Add autoplay=off option for the galleria so you can stop the galleria slideshow playing automatically
-* Fix bug with captions always displaying in the galleria
-* Inhibit display of html on the tooltip popup on placing the mouse over a thumbnail by using the Flickr photo title as the image title attribute and the Flickr photo description as the inage alt attribute
-* Use a default value of "wp_" as the table prefix if none is defined.
+* Added pause=on option for the slideshow so you can pause or resume the slideshow by clicking the photo
+* Added autoplay=off option for the galleria so you can stop the galleria slideshow playing automatically
+* Fixed bug with captions always displaying in the galleria
+* Inhibited display of html on the tooltip popup on placing the mouse over a thumbnail by using the Flickr photo title as the image title attribute and the Flickr photo description as the inage alt attribute
+* Used a default value of "wp_" as the table prefix if none is defined.
  
 = 1.12 =
-* Fix bug with captions not displaying in the galleria and also allow more than one galleria slideshow per page
+* Fixed bug with captions not displaying in the galleria and also allow more than one galleria slideshow per page
 
 = 1.11 =
-* Fix bug in slickr-flickr.js when using other lightboxes
+* Fixed bug in slickr-flickr.js when using other lightboxes
 
 = 1.10 =
 * Consolidated script and stylesheet files
-* More options for the LightBox: Slimbox
+* Added more options for the LightBox: Slimbox
 * Fixed bug with the speed of play of the galleria slideshow
 * Added autoplay off option for the galleria so it does not start automatically 
 * Partial support for multiple galleria on a page (a bug remains - only the last galleria slideshow plays)
@@ -76,7 +81,7 @@ Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only 
 * Readme updates
 
 = 1.8 =
-* More options for the LightBox: ThickBox, ShadowBox, FancyBox, LightBox Plus and Shutter Reloaded 
+* Added more options for the LightBox: ThickBox, ShadowBox, FancyBox, LightBox Plus and Shutter Reloaded 
 * Option for large thumbnails in the gallery
 * Optional border for the slideshow
 * Automatic slideshow option for the galleria
@@ -122,7 +127,7 @@ Slickr Flickr uses the Flickr RSS feed which has a limitation of returning only 
 
 == Upgrade Notice ==
 
-= 1.13 = 
+= 1.14 = 
 * Recommended but not mandatory
 
 
