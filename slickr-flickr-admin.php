@@ -111,6 +111,13 @@ print <<< ADMIN_PANEL
 <option value="y" {$is_group}>group</option>
 </select>
 
+<h3>Flickr API Key (Optional)</h3>
+<p>The Flickr API Key is used if you want to be able to get more than 20 photos at a time.</p>
+<p>If you supply it here, the plugin will remember it so you do not need to supply it for every gallery and every slideshow.</p>
+<p>A Flickr Id looks something like this : 5aa7aax73kljlkffkf2348904582b9cc and you can find your Flickr API Key by logging in to Flickr
+and then visiting <a target="_blank" href="http://www.flickr.com/services/api/keys/">Flickr API Keys</a></p>
+<label for="flickr_api_key">Flickr API Key: </label><input name="flickr_api_key" type="text" id="flickr_api_key" style="width:300px" value="{$options['api_key']}" />
+
 <h3>Number Of Photos To Display (Maximum is 20)</h3>
 <p>If you leave this blank then the plugin will display up to a maximum of 20 photos in each gallery or slideshow.</p>
 <p>If you supply a number it here, the plugin will remember it so you do not need to supply it for every gallery and every slideshow.</p>
@@ -168,7 +175,7 @@ print <<< ADMIN_PANEL
 
 <p class="submit">
 <input type="submit" name="options_update" value="Save Changes" />
-<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_lightbox" />
+<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_api_key,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_lightbox" />
 </p>
 </form>
 
@@ -201,7 +208,7 @@ print <<< ADMIN_PANEL
 <li><a target="_blank" href="http://slickr-flickr.diywebmastery.com/slickr-flickr-videos/">Get FREE Video Tutorials</a></li>
 </ul>
 <p><img src="http://images.diywebmastery.com/layout/wordpress-signup.png" alt="DIY Webmastery Slickr Flickr Signup" /></p>
-<form id="slickr_flickr_signup" name="slickr_flickr_signup" method="post" action="http://slickr-flickr.diywebmastery.com/form-storm"
+<form id="slickr_flickr_signup" name="slickr_flickr_signup" method="post" action="http://slickr-flickr.diywebmastery.com/"
 onSubmit="return slickr_flickr_validate_form(this)">
 <input type="hidden" name="form_storm" value="submit"/>
 <input type="hidden" name="destination" value="slickr-flickr"/>

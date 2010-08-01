@@ -2,33 +2,33 @@
 /**
  * Slickr Flickr
  *
- * Display a Flickr slideshow or a gallery in a post of widget
+ * Display a Flickr slideshow or a gallery in a post or widget
  *
- *
- * @param id -> the Flickr ID of user
- * @param group -> set to Y if the Flickr ID is the id of a group and not a user
- * @param tag -> identifies what photos to select
- * @param tagmode -> set to ANY for fetching photos with different tags (optiona)
- * @param items -> maximum number photos to display in the gallery or slideshow
- * @param type -> gallery or slideshow
- * @param captions -> whether captions are on or off
- * @param delay -> delay in seconds between each image in the slideshow
- * @param autoplay -> on or off (default is on) - only applies to galleria
- * @param pause -> on or off (default is off) - only applies to slideshow
+ * @param tag -> identifies what photos to select(required)
+ * @param tagmode -> set to ANY for fetching photos with different tags - default is ALL (optional)
+ * @param id -> the Flickr ID of user (optional)
+ * @param group -> set to Y if the Flickr ID is the id of a group and not a user (optional)
+ * @param api_key -> 32 character alphanumeric API key (optional)
+ * @param search -> photos, groups, friends, favorites, sets  (optional)
+ * @param items -> maximum number photos to display in the gallery or slideshow (optional)
+ * @param type -> gallery, galleria or slideshow (optional)
+ * @param captions -> whether captions are on or off (optional)
+ * @param delay -> delay in seconds between each image in the slideshow (optional)
+ * @param autoplay -> on or off - default is on (optional)
+ * @param pause -> on or off - default is off - only applies to slideshow (optional)
  * @param start -> first slide in the slideshow (optional)
  * @param link -> url to visit on clicking slideshow (optional)
  * @param attribution -> credit the photographer (optional)
  * @param sort -> sort order of photos (optional)
  * @param direction -> sort order of photos (optional)
- * @param descriptions -> show descriptions beneath title on the lightbox - on or off (optional)
+ * @param descriptions -> show descriptions beneath title caption - on or off (optional)
  * @param flickr_link -> include a link to the photo on Flickr on the lightbox - on or off (optional)
- * @param photos_per_row -> maximum number number of thumbnail in a gallery row (optional)
+ * @param photos_per_row -> maximum number number of thumbnails in a gallery row (optional)
  * @param thumbnail_size -> default is square 75x75px (optional)
  * @param thumbnail_scale -> default 100% (optional)
  * @param border -> whether slideshow border is on or off (optional)
 */
 require_once(dirname(__FILE__).'/flickr.php');
-
 
 function slickr_flickr_display ($attr) {
 
@@ -36,13 +36,53 @@ function slickr_flickr_display ($attr) {
   if (($params['type']=="gallery") && ($attr['captions']!="on")) $params['captions'] = "off";
 
   if (empty($params['id'])) return "<p>Please set up a Flickr User id for this slideshow</p>";
-  if (empty($params['tag'])) return "<p>Please set up a Flickr tag for this slideshow</p>";
+  if (empty($params['tag']) && ($params['search']=="photos")) return "<p>Please set up a Flickr tag for this slideshow</p>";
   $tagmode = strtolower($params['tagmode'])=="any"?"any":"all";
-  $id = $params['group']=="y" ? "g" : "id" ;
+  $striptag = strtolower(str_replace(" ","",$params['tag']));
+
+  if (empty($params['api_key']) || ($params['items'] <= 20)) {
+        switch($params['search']) {
+           case "favorites": {
+                $flickr_feed = "http://api.flickr.com/services/feeds/photos_faves.gne?lang=en-us&format=rss_200&nsid=".$params['id']; break;
+           }
+           case "groups": {
+                $flickr_feed = "http://api.flickr.com/services/feeds/groups_pool.gne?lang=en-us&format=feed-rss_200&id=".$params['id'];  break;
+                break;
+           }
+           case "friends": {
+                $id = $params['group']=="y" ? "g" : "id" ;
+                $flickr_feed = "http://api.flickr.com/services/feeds/photos_friends.gne?lang=en-us&format=feed-rss_200&".$id."=".$params['id']."&display_all=1";  break;
+                break;
+           }
+           case "sets": {
+                $flickr_feed = "http://api.flickr.com/services/feeds/photoset.gne?lang=en-us&format=feed-rss_200&nsid=".$params['id']."&set=".$striptag;  break;
+                break;
+           }
+           default: {
+                $id = $params['group']=="y" ? "g" : "id" ;
+                $flickr_feed = "http://api.flickr.com/services/feeds/photos_public.gne?lang=en-us&format=feed-rss_200&".$id."=".$params['id']."&tagmode=".$tagmode."&tags=".$striptag;
+           }
+        }
+   } else {
+        switch($params['search']) {
+           case "favorites": {
+                $flickr_feed = "http://api.flickr.com/services/rest/?method=flickr.favorites.getPublicList&lang=en-us&format=feed-rss_200&api_key=".$params['api_key']."&user_id=".$params['id']."&per_page=".$params['items'];
+                break;
+          }
+           case "groups": {
+                $flickr_feed = "http://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&lang=en-us&format=feed-rss_200&api_key=".$params['api_key']."&group_id=".$params['id']."&per_page=".$params['items'];
+                break;
+           }
+          default: {
+                $id = $params['group']=="y" ? "group_id" : "user_id" ;
+                $flickr_feed = "http://api.flickr.com/services/rest/?method=flickr.photos.search&lang=en-us&format=feed-rss_200&api_key=".$params['api_key']."&".$id."=".$params['id']."&tag_mode=".$tagmode."&tags=".$striptag."&per_page=".$params['items'];
+          }
+       }
+   }
 
   $attribution = empty($params['attribution'])?"":('<p class="slickr-flickr-attribution align'.$params['align'].'">'.$params['attribution'].'</p>');
   $rand_id = rand(1,1000);
-  $divid = "flickr_".strtolower(str_replace(array(" ","-",","),"",$params['tag'])).'_'.$rand_id; //strip apostrophes, spaces and commas
+  $divid = "flickr_".str_replace(array("`","-",","),"",$striptag).'_'.$rand_id; //strip backticks, dashes and commas
   $divclear = '<div style="clear:both"></div>';
   switch ($params['type']) {
     case "slideshow": {
@@ -101,9 +141,8 @@ NAV;
           }
         }
   }
-  $striptag = strtolower(str_replace(" ","",$params['tag']));
-  $flickr_feed= "http://api.flickr.com/services/feeds/photos_public.gne?lang=en-us&format=rss_200&".$id."=".$params['id']."&tagmode=".$tagmode."&tags=".$striptag;
   $rss = fetch_feed($flickr_feed);
+  if ( is_wp_error($rss) ) return "<p>Error fetching Flickr RSS feed: ".$rss->get_error_message()."</p>";  //exit if cannot fetch the feed
   $numitems = $rss->get_item_quantity($params['items']);
   if ($numitems == 0)  return '<p>No photos available for '.$params['tag'].'</p>';
   $rss_items = $rss->get_items(0, $numitems);
