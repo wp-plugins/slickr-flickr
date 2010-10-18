@@ -1,5 +1,5 @@
 <?php
-class flickr {
+class slickr_flickr {
   /* Function that removes all quotes */
   function cleanup($s = null) {
     return $s?str_replace('"', '', str_replace("'", "",$s)):false;
@@ -13,7 +13,7 @@ class flickr {
 
     switch($size)  {
       case 'square': $suffix = '_s.';  break;
-      case 'thumb': $suffix = '_t.';  break;
+      case 'thumbnail': $suffix = '_t.';  break;
       case 'small': $suffix = '_m.';  break;
       case 'large': $suffix = '_b.';  break;
       default:  $suffix = '.';  break; // Medium   
@@ -45,7 +45,7 @@ class flickr {
 
     $enclosure = $item->get_enclosure(0);
     $photo["original"] = $enclosure==null ? $photo['url'] : $enclosure->get_link();
-    $photo["description"] = $enclosure==null ? "" : $enclosure->get_description();
+    $photo["description"] = $enclosure==null ? "" : html_entity_decode($enclosure->get_description());
     return $photo;
   }
 }

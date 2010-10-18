@@ -4,7 +4,7 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.14
+Stable tag: 1.15
 Displays a set of tagged photos from your Flickr account either as a gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -13,9 +13,9 @@ Displays a set of tagged photos from your Flickr account either as a gallery or 
 * Uses "slickr-flickr" shortcode to make adding a Flickr show as easy as possible
 * Works well in posts, pages and text widgets in the sidebar, at different sizes, with portrait and landscape photos
 * Sorts photos by date, title or description
-* With or without captions, descriptions and links back to Flickr
+* With or without captions, and links back to Flickr (decriptions stopped working with Wordpress 3.) - under investigation) 
 * With manual or autoplay slideshows
-* Works with various LightBoxes 
+* Works with various LightBoxes
 * Works with jQuery Galleria to display photos in a slideshow/gallery combo
 * See http://slickr-flickr.diywebmastery.com for tutorials and support on using the plugin
 
@@ -37,9 +37,9 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-help for the full list 
 
 * Changes to my photos on Flickr do not appear instantly in the Slickr Flickr slideshow or Gallery - see http://slickr-flickr.diywebmastery.com/support/tagged-photos-do-not-appear-in-the-blog-immediately/
 
-* Only 20 photos are displayed in the gallery and I have tagged more than 20 photos - see http://slickr-flickr.diywebmastery.com/support/how-to-show-50-photos-in-a-flickr-gallery/
+* Only up to 20 photos are displayed when using your Flickr ID to access photos but you can access up to 50 photos in you specify your Flickr API Key - see http://slickr-flickr.diywebmastery.com/support/how-to-show-50-photos-in-a-flickr-gallery/
 
-With release 1.14 you can show up to 100 photos per gallery or slideshow if you get a Flickr API Key
+* To make Flickr photo descriptions appear you need to set the parameter use_key='y' and specify your Flickr API key in the Admin settings
 
 
 == Screenshots ==
@@ -51,10 +51,15 @@ With release 1.14 you can show up to 100 photos per gallery or slideshow if you 
 
 == Changelog ==
 
+= 1.15 =
+* Renamed Flickr class to avoid conflict with other plugins
+* Fixed bug with thumbnail size
+* Added option to force use of api key (this fixes the issue with missing descriptions when not using the api key)
+* Allow tag not to be specified so most recent photos are returned
+
 = 1.14 =
 * Added search=photos|favorites|friends|groups|sets to allow more than just tagged photos to be selected
-* Added api_key option to allow selection of up to 100 photos to be selected
-
+* Added api_key option to allow selection of up to 50 photos
 
 = 1.13 =
 * Added pause=on option for the slideshow so you can pause or resume the slideshow by clicking the photo
@@ -127,7 +132,7 @@ With release 1.14 you can show up to 100 photos per gallery or slideshow if you 
 
 == Upgrade Notice ==
 
-= 1.14 = 
+= 1.15 = 
 * Recommended but not mandatory
 
 

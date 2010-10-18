@@ -7,8 +7,10 @@
  * @param tag -> identifies what photos to select(required)
  * @param tagmode -> set to ANY for fetching photos with different tags - default is ALL (optional)
  * @param id -> the Flickr ID of user (optional)
- * @param group -> set to Y if the Flickr ID is the id of a group and not a user (optional)
+ * @param group -> set to y if the Flickr ID is the id of a group and not a user (optional)
+ * @param use_key -> set to y to force use of API key - default is n(optional)
  * @param api_key -> 32 character alphanumeric API key (optional)
+ * @param set -> used in searching sets (optional)
  * @param search -> photos, groups, friends, favorites, sets  (optional)
  * @param items -> maximum number photos to display in the gallery or slideshow (optional)
  * @param type -> gallery, galleria or slideshow (optional)
@@ -28,42 +30,21 @@
  * @param thumbnail_scale -> default 100% (optional)
  * @param border -> whether slideshow border is on or off (optional)
 */
-require_once(dirname(__FILE__).'/flickr.php');
+require_once(dirname(__FILE__).'/class-slickr-flickr.php');
 
 function slickr_flickr_display ($attr) {
 
   $params = shortcode_atts( slickr_flickr_get_options(), $attr ); //apply plugin defaults
   if (($params['type']=="gallery") && ($attr['captions']!="on")) $params['captions'] = "off";
-
   if (empty($params['id'])) return "<p>Please set up a Flickr User id for this slideshow</p>";
-  if (empty($params['tag']) && ($params['search']=="photos")) return "<p>Please set up a Flickr tag for this slideshow</p>";
-  $tagmode = strtolower($params['tagmode'])=="any"?"any":"all";
+  if (($params['items'] > 20) || ( (!empty($params['api_key'])) && ($params['search']=="photos") && ($params['descriptions']=="on"))) { $params['use_key'] = 'y'; }
+  if (empty($params['api_key']) && ($params['use_key'] == "y")) return "<p>Please add your Flickr API Key in Slickr Flickr Admin settings to fetch more than 20 photos.</p>";
+  if ( (!empty($params['tagmode'])) && empty($params['tag']) && ($params['search']=="photos")) return "<p>Please set up a Flickr tag for this slideshow</p>";
+  $tagmode = empty($params['tagmode']) ? "" : ("&tag_mode=".($params['tagmode']=="any"?"any":"all"));
   $striptag = strtolower(str_replace(" ","",$params['tag']));
-
-  if (empty($params['api_key']) || ($params['items'] <= 20)) {
-        switch($params['search']) {
-           case "favorites": {
-                $flickr_feed = "http://api.flickr.com/services/feeds/photos_faves.gne?lang=en-us&format=rss_200&nsid=".$params['id']; break;
-           }
-           case "groups": {
-                $flickr_feed = "http://api.flickr.com/services/feeds/groups_pool.gne?lang=en-us&format=feed-rss_200&id=".$params['id'];  break;
-                break;
-           }
-           case "friends": {
-                $id = $params['group']=="y" ? "g" : "id" ;
-                $flickr_feed = "http://api.flickr.com/services/feeds/photos_friends.gne?lang=en-us&format=feed-rss_200&".$id."=".$params['id']."&display_all=1";  break;
-                break;
-           }
-           case "sets": {
-                $flickr_feed = "http://api.flickr.com/services/feeds/photoset.gne?lang=en-us&format=feed-rss_200&nsid=".$params['id']."&set=".$striptag;  break;
-                break;
-           }
-           default: {
-                $id = $params['group']=="y" ? "g" : "id" ;
-                $flickr_feed = "http://api.flickr.com/services/feeds/photos_public.gne?lang=en-us&format=feed-rss_200&".$id."=".$params['id']."&tagmode=".$tagmode."&tags=".$striptag;
-           }
-        }
-   } else {
+  $tags = empty($params['tag']) ? "" : ("&tags=".$striptag);
+  $group = strtolower(substr($params['group'],0,1));
+  if ($params['use_key'] == 'y') {
         switch($params['search']) {
            case "favorites": {
                 $flickr_feed = "http://api.flickr.com/services/rest/?method=flickr.favorites.getPublicList&lang=en-us&format=feed-rss_200&api_key=".$params['api_key']."&user_id=".$params['id']."&per_page=".$params['items'];
@@ -73,11 +54,39 @@ function slickr_flickr_display ($attr) {
                 $flickr_feed = "http://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&lang=en-us&format=feed-rss_200&api_key=".$params['api_key']."&group_id=".$params['id']."&per_page=".$params['items'];
                 break;
            }
+           case "galleries": {
+                $flickr_feed = "http://api.flickr.com/services/rest/?method=flickr.galleries.getPhotos&api_key=".$params['api_key']."&gallery_id=".$params['id']."&per_page=".$params['items'].'&format=feed-rss_200&lang=en-us';
+                break;
+           }
           default: {
-                $id = $params['group']=="y" ? "group_id" : "user_id" ;
-                $flickr_feed = "http://api.flickr.com/services/rest/?method=flickr.photos.search&lang=en-us&format=feed-rss_200&api_key=".$params['api_key']."&".$id."=".$params['id']."&tag_mode=".$tagmode."&tags=".$striptag."&per_page=".$params['items'];
+                $id = $group=="y" ? "group_id" : "user_id" ;
+                $flickr_feed = "http://api.flickr.com/services/rest/?method=flickr.photos.search&lang=en-us&format=feed-rss_200&api_key=".$params['api_key']."&".$id."=".$params['id'].$tagmode.$tags."&per_page=".$params['items'];
           }
        }
+   } else {
+        switch($params['search']) {
+           case "favorites": {
+                $flickr_feed = "http://api.flickr.com/services/feeds/photos_faves.gne?lang=en-us&format=rss_200&nsid=".$params['id']; break;
+           }
+           case "groups": {
+                $flickr_feed = "http://api.flickr.com/services/feeds/groups_pool.gne?lang=en-us&format=feed-rss_200&id=".$params['id'];  break;
+                break;
+           }
+           case "friends": {
+                $id = $group=="y" ? "g" : "id" ;
+                $flickr_feed = "http://api.flickr.com/services/feeds/photos_friends.gne?lang=en-us&format=feed-rss_200&".$id."=".$params['id']."&display_all=1";  break;
+                break;
+           }
+           case "sets": {
+                $set = empty($params['set']) ? $params['tag'] : $params['set'];
+                $flickr_feed = "http://api.flickr.com/services/feeds/photoset.gne?lang=en-us&format=feed-rss_200&nsid=".$params['id']."&set=".$set;  break;
+                break;
+           }
+           default: {
+                $id = $group=="y" ? "g" : "id" ;
+                $flickr_feed = "http://api.flickr.com/services/feeds/photos_public.gne?lang=en-us&format=feed-rss_200&".$id."=".$params['id'].$tagmode.$tags;
+           }
+        }
    }
 
   $attribution = empty($params['attribution'])?"":('<p class="slickr-flickr-attribution align'.$params['align'].'">'.$params['attribution'].'</p>');
@@ -142,9 +151,9 @@ NAV;
         }
   }
   $rss = fetch_feed($flickr_feed);
-  if ( is_wp_error($rss) ) return "<p>Error fetching Flickr RSS feed: ".$rss->get_error_message()."</p>";  //exit if cannot fetch the feed
+  if ( is_wp_error($rss) ) return "<p>Error fetching Flickr photos: ".$rss->get_error_message()."</p>";  //exit if cannot fetch the feed
   $numitems = $rss->get_item_quantity($params['items']);
-  if ($numitems == 0)  return '<p>No photos available for '.$params['tag'].'</p>';
+  if ($numitems == 0)  return '<p>No photos available right now.</p><p>Please verify your settings, clear your RSS cache on the Slickr Flickr Admin page and check your <a target="_blank" href="'.$flickr_feed.'">Flickr feed</a></p>';
   $rss_items = $rss->get_items(0, $numitems);
   $r = -1;
   if ($numitems > 1) {
@@ -158,12 +167,12 @@ NAV;
   if (!empty($params['sort'])) $rss_items = slickr_flickr_sort ($rss_items, $params['sort'], $params['direction']);
   foreach ( $rss_items as $item ) {
     $i++;
-    $photo = flickr::find_photo($item);
-    $title = flickr::cleanup($photo['title']);
-    $description = flickr::cleanup($photo['description']);
+    $photo = slickr_flickr::find_photo($item);
+    $title = slickr_flickr::cleanup($photo['title']);
+    $description = slickr_flickr::cleanup($photo['description']);
     $oriented = $photo['orientation'];
-    $full_url = $params['size']=="original" ? $photo['original'] : flickr::resize_photo($photo['url'], $params['size']);
-    $thumb_url = flickr::resize_photo($photo['url'], $params['thumbnail_size']);
+    $full_url = $params['size']=="original" ? $photo['original'] : slickr_flickr::resize_photo($photo['url'], $params['size']);
+    $thumb_url = slickr_flickr::resize_photo($photo['url'], $params['thumbnail_size']);
     $captiontitle = $params["flickr_link"]=="on"?("<a title='Click to see photo on Flickr' href='". $photo["link"] . "'>".$title."</a>"):$title;
     $alt = $params["descriptions"]=="on"? $description : "";
     $imgsize="";
