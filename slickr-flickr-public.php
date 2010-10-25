@@ -14,6 +14,8 @@
  * @param search -> photos, groups, friends, favorites, sets  (optional)
  * @param items -> maximum number photos to display in the gallery or slideshow (optional)
  * @param type -> gallery, galleria or slideshow (optional)
+ * @param size -> default is medium, m640, small, large, original (optional)
+ * @param orientation -> default is landscape or portrait (optional)
  * @param captions -> whether captions are on or off (optional)
  * @param delay -> delay in seconds between each image in the slideshow (optional)
  * @param autoplay -> on or off - default is on (optional)
