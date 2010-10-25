@@ -4,7 +4,7 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.15
+Stable tag: 1.16
 Displays a set of tagged photos from your Flickr account either as a gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -17,7 +17,7 @@ Displays a set of tagged photos from your Flickr account either as a gallery or 
 * With manual or autoplay slideshows
 * Works with various LightBoxes
 * Works with jQuery Galleria to display photos in a slideshow/gallery combo
-* See http://slickr-flickr.diywebmastery.com for tutorials and support on using the plugin
+* See http://www.slickrflickr.com for tutorials and support on using the plugin
 
 == Installation ==
 
@@ -27,17 +27,17 @@ Displays a set of tagged photos from your Flickr account either as a gallery or 
 1. Type In your Flickr Id (it should look something like 12345678@N00) and then click the Save button
 1. To use the plugin in a post, page or text widget use the shortcode [slickr-flickr tag="my tag phrase"]
 1. If you have no photos in Flickr with this tag then no pictures are displayed
-1. See http://slickr-flickr.diywebmastery.com/how-to/how-to-install-slickr-flickr-plugin for more about the plugin installation
+1. See http://www.slickrflickr.com/how-to/how-to-install-slickr-flickr-plugin for more about the plugin installation
 
 == Frequently Asked Questions ==
 
-See http://slickr-flickr.diywebmastery.com/slickr-flickr-help for the full list of questions and answers about Slickr Flickr
+See http://www.slickrflickr.com/slickr-flickr-help for the full list of questions and answers about Slickr Flickr
 
-* How do I find my Flickr Id? - see http://slickr-flickr.diywebmastery.com/support/where-do-i-find-my-flickr-id/
+* How do I find my Flickr Id? - see http://www.slickrflickr.com/support/where-do-i-find-my-flickr-id/
 
-* Changes to my photos on Flickr do not appear instantly in the Slickr Flickr slideshow or Gallery - see http://slickr-flickr.diywebmastery.com/support/tagged-photos-do-not-appear-in-the-blog-immediately/
+* Changes to my photos on Flickr do not appear instantly in the Slickr Flickr slideshow or Gallery - see http://www.slickrflickr.com/support/tagged-photos-do-not-appear-in-the-blog-immediately/
 
-* Only up to 20 photos are displayed when using your Flickr ID to access photos but you can access up to 50 photos in you specify your Flickr API Key - see http://slickr-flickr.diywebmastery.com/support/how-to-show-50-photos-in-a-flickr-gallery/
+* Only up to 20 photos are displayed when using your Flickr ID to access photos but you can access up to 50 photos in you specify your Flickr API Key - see http://www.slickrflickr.com/support/how-to-show-50-photos-in-a-flickr-gallery/
 
 * To make Flickr photo descriptions appear you need to set the parameter use_key='y' and specify your Flickr API key in the Admin settings
 
@@ -50,6 +50,10 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-help for the full list 
 
 
 == Changelog ==
+
+= 1.16 =
+* Added medium 640 photos - size="m640"
+* Moved site to http://slickrflickr.com
 
 = 1.15 =
 * Renamed Flickr class to avoid conflict with other plugins
@@ -132,7 +136,7 @@ See http://slickr-flickr.diywebmastery.com/slickr-flickr-help for the full list 
 
 == Upgrade Notice ==
 
-= 1.15 = 
+= 1.16 = 
 * Recommended but not mandatory
 
 
@@ -142,7 +146,7 @@ The Flickr show is inserted into a post or a widget using the slickr-flickr shor
 
 For example, to show my pictures from Flickr that have been tagged with "bahamas" I use : [slickr-flickr tag="bahamas"]
 
-For the full list of Slickr Flickr parameters go to http://slickr-flickr.diywebmastery.com/56/how-to-use-slickr-flickr-to-create-a-slideshow-or-gallery/
+For the full list of Slickr Flickr parameters go to http://www.slickrflickr.com/56/how-to-use-slickr-flickr-to-create-a-slideshow-or-gallery/
 
 
 == How to Set Up The Plugin Defaults ==
@@ -162,6 +166,6 @@ If you don't want to specify all the settings for every slideshow you can set up
 
 Here are some of the useful Slickr Flickr Plugin links
 
-* Plugin Home Page http://slickr-flickr.diywebmastery.com/
-* Plugin Help and Support http://slickr-flickr.diywebmastery.com/slickr-flickr-help
-* Plugin Tutorials http://slickr-flickr.diywebmastery.com/slickr-flickr-videos
+* Plugin Home Page http://www.slickrflickr.com/
+* Plugin Help and Support http://www.slickrflickr.com/slickr-flickr-help
+* Plugin Tutorials http://www.slickrflickr.com/slickr-flickr-videos

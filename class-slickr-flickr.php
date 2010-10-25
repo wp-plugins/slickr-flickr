@@ -15,6 +15,7 @@ class slickr_flickr {
       case 'square': $suffix = '_s.';  break;
       case 'thumbnail': $suffix = '_t.';  break;
       case 'small': $suffix = '_m.';  break;
+      case 'm640': $suffix = '_z.';  break;
       case 'large': $suffix = '_b.';  break;
       default:  $suffix = '.';  break; // Medium   
       }
