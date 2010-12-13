@@ -4,7 +4,7 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.17
+Stable tag: 1.18
 Displays a set of tagged photos from your Flickr account either as a gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -49,12 +49,14 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 
 == Changelog ==
 
+= 1.18 =
+* Added images folder
+
 = 1.17 =
 * Fix problem with getting photo description
 * Fix problem with using multiple tags
 * Added a "descriptions" class so that there is less white space beneath the slideshow
 * Created Slickr Flickr Pro edition with Priority Support Forum and Bonus Features
-
 
 = 1.16 =
 * Added medium 640 photos - size="m640"
@@ -101,7 +103,6 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 * Automatic slideshow option for the galleria
 * Slickr Flickr Resources Menu on the admin panel
 
-
 = 1.7 =
 * Add feature in the Slickr Flickr Admin Panel to clear the RSS cache so updates to Flickr appear more quickly on Wordpress
 * Change Galleria size to improve presentation of photos of portarit orientation
@@ -141,7 +142,7 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 
 == Upgrade Notice ==
 
-= 1.17 = 
+= 1.18 = 
 * Recommended but not mandatory
 
 
