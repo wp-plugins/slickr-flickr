@@ -4,7 +4,7 @@ Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
 Tags: flickr, flickr slideshow, flickr gallery, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.16
+Stable tag: 1.17
 Displays a set of tagged photos from your Flickr account either as a gallery or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -39,8 +39,6 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 
 * Only up to 20 photos are displayed when using your Flickr ID to access photos but you can access up to 50 photos in you specify your Flickr API Key - see http://www.slickrflickr.com/support/how-to-show-50-photos-in-a-flickr-gallery/
 
-* To make Flickr photo descriptions appear you need to set the parameter use_key='y' and specify your Flickr API key in the Admin settings
-
 
 == Screenshots ==
 
@@ -51,9 +49,16 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 
 == Changelog ==
 
+= 1.17 =
+* Fix problem with getting photo description
+* Fix problem with using multiple tags
+* Added a "descriptions" class so that there is less white space beneath the slideshow
+* Created Slickr Flickr Pro edition with Priority Support Forum and Bonus Features
+
+
 = 1.16 =
 * Added medium 640 photos - size="m640"
-* Moved site to http://slickrflickr.com
+* Moved site to http://www.slickrflickr.com
 
 = 1.15 =
 * Renamed Flickr class to avoid conflict with other plugins
@@ -136,7 +141,7 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 
 == Upgrade Notice ==
 
-= 1.16 = 
+= 1.17 = 
 * Recommended but not mandatory
 
 
@@ -154,8 +159,10 @@ For the full list of Slickr Flickr parameters go to http://www.slickrflickr.com/
 If you don't want to specify all the settings for every slideshow you can set up some defaults. The default value is used when you have not specified a value on the individual slideshow or gallery.
 
 * Go to the "Settings" section, and choose "Slickr Flickr"
-* Enter your Flickr Id (the id of the form 12345678@N00) and choose whether it is a user or group id
-* Enter the default number of photos to show (maximum is 20)
+* Enter your Flickr Id (the ID is of the form 12345678@N00) and choose whether it is a user or group id
+* Enter your Flickr API Key (optional) 
+* Enter your Slickr Flickr Pro license Id (optional)
+* Enter the default number of photos to show
 * Select the type of display - gallery, slideshow or slideshow/gallery combo
 * Choose whether photos captions are displayed
 * Enter what the delay in seconds is before the slideshow moves on to the next slide
@@ -167,5 +174,5 @@ If you don't want to specify all the settings for every slideshow you can set up
 Here are some of the useful Slickr Flickr Plugin links
 
 * Plugin Home Page http://www.slickrflickr.com/
-* Plugin Help and Support http://www.slickrflickr.com/slickr-flickr-help
-* Plugin Tutorials http://www.slickrflickr.com/slickr-flickr-videos
+* Plugin Help and Support http://www.slickrflickr.com/slickr-flickr-help/
+* Plugin Tutorials http://www.slickrflickr.com/slickr-flickr-videos/

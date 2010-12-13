@@ -25,9 +25,11 @@
 .slickr-flickr-gallery ul li a span{ font-size: 0.7em;}
 .slickr-flickr-gallery p.slickr-flickr-attribution { font-style: italic; margin-bottom: 0px;}
 /* Slickr Flickr Slideshow */
-.slickr-flickr-slideshow { position:relative;  }
-.slickr-flickr-slideshow.landscape { height: 450px }
-.slickr-flickr-slideshow.portrait { height: 540px }
+.slickr-flickr-slideshow { position:relative; margin-bottom: 20px;  }
+.slickr-flickr-slideshow.landscape { height: 360px }
+.slickr-flickr-slideshow.portrait { height: 520px }
+.slickr-flickr-slideshow.landscape.descriptions { height: 450px }
+.slickr-flickr-slideshow.portrait.descriptions { height: 570px }
 .slickr-flickr-slideshow.portrait.small { width: 180px; height: 260px }
 .slickr-flickr-slideshow.landscape.small { height: 200px }
 .slickr-flickr-slideshow div { position:absolute; top:0; left:0; z-index:8; width: 100%; height: 100%; }
