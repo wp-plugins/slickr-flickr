@@ -25,9 +25,9 @@
 .slickr-flickr-gallery ul li a span{ font-size: 0.7em;}
 .slickr-flickr-gallery p.slickr-flickr-attribution { font-style: italic; margin-bottom: 0px;}
 /* Slickr Flickr Slideshow */
-.slickr-flickr-slideshow { position:relative; margin-bottom: 20px;  }
-.slickr-flickr-slideshow.landscape { height: 360px }
-.slickr-flickr-slideshow.portrait { height: 520px }
+.slickr-flickr-slideshow { position:relative; margin-bottom: 20px; cursor: pointer; }
+.slickr-flickr-slideshow.landscape { height: 400px }
+.slickr-flickr-slideshow.portrait { height: 525px }
 .slickr-flickr-slideshow.landscape.descriptions { height: 450px }
 .slickr-flickr-slideshow.portrait.descriptions { height: 570px }
 .slickr-flickr-slideshow.portrait.small { width: 180px; height: 260px }

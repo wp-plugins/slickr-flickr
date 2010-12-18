@@ -28,7 +28,7 @@ function slickr_flickr_check_update($plugin_updates, $cache=true) {
     if (( slickr_flickr_get_licence())
     && ($latest_version_info = slickr_flickr_get_version_info($cache))
     && (version_compare(SLICKR_FLICKR_VERSION, $latest_version_info["version"], '<'))) {
-        $current_version_info = $plugin_updates->response[SLICKR_FLICKR_PATH];
+        $current_version_info = is_array($plugin_updates->response) ? $plugin_updates->response[SLICKR_FLICKR_PATH] : "";
         if(empty($current_version_info)) $current_version_info = new stdClass();
 
         $current_version_info->id = "0";
@@ -40,7 +40,7 @@ function slickr_flickr_check_update($plugin_updates, $cache=true) {
 
         $plugin_updates->response[SLICKR_FLICKR_PATH] =  $current_version_info ;
     } else {
-      if (array_key_exists(SLICKR_FLICKR_PATH,$plugin_updates->response)) unset($plugin_updates->response[SLICKR_FLICKR_PATH]);
+      if (is_array($plugin_updates->response) && array_key_exists(SLICKR_FLICKR_PATH,$plugin_updates->response)) unset($plugin_updates->response[SLICKR_FLICKR_PATH]);
     }
     return $plugin_updates;
 }
@@ -53,7 +53,7 @@ function slickr_flickr_get_notice(){
 
 function slickr_flickr_plugin_row_message($plugin){
     if (slickr_flickr_get_licence() && (!slickr_flickr_check_validity())) {
-        echo '</tr><tr class="plugin-update-tr"><td colspan="5" class="plugin-update"><div class="update-message">Need a licence key for Slickr Flickr Pro? <a href="http://www.slickrflickr.com/upgrade/">Get one now</a>.</div></td>';
+        echo '</tr><tr class="plugin-update-tr"><td colspan="5" class="plugin-update"><div class="update-message">Did you know you can upgrade to Slickr Flickr Pro for priority support and bonus features? <a href="http://www.slickrflickr.com/upgrade/">Find out more</a>.</div></td>';
     }
 }
 
@@ -270,7 +270,7 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <li><a target="_blank" href="http://www.slickrflickr.com/slickr-flickr-help/">Get Help</a></li>
 <li><a target="_blank" href="http://www.slickrflickr.com/slickr-flickr-videos/">Get FREE Video Tutorials</a></li>
 </ul>
-<p><img src="http://images.diywebmastery.com/layout/wordpress-signup.png" alt="DIY Webmastery Slickr Flickr Signup" /></p>
+<p><img src="http://images.slickrflickr.com/pages/slickr-flickr-tutorials.png" alt="Slickr Flickr Tutorials Signup" /></p>
 <form id="slickr_flickr_signup" name="slickr_flickr_signup" method="post" action="http://www.slickrflickr.com/"
 onSubmit="return slickr_flickr_validate_form(this)">
 <input type="hidden" name="form_storm" value="submit"/>

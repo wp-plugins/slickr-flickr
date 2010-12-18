@@ -1,23 +1,24 @@
 === Slickr Flickr ===
 Contributors: powerblogservice
 Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
-Tags: flickr, flickr slideshow, flickr gallery, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
+Tags: flickr, flickr slideshow, flickr gallery, flickr galleria, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 1.18
-Displays a set of tagged photos from your Flickr account either as a gallery or a unbranded slideshow in posts, pages, or sidebar widgets
+Stable tag: 1.19
+Displays your Flickr photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
 
-* Displays tagged Flickr photos as a gallery or an unbranded slideshow (i.e. not Flickr's own slideshow widget)
-* Uses "slickr-flickr" shortcode to make adding a Flickr show as easy as possible
+* Displays Flickr photos as a gallery, a galleria, or an unbranded slideshow (i.e. not Flickr's own slideshow widget)
+* Uses "slickr-flickr" shortcode to make it as easy as possible to show your Flickr photos on Wordpress
 * Works well in posts, pages and text widgets in the sidebar, at different sizes, with portrait and landscape photos
 * Sorts photos by date, title or description
-* With or without captions, and links back to Flickr (decriptions stopped working with Wordpress 3.) - under investigation) 
+* With or without captions, and links back to Flickr 
 * With manual or autoplay slideshows
 * Works with various LightBoxes
 * Works with jQuery Galleria to display photos in a slideshow/gallery combo
-* See http://www.slickrflickr.com for tutorials and support on using the plugin
+* See http://www.slickrflickr.com for tutorials on using the plugin
+* See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
 
 == Installation ==
 
@@ -37,29 +38,37 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 
 * Changes to my photos on Flickr do not appear instantly in the Slickr Flickr slideshow or Gallery - see http://www.slickrflickr.com/support/tagged-photos-do-not-appear-in-the-blog-immediately/
 
-* Only up to 20 photos are displayed when using your Flickr ID to access photos but you can access up to 50 photos in you specify your Flickr API Key - see http://www.slickrflickr.com/support/how-to-show-50-photos-in-a-flickr-gallery/
+* How many photos can I display? Only up to 20 photos are displayed when using your Flickr ID to access photos but you can access up to 50 photos in you specify your Flickr API Key or have unlimited numbers of photos if you upgrade to Slickr Flickr Pro - see http://www.slickrflickr.com/support/how-to-show-50-photos-in-a-flickr-gallery/
 
 
 == Screenshots ==
 
-1. Examples of Slickr Flickr slideshows and galleries in action
-1. Example of a slideshow/gallery combo in a post
+1. Example of many Slickr Flickr slideshows and galleries in action on a single page
+1. Example of a galleria (a display including a large photo with thumbnails below)
 1. Example of an overlaid lightbox which appears on clicking a thumbnail
 
 
 == Changelog ==
 
+= 1.19 =
+* Reinstated automatic use of API key if more than 20 photos are requested
+* Use https protocol for js and css files if admin site is being run securely
+* Removed warning message when checking for updates
+* Added cursor pointer/hand when hovering over the slideshow to show it is clickable
+* Added Slideshow LightBox display in Pro edition
+
 = 1.18 =
 * Added images folder
 
 = 1.17 =
-* Fix problem with getting photo description
+* Fix problem with getting photo descriptions
 * Fix problem with using multiple tags
 * Added a "descriptions" class so that there is less white space beneath the slideshow
 * Created Slickr Flickr Pro edition with Priority Support Forum and Bonus Features
 
 = 1.16 =
 * Added medium 640 photos - size="m640"
+
 * Moved site to http://www.slickrflickr.com
 
 = 1.15 =
@@ -142,7 +151,7 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 
 == Upgrade Notice ==
 
-= 1.18 = 
+= 1.19 = 
 * Recommended but not mandatory
 
 
@@ -164,10 +173,10 @@ If you don't want to specify all the settings for every slideshow you can set up
 * Enter your Flickr API Key (optional) 
 * Enter your Slickr Flickr Pro license Id (optional)
 * Enter the default number of photos to show
-* Select the type of display - gallery, slideshow or slideshow/gallery combo
+* Select the default type of display - gallery, slideshow or slideshow/gallery combo
 * Choose whether photos captions are displayed
-* Enter what the delay in seconds is before the slideshow moves on to the next slide
-* Choose the lightbox (manual play, auto play or ThickBox, ShadowBox, FancyBox or LightBox Plus)
+* Enter the default delay in seconds before the slideshow moves on to the next slide
+* Choose the lightbox (manual play, auto play or ThickBox, ShadowBox, FancyBox, Shutterbox, SlimBox or LightBox Plus)
 
 
 == Links ==
@@ -177,3 +186,4 @@ Here are some of the useful Slickr Flickr Plugin links
 * Plugin Home Page http://www.slickrflickr.com/
 * Plugin Help and Support http://www.slickrflickr.com/slickr-flickr-help/
 * Plugin Tutorials http://www.slickrflickr.com/slickr-flickr-videos/
+* Slickr Flickr Pro http://www.slickrflickr.com/pro/
