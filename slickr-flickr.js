@@ -63,7 +63,7 @@ jQuery.noConflict(); jQuery(document).ready(function($) {
             $(this).galleria();
     });
     if ($('a[rel="sf-lbox-auto"]').size() + $('a[rel="sf-lbox-manual"]').size() > 0) {
-        $(".slickr-flickr-gallery").each( function (index) {
+        $(".slickr-flickr-gallery,.slickr-flickr-slideshow").each( function (index) {
             $delay = $(this).data("delay");
             if (($delay) && ($delay > 0)) {
                 $autoplay = $(this).data("autoplay")=="on"?true:false;

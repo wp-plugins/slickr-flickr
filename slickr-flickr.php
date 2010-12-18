@@ -3,15 +3,15 @@
 Plugin Name: Slickr Flickr
 Plugin URI: http://www.slickr-flickr.com
 Description: Displays tagged photos from Flickr in slideshows and galleries
-Version: 1.18
+Version: 1.19
 Author: Russell Jamieson
 Author URI: http://www.wordpresswise.com
 */
-if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.18');
+if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.19');
 if (!defined('SLICKR_FLICKR_FOLDER')) define('SLICKR_FLICKR_FOLDER', 'slickr-flickr');
 if (!defined('SLICKR_FLICKR_HOME')) define('SLICKR_FLICKR_HOME', 'http://wordpress.org/extend/plugins/'.SLICKR_FLICKR_FOLDER.'/');
 if (!defined('SLICKR_FLICKR_PATH')) define('SLICKR_FLICKR_PATH', SLICKR_FLICKR_FOLDER.'/slickr-flickr.php');
-if (!defined('SLICKR_FLICKR_PLUGIN_URL')) define ('SLICKR_FLICKR_PLUGIN_URL',WP_PLUGIN_URL . '/' . SLICKR_FLICKR_FOLDER);
+if (!defined('SLICKR_FLICKR_PLUGIN_URL')) define ('SLICKR_FLICKR_PLUGIN_URL',slickr_flickr_fix_protocol(WP_PLUGIN_URL) . '/' . SLICKR_FLICKR_FOLDER);
 if (!defined('SLICKR_FLICKR_UPGRADER')) define('SLICKR_FLICKR_UPGRADER', 'http://www.diywebmastery.com/slickrflickrpro/slickr-flickr-version.php');
 
 $slickr_flickr_options = array();
@@ -25,28 +25,28 @@ $slickr_flickr_defaults = array(
     'search' => 'photos',
     'tag' => '',
     'tagmode' => '',
-    'type' => 'gallery',
     'set' => '',
     'cache' => 'on',
-    'lightbox' => 'sf-lbox-manual',
     'items' => '20',
+    'type' => 'gallery',
+    'captions' => 'on',
+    'lightbox' => 'sf-lbox-manual',
     'delay' => '5',
     'start' => '1',
     'autoplay' => 'on',
+    'pause' => 'off',
+    'orientation' => 'landscape',
+    'size' => 'medium',
     'width' => '',
     'height' => '',
-    'border' => 'off',
-    'captions' => 'on',
-    'descriptions' => 'off',
-    'flickr_link' => 'off',
-    'pause' => 'off',
-    'size' => 'medium',
-    'orientation' => 'landscape',
-    'thumbnail_size' => 'square',
-    'thumbnail_scale' => '100',
+    'thumbnail_size' => '',
+    'thumbnail_scale' => '',
+    'photos_per_row' => '',
+    'border' => '',
+    'descriptions' => '',
+    'flickr_link' => '',
     'link' => '',
     'attribution' => '',
-    'photos_per_row' => '',
     'sort' => '',
     'direction' => ''
     );
@@ -157,6 +157,14 @@ function slickr_flickr_clear_rss_cache_transient() {
 function slickr_flickr_clear_cache() {
     slickr_flickr_clear_rss_cache();
     slickr_flickr_clear_rss_cache_transient();
+}
+
+function slickr_flickr_fix_protocol($url) {
+   if(is_ssl()) {
+       return str_replace('http://', 'https://', $url);
+   } else {
+       return $url;
+   }
 }
 
 if (is_admin()) {
