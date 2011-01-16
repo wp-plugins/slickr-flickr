@@ -3,6 +3,8 @@ var slickr_flickr_slideshow_timer_on = false;
 
 function  slickr_flickr_next_slide(obj) {
     var j = jQuery(obj);
+    if (j.children('div').length == 1)  return ;
+    transition = j.data("transition") === "undefined" ? 500 : j.data("transition")*1000;
     var $active = j.children('div.active');
     if ( $active.length == 0 ) $active = j.children('div:last');
     var $next =  $active.next().length ? $active.next() : j.children('div:first');
@@ -10,14 +12,14 @@ function  slickr_flickr_next_slide(obj) {
     $active.addClass('last-active');
     $next.css({opacity: 0.0})
         .addClass('active')
-        .animate({opacity: 1.0}, 500, function() {
+        .animate({opacity: 1.0}, transition, function() {
             $active.removeClass('active last-active');
         });
 }
 
 function slickr_flickr_next_slides() {
    jQuery('.slickr-flickr-slideshow').each(function(index){
-        slickr_flickr_next_slide(jQuery(this));
+        slickr_flickr_next_slide(jQuery(this)) ;
    });
 }
 

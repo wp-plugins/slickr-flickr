@@ -1,13 +1,28 @@
 <?php
 /*
 Plugin Name: Slickr Flickr
-Plugin URI: http://www.slickr-flickr.com
+Plugin URI: http://www.slickrflickr.com
 Description: Displays tagged photos from Flickr in slideshows and galleries
-Version: 1.19
+Version: 1.20
 Author: Russell Jamieson
-Author URI: http://www.wordpresswise.com
+Author URI: http://www.russelljamieson.com
+
+Copyright 2011 Russell Jamieson (russell.jamieson@gmail.com)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License, version 2, as 
+    published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.19');
+if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.20');
 if (!defined('SLICKR_FLICKR_FOLDER')) define('SLICKR_FLICKR_FOLDER', 'slickr-flickr');
 if (!defined('SLICKR_FLICKR_HOME')) define('SLICKR_FLICKR_HOME', 'http://wordpress.org/extend/plugins/'.SLICKR_FLICKR_FOLDER.'/');
 if (!defined('SLICKR_FLICKR_PATH')) define('SLICKR_FLICKR_PATH', SLICKR_FLICKR_FOLDER.'/slickr-flickr.php');
@@ -32,6 +47,7 @@ $slickr_flickr_defaults = array(
     'captions' => 'on',
     'lightbox' => 'sf-lbox-manual',
     'delay' => '5',
+    'transition' => '0.5',
     'start' => '1',
     'autoplay' => 'on',
     'pause' => 'off',
@@ -42,6 +58,7 @@ $slickr_flickr_defaults = array(
     'thumbnail_size' => '',
     'thumbnail_scale' => '',
     'photos_per_row' => '',
+    'align' => '',
     'border' => '',
     'descriptions' => '',
     'flickr_link' => '',

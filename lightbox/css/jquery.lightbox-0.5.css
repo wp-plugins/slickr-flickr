@@ -29,5 +29,6 @@
 #lightbox-container-image-data { padding: 0 10px; color: #666; }
 #lightbox-container-image-data #lightbox-image-details { width: 70%; float: left; text-align: left; }
 #lightbox-image-details-caption { font-weight: bold; }
+#lightbox-image-details-caption p { margin-bottom: 4px; font-weight: normal; }
 #lightbox-image-details-currentNumber {	display: block; clear: left; padding-bottom: 1.0em; }
 #lightbox-secNav-btnClose { width: 66px; float: right; padding-bottom: 0.7em; padding-top: 1.0em; margin-bottom: 1.0em; background: url(images/lightbox-btn-close.gif) right 55% no-repeat; }
