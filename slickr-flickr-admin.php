@@ -127,6 +127,8 @@ $lightbox_auto = $options['lightbox']=="sf-lbox-auto"?"selected":"";
 $lightbox_manual = $options['lightbox']=="sf-lbox-manual"?"selected":"";
 $shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
 $thickbox = $options['lightbox']=="thickbox"?"selected":"";
+$evolution = $options['lightbox']=="evolution"?"selected":"";
+$prettyphoto = $options['lightbox']=="prettyphoto"?"selected":"";
 $slimbox = $options['lightbox']=="slimbox"?"selected":"";
 $fancybox = $options['lightbox']=="fancybox"?"selected":"";
 $colorbox = $options['lightbox']=="colorbox"?"selected":"";
@@ -221,19 +223,19 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <p>If you select lightbox slideshow then when a photo is clicked the overlaid lightbox will automatically play the slideshow.</p>
 <p>If you select ShadowBox then it will use the ShadowBox jQuery plugin which is bundled with this plugin.</p>
 <p>If you select ThickBox then it will use the standard WordPress lightbox plugin which is pre-installed with Wordpress.</p>
-<p>If you select FancyBox then it will use the FancyBox for WP lightbox plugin which you need to have installed independently from Slickr Flickr.</p>
-<p>If you select Lightbox Plus then it will use the Lightbox Plus plugin which you need to have installed independently from Slickr Flickr.</p>
-<p>If you select SlimBox then it will use the SlimBox for WP lightbox plugin which you need to have installed independently from Slickr Flickr.</p>
-<p>If you select Shutter then it will use the Shutter Reloaded for WP lightbox plugin which you need to have installed independently from Slickr Flickr.</p>
+<p><b>If you select one of the other lightboxes then you need to install that lightbox plugin independently from Slickr Flickr.</b></p>
+<p><b>Please read this post about <a href="http://www.slickrflickr.com/1717/using-slickr-flickr-with-other-lightboxes">using Slickr Flickr with other lightboxes</a> before choosing, as not all the third party lightbox plugins support photo descriptions and links to Flickr in the photo title.</b></p> 
 <label for="flickr_lightbox">Lightbox</label><select name="flickr_lightbox" id="flickr_lightbox">
-<option value="sf-lbox-manual" {$lightbox_manual}>LightBox with manual slideshow</option>
-<option value="sf-lbox-auto" {$lightbox_auto}>LightBox with autoplay slideshow option</option>
-<option value="shadowbox" {$shadowbox}>Shadowbox</option>
-<option value="thickbox" {$thickbox}>Thickbox (standard lightbox pre-installed with Wordpress)</option>
-<option value="fancybox" {$fancybox}>FancyBox for Wordpress</option>
-<option value="colorbox" {$colorbox}>LightBox Plus for Wordpress</option>
-<option value="slimbox" {$slimbox}>SlimBox for Wordpress</option>
-<option value="shutter" {$shutter}>Shutter Reloaded for Wordpress</option>
+<option value="sf-lbox-manual" {$lightbox_manual}>LightBox with manual slideshow (pre-installed)</option>
+<option value="sf-lbox-auto" {$lightbox_auto}>LightBox with autoplay slideshow option (pre-installed)</option>
+<option value="shadowbox" {$shadowbox}>Shadowbox (pre-installed)</option>
+<option value="thickbox" {$thickbox}>Thickbox (pre-installed with Wordpress)</option>
+<option value="evolution" {$evolution}>Evolution LightBox for Wordpress (requires separate installation)</option>
+<option value="fancybox" {$fancybox}>FancyBox for Wordpress (requires separate installation)</option>
+<option value="colorbox" {$colorbox}>LightBox Plus for Wordpress (requires separate installation)</option>
+<option value="shutter" {$shutter}>Shutter Reloaded for Wordpress (requires separate installation)</option>
+<option value="slimbox" {$slimbox}>SlimBox for Wordpress (requires separate installation)</option>
+<option value="prettyphoto" {$prettyphoto}>WP Pretty Photo (requires separate installation)</option>
 </select>
 
 <p class="submit">
@@ -287,8 +289,9 @@ onSubmit="return slickr_flickr_validate_form(this)">
 <ul>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/fancybox-for-wordpress/">FancyBox Lightbox for WordPress</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/lightbox-plus/">Lightbox Plus (ColorBox) for WordPress</a></li>
-<li><a target="_blank" href="http://wordpress.org/extend/plugins/slimbox-plugin/">SlimBox for WordPress</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/shutter-reloaded/">Shutter Lightbox for WordPress</a></li>
+<li><a target="_blank" href="http://wordpress.org/extend/plugins/slimbox-plugin/">SlimBox for WordPress</a></li>
+<li><a target="_blank" href="http://wordpress.org/extend/plugins/wp-prettyphoto/">WP Pretty Photo</a></li>
 </ul>
 <h3>Compatible Flickr Plugins</h3>
 <ul>

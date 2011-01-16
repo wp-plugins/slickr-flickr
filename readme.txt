@@ -1,10 +1,10 @@
 === Slickr Flickr ===
 Contributors: powerblogservice
-Donate link: http://www.wordpresswise.com/slickr-flickr/donate/
-Tags: flickr, flickr slideshow, flickr gallery, flickr galleria, lightbox, shutter, fancybox, galleria, jquery, wordpresswise
+Donate link: http://www.slickrflickr.com/donate/
+Tags: flickr, flickr slideshow, flickr gallery, flickr galleria, lightbox, fancybox, slimbox, prettyPhoto
 Requires at least: 2.8
-Tested up to: 3.0
-Stable tag: 1.19
+Tested up to: 3.0.4
+Stable tag: 1.20
 Displays your Flickr photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -13,19 +13,18 @@ Displays your Flickr photos either as a gallery, a galleria or a unbranded slide
 * Uses "slickr-flickr" shortcode to make it as easy as possible to show your Flickr photos on Wordpress
 * Works well in posts, pages and text widgets in the sidebar, at different sizes, with portrait and landscape photos
 * Sorts photos by date, title or description
-* With or without captions, and links back to Flickr 
+* With or without captions, photo descriptions and links back to Flickr 
 * With manual or autoplay slideshows
 * Works with various LightBoxes
-* Works with jQuery Galleria to display photos in a slideshow/gallery combo
 * See http://www.slickrflickr.com for tutorials on using the plugin
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
 
 == Installation ==
 
-1. Uncompress the downloaded zip archive in [WordPress install root]/wp-content/plugins
+1. Uncompress the downloaded zip archive in [WordPress install root]/wp-content/plugins or use the WordPress plugin installer
 1. Activate the plugin in your WordPress plugins control panel
 1. Go to the "Settings" section, and choose "Slickr Flickr"
-1. Type In your Flickr Id (it should look something like 12345678@N00) and then click the Save button
+1. Type In your Flickr ID (it should look something like 12345678@N00) and then click the Save button
 1. To use the plugin in a post, page or text widget use the shortcode [slickr-flickr tag="my tag phrase"]
 1. If you have no photos in Flickr with this tag then no pictures are displayed
 1. See http://www.slickrflickr.com/how-to/how-to-install-slickr-flickr-plugin for more about the plugin installation
@@ -50,6 +49,16 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 
 == Changelog ==
 
+= 1.20 =
+* Added support for links back to Flickr in the photo captions in the galleria display
+* Added support for Evolution LightBox and PrettyPhoto LightBox
+* Added better instructions for using third party lightboxes
+* Added slideshow "transition" parameter to override the default transition of 0.5 seconds (Pro version)
+* Added "align" parameter to make it easier to center a gallery or slideshow
+* Improved handling of large thumbnail
+* Improved error reporting when attempting to fetch more than 20 photos from a photoset 
+* Fixed display issues where there is only a single photo in the slideshow
+
 = 1.19 =
 * Reinstated automatic use of API key if more than 20 photos are requested
 * Use https protocol for js and css files if admin site is being run securely
@@ -68,8 +77,9 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 
 = 1.16 =
 * Added medium 640 photos - size="m640"
-
 * Moved site to http://www.slickrflickr.com
+
+
 
 = 1.15 =
 * Renamed Flickr class to avoid conflict with other plugins
@@ -151,7 +161,7 @@ See http://www.slickrflickr.com/slickr-flickr-help for the full list of question
 
 == Upgrade Notice ==
 
-= 1.19 = 
+= 1.20 = 
 * Recommended but not mandatory
 
 
@@ -173,10 +183,10 @@ If you don't want to specify all the settings for every slideshow you can set up
 * Enter your Flickr API Key (optional) 
 * Enter your Slickr Flickr Pro license Id (optional)
 * Enter the default number of photos to show
-* Select the default type of display - gallery, slideshow or slideshow/gallery combo
+* Select the default type of display - gallery, slideshow or galleria (a slideshow/gallery combo)
 * Choose whether photos captions are displayed
 * Enter the default delay in seconds before the slideshow moves on to the next slide
-* Choose the lightbox (manual play, auto play or ThickBox, ShadowBox, FancyBox, Shutterbox, SlimBox or LightBox Plus)
+* Choose the lightbox (manual play, auto play or ThickBox, ShadowBox, FancyBox, Shutterbox, SlimBox LightBox Plus, WP PrettyPhoto or Evolution LightBox)
 
 
 == Links ==
