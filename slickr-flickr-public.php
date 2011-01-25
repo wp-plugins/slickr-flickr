@@ -25,7 +25,8 @@
  * @param width -> width of slideshow
  * @param height -> height of slideshow
  * @param thumbnail_size -> square, thumbnail, small - default is square
- * @param thumbnail_scale -> scaling factor - default is 100 
+ * @param thumbnail_scale -> scaling factor - default is 100
+ * @param thumbnail_captions -> on or off - default is off 
  * @param photos_per_row -> maximum number number of thumbnails in a gallery row
  * @param align -> left, right or center
  * @param border -> whether slideshow border is on or off - default is off
@@ -40,14 +41,13 @@ require_once(dirname(__FILE__).'/slickr-flickr-photo.php');
 
 function slickr_flickr_display ($attr) {
   $params = shortcode_atts( slickr_flickr_get_options(), $attr ); //apply plugin defaults
-  if (($params['type']=="gallery") && ($attr['captions']!="on")) $params['captions'] = "off";
   if (empty($params['id'])) return "<p>Please specify a Flickr ID for this ".$params['type']."</p>";
   if (empty($params['api_key']) && ($params['use_key'] == "y")) return "<p>Please add your Flickr API Key in Slickr Flickr Admin settings to fetch more than 20 photos.</p>";
   if (($params['items'] > 20 ) && (! empty($params['api_key'])) && (empty($params['use_key'])) && ($params['search'] != "sets")) $params['use_key'] = "y"; // default use_key if request for over 20 photos and API key is present
   if ( (!empty($params['tagmode'])) && empty($params['tag']) && ($params['search']=="photos")) return "<p>Please set up a Flickr tag for this slideshow</p>";
 
   $rand_id = rand(1,1000);
-  $divid = "flickr_".strtolower(str_replace(array(" ","`","-",","),"",$params['tag'])).'_'.$rand_id; //strip spaces, backticks, dashes and commas
+  $divid = "flickr_".strtolower(ereg_replace("[^A-Za-z0-9_]","",$params['tag'])).'_'.$rand_id; //strip spaces, backticks, dashes and commas
   $divclear = '<div style="clear:both"></div>';
   $attribution = empty($params['attribution'])?"":('<p class="slickr-flickr-attribution align'.$params['align'].'">'.$params['attribution'].'</p>');
   $lightboxrel =""; $thumb_scale ="";
@@ -87,7 +87,7 @@ NAV;
         $element_style = $params['thumbnail_style'];
         }
   }
-  $photos = slickr_flickr_feed($params);
+  $photos = slickr_flickr_fetch_feed($params);
   if (! is_array($photos)) return $photos; //return error message if an array of photos is not returned
 
   $r = slickr_flickr_get_start($params, count($photos));
@@ -100,6 +100,15 @@ NAV;
   return $divstart . $s . $divend;
 }
 
+function slickr_flickr_fetch_feed($params) {
+   $photos = slickr_flickr_feed($params);
+   if ((! is_array($photos)) && ($params['use_key']=='y') && slickr_flickr_check_validity()) {
+   		$params['use_key']='n';
+   		return slickr_flickr_feed($params);
+   	} else {
+   		return $photos;
+   	}
+}
 
 function slickr_flickr_feed($params) {
   $photos = array();
@@ -314,8 +323,8 @@ function slickr_flickr_image($photo, $params) {
             return '<img '.$imgsize.' src="'.$full_url.'" alt="'.$alt.'" title="'.$captiontitle.'" />';
         }
         default: {
-            $thumbcaption = $params['captions']=="off"?"":('<br/><span class="slickr-flickr-caption">'.$title.'</span>');
-            $lightbox_title = $captiontitle . ($params["descriptions"]=="on" ? $description : "");
+            $thumbcaption = $params['thumbnail_captions']=="on"?('<br/><span class="slickr-flickr-caption">'.$title.'</span>'):"";
+            $lightbox_title = ($params["captions"]=="on" ? $captiontitle :"") . ($params["descriptions"]=="on" ? $description : "");
             return '<a '.$params['lightboxrel'].' href="'.$full_url.'" title="'.$lightbox_title.'"><img src="'.$thumb_url.'"'.$params['image_style'].' alt="'.$alt.'" title="'.$title.'" />'.$thumbcaption.'</a>';
         }
     }
@@ -364,10 +373,6 @@ function slickr_flickr_header() {
         wp_enqueue_style('lightbox', $path."/lightbox-slideshow/lightbox.css");
         wp_enqueue_script('lightbox', $path."/lightbox-slideshow/lightbox-slideshow.js", array('jquery'));
         break;
-        }
-     case 'shadowbox': {
-        wp_enqueue_style('shadowbox', $path."/shadowbox/shadowbox.css");
-        wp_enqueue_script('shadowbox', $path."/shadowbox/shadowbox.js", array('jquery'));
         }
     case 'thickbox': { //preinstalled by wordpress but needs to be activated
        wp_enqueue_style('thickbox');

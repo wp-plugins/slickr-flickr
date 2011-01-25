@@ -4,7 +4,8 @@ var slickr_flickr_slideshow_timer_on = false;
 function  slickr_flickr_next_slide(obj) {
     var j = jQuery(obj);
     if (j.children('div').length == 1)  return ;
-    transition = j.data("transition") === "undefined" ? 500 : j.data("transition")*1000;
+    transition = j.data("transition");
+    transition =  ((transition=="") || isNaN(transition)) ? 500 : (transition*1000) ;    
     var $active = j.children('div.active');
     if ( $active.length == 0 ) $active = j.children('div:last');
     var $next =  $active.next().length ? $active.next() : j.children('div:first');

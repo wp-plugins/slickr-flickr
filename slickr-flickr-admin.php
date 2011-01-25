@@ -125,13 +125,13 @@ $captions_on = $options['captions']!="off"?"selected":"";
 $captions_off = $options['captions']=="off"?"selected":"";
 $lightbox_auto = $options['lightbox']=="sf-lbox-auto"?"selected":"";
 $lightbox_manual = $options['lightbox']=="sf-lbox-manual"?"selected":"";
-$shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
 $thickbox = $options['lightbox']=="thickbox"?"selected":"";
 $evolution = $options['lightbox']=="evolution"?"selected":"";
 $prettyphoto = $options['lightbox']=="prettyphoto"?"selected":"";
-$slimbox = $options['lightbox']=="slimbox"?"selected":"";
 $fancybox = $options['lightbox']=="fancybox"?"selected":"";
 $colorbox = $options['lightbox']=="colorbox"?"selected":"";
+$shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
+$slimbox = $options['lightbox']=="slimbox"?"selected":"";
 $shutter = $options['lightbox']=="shutter"?"selected":"";
 $multiple_fetch = $pro_options['multiple_fetch']=="1"?"checked":"";
 $manual_sizing = $pro_options['manual_sizing']=="1"?"checked":"";
@@ -228,11 +228,11 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <label for="flickr_lightbox">Lightbox</label><select name="flickr_lightbox" id="flickr_lightbox">
 <option value="sf-lbox-manual" {$lightbox_manual}>LightBox with manual slideshow (pre-installed)</option>
 <option value="sf-lbox-auto" {$lightbox_auto}>LightBox with autoplay slideshow option (pre-installed)</option>
-<option value="shadowbox" {$shadowbox}>Shadowbox (pre-installed)</option>
 <option value="thickbox" {$thickbox}>Thickbox (pre-installed with Wordpress)</option>
 <option value="evolution" {$evolution}>Evolution LightBox for Wordpress (requires separate installation)</option>
 <option value="fancybox" {$fancybox}>FancyBox for Wordpress (requires separate installation)</option>
 <option value="colorbox" {$colorbox}>LightBox Plus for Wordpress (requires separate installation)</option>
+<option value="shadowbox" {$shadowbox}>Shadowbox (requires separate installation)</option>
 <option value="shutter" {$shutter}>Shutter Reloaded for Wordpress (requires separate installation)</option>
 <option value="slimbox" {$slimbox}>SlimBox for Wordpress (requires separate installation)</option>
 <option value="prettyphoto" {$prettyphoto}>WP Pretty Photo (requires separate installation)</option>
@@ -289,6 +289,7 @@ onSubmit="return slickr_flickr_validate_form(this)">
 <ul>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/fancybox-for-wordpress/">FancyBox Lightbox for WordPress</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/lightbox-plus/">Lightbox Plus (ColorBox) for WordPress</a></li>
+<li><a target="_blank" href="http://wordpress.org/extend/plugins/shadowbox-js/">ShadowBox JS</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/shutter-reloaded/">Shutter Lightbox for WordPress</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/slimbox-plugin/">SlimBox for WordPress</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/wp-prettyphoto/">WP Pretty Photo</a></li>
