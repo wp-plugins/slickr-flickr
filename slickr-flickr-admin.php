@@ -133,6 +133,8 @@ $colorbox = $options['lightbox']=="colorbox"?"selected":"";
 $shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
 $slimbox = $options['lightbox']=="slimbox"?"selected":"";
 $shutter = $options['lightbox']=="shutter"?"selected":"";
+$galleria_10 = $options['galleria']=="galleria_10"?"selected":"";
+$galleria_12 = $options['galleria']=="galleria_12"?"selected":"";
 $multiple_fetch = $pro_options['multiple_fetch']=="1"?"checked":"";
 $manual_sizing = $pro_options['manual_sizing']=="1"?"checked":"";
 $clear_cache = $pro_options['clear-cache']=="1"?"checked":"";
@@ -178,6 +180,12 @@ print <<< ADMIN_PANEL
 and then visiting <a target="_blank" href="http://www.flickr.com/services/api/keys/">Flickr API Keys</a></p>
 <label for="flickr_api_key">Flickr API Key: </label><input name="flickr_api_key" type="text" id="flickr_api_key" style="width:320px" value="{$options['api_key']}" />
 
+<h3>Flickr Secret Key (Pro Edition Only)</h3>
+<p>The Flickr Secret Key is used if you want to be use an authenticated connection that is required for functions like 'Safe_search'.</p>
+<p>A Flickr Secret key looks something like this : 5aa7aax73kljlkffkf2348904582b9cc and you can find your Flickr Secret Key by logging in to Flickr
+and then visiting <a target="_blank" href="http://www.flickr.com/services/api/keys/">Flickr API Keys</a></p>
+<label for="flickr_secret_key">Flickr Secret Key: </label><input name="flickr_secret_key" type="text" id="flickr_secret_key" style="width:320px" value="{$options['secret_key']}" />
+
 <h3>Slickr Flickr Pro Licence Key</h3>
 <p>The Slickr Flickr Pro Licence Key is required if you want to get support through the Slickr Flickr Forum and also use some of the <a href="http://www.slickrflickr.com/pro/">Slickr Flickr Pro Bonus features</a>.</p>
 {$version_info["notice"]}
@@ -218,6 +226,13 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <p>For example [slickr-flickr tag="bahamas" delay="10"] displays a slideshow with a ten second delay between slides</p>
 <label for="flickr_delay">Slide Transition Delay: </label><input name="flickr_delay" type="text" id="flickr_delay" value="{$options['delay']}" />
 
+<h3>Fade Transition Time</h3>
+<p>If you leave this blank then the plugin will take half a second to fade one slide into the next.</p>
+<p>If you supply a number it here, the plugin will remember it so you do not need to supply it for every slideshow.</p>
+<p>You are still able to supply a different delay for individual slideshow by specifying it in the post</p>
+<p>For example [slickr-flickr tag="bahamas" transition="2"] displays a slideshow with a 2 second fade transition between slides</p>
+<label for="flickr_transition">Fade Transition Time: </label><input name="flickr_transition" type="text" id="flickr_transition" value="{$options['transition']}" />
+
 <h3>Lightbox</h3>
 <p>If you leave this blank then the plugin will use the standard lightbox.</p>
 <p>If you select lightbox slideshow then when a photo is clicked the overlaid lightbox will automatically play the slideshow.</p>
@@ -238,9 +253,17 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <option value="prettyphoto" {$prettyphoto}>WP Pretty Photo (requires separate installation)</option>
 </select>
 
+
+<h3>Galleria</h3>
+<p>If you leave this blank then the plugin will use the galleria 1.0.</p>
+<label for="flickr_galleria">Galleria</label><select name="flickr_galleria" id="flickr_galleria">
+<option value="galleria_10" {$galleria_10}>Galleria 1.0 - original version</option>
+<option value="galleria_12" {$galleria_12}>Galleria 1.2 - with carousel and skins</option>
+</select>
+
 <p class="submit">
 <input type="submit" name="options_update" value="Save Changes" />
-<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_api_key,slickr_licence,slickr_multiple_fetch,slickr_manual_sizing,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_lightbox" />
+<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_api_key,flickr_secret_key,slickr_licence,slickr_multiple_fetch,slickr_manual_sizing,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_transition,flickr_lightbox,flickr_galleria" />
 </p>
 </form>
 
