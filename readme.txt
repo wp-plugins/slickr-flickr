@@ -1,16 +1,15 @@
 === Slickr Flickr ===
 Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
-Tags: flickr, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox
+Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
-Tested up to: 3.0.4
-Stable tag: 1.21
+Tested up to: 3.0.5
+Stable tag: 1.22
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
-
 * Displays Flickr photos as a gallery, a galleria, or an unbranded slideshow (i.e. not Flickr's own slideshow widget)
-* Uses "slickr-flickr" shortcode to make it as easy as possible to show your Flickr photos on Wordpress
+* Uses "slickr-flickr" shortcode to make it as easy as possible to show your Flickr photos on WordPress
 * Works well in posts, pages and text widgets in the sidebar, at different sizes, with portrait and landscape photos
 * Sorts photos by date, title or description
 * With or without captions, photo descriptions and links back to Flickr 
@@ -21,7 +20,6 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 
 
 == Installation ==
-
 1. Uncompress the downloaded zip archive in [WordPress install root]/wp-content/plugins or use the WordPress plugin installer
 1. Activate the plugin in your WordPress plugins control panel
 1. Go to the "Settings" section, and choose "Slickr Flickr"
@@ -43,13 +41,23 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 
 == Screenshots ==
-
 1. Example of more than one Flickr Gallery and more than onb Flickr Slideshow in action on a single page
 1. Example of a Flickr galleria (a display including a large photo with thumbnails below)
 1. Example of an overlaid lightbox which appears on clicking a thumbnail
 
 
 == Changelog ==
+
+= 1.22 =
+* Added Flickr commons license selection  
+* Added search by date taken and date uploaded
+* Added search by tag for group photos
+* Improved slideshow sizing
+* Added galleria 1.2 option
+* Increased photoset search from 20 to 50 photos
+* Added unlimited search for photosets  (Pro Edition only)
+* Added search by post publish date  (Pro Edition only)
+
 
 = 1.21 =
 * Added automatic failover from Flickr API to Flickr RSS if no photos are returned (Pro Edition only)
@@ -89,8 +97,6 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 = 1.16 =
 * Added medium 640 photos - size="m640"
 * Moved site to http://www.slickrflickr.com
-
-
 
 = 1.15 =
 * Renamed Flickr class to avoid conflict with other plugins
@@ -172,7 +178,7 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Upgrade Notice ==
 
-= 1.21 = 
+= 1.22 = 
 * Recommended but not mandatory
 
 
@@ -202,7 +208,7 @@ If you don't want to specify all the settings for every slideshow you can set up
 
 == Links ==
 
-Here are some of the useful Slickr Flickr Plugin links
+Here are some of the useful Slickr Flickr WordPress Plugin links
 
 * Plugin Home Page http://www.slickrflickr.com/
 * Plugin Help and Support http://www.slickrflickr.com/slickr-flickr-help/
