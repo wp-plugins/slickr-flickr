@@ -34,7 +34,7 @@ class slickr_flickr_feed{
         	$this->message = "<p>Error fetching Flickr photos: ".$rss->get_error_message()."</p>";  
 			$this->error = true;
 		} else {
-	    	$numitems = $rss->get_item_quantity($params['items']);
+	    	$numitems = $rss->get_item_quantity($this->args['per_page']);
 	        if ($numitems == 0)  {
 	        	$this->message = '<p>No photos available right now.</p><p>Please verify your settings, clear your RSS cache on the Slickr Flickr Admin page and check your <a target="_blank" href="'.$flickr_feed.'">Flickr feed</a></p>';
 				$this->error = true;

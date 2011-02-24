@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
 Tested up to: 3.0.5
-Stable tag: 1.22
+Stable tag: 1.23
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -48,6 +48,9 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 1.23 =
+* Fix "items" bug where the requested number of photos to be returned was being ignored 
+
 = 1.22 =
 * Added Flickr commons license selection  
 * Added search by date taken and date uploaded
@@ -57,7 +60,6 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 * Increased photoset search from 20 to 50 photos
 * Added unlimited search for photosets  (Pro Edition only)
 * Added search by post publish date  (Pro Edition only)
-
 
 = 1.21 =
 * Added automatic failover from Flickr API to Flickr RSS if no photos are returned (Pro Edition only)
@@ -178,8 +180,8 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Upgrade Notice ==
 
-= 1.22 = 
-* Recommended but not mandatory
+= 1.23 = 
+* Mandatory - fixes bug in 1.22 which meant to many photos were being returned
 
 
 == How to Use The Plugin ==
