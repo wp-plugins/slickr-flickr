@@ -39,6 +39,7 @@
  * @param flickr_link -> include a link to the photo on Flickr on the lightbox - default is off
  * @param link -> url to visit on clicking slideshow
  * @param attribution -> credit the photographer
+ * @param nav -> galleria navigation - none, above, below (if not supplied navigation is both above and below)
  * @param sort -> sort photos by date, title or description
  * @param direction -> sort ascending or descending 
 */
@@ -75,8 +76,14 @@ function slickr_flickr_display ($attr) {
         $nav = <<<NAV
 <p class="nav {$params['size']}"><a href="#" class="prevSlide">&laquo; previous</a> | <a href="#" class="startSlide">start</a> | <a href="#" class="stopSlide">stop</a> | <a href="#" class="nextSlide">next &raquo;</a></p>
 NAV;
-        $divstart = '<div id="'.$divid.'" class="slickr-flickr-galleria '.$params['orientation'].' '.$params['size'].'">'.$attribution.$nav.'<ul>';
-        $divend = '</ul>'.$divclear.$attribution.$nav.'</div>'.slickr_flickr_set_options($divid,slickr_flickr_galleria_options($params));
+		switch ($params['nav']) {
+			case "above": { $nav_below = ''; $nav_above = $nav; break; }
+			case "below": { $nav_below = $nav; $nav_above = ''; break; }
+			case "none": { $nav_below = ''; $nav_above = ''; break; } 	
+			default: { $nav_below = $nav; $nav_above = $nav; break; }
+		}
+        $divstart = '<div id="'.$divid.'" class="slickr-flickr-galleria '.$params['orientation'].' '.$params['size'].'">'.$attribution.$nav_above.'<ul>';
+        $divend = '</ul>'.$divclear.$attribution.$nav_below.'</div>'.slickr_flickr_set_options($divid,slickr_flickr_galleria_options($params));
         $element='li';
         $element_style='';
         break;
@@ -144,9 +151,8 @@ function slickr_flickr_fetch($params) {
 function slickr_flickr_force_api_key(&$params) {
   if ((empty($params['use_key'])) 
   && (! empty($params['api_key'])) 
-  //&& ($params['search'] != "sets") 
   && (($params['items'] > 20 ) || slickr_flickr_api_required($params))) 
-   	$params['use_key'] = "y"; // default use_key for license or date based searches or request is for over 20 photos and API key is present
+   	$params['use_key'] = "y"; // set use_key if API key is available and is either required or request is for over 20 photos
 }
 
 function slickr_flickr_api_required($params) {
@@ -186,6 +192,7 @@ function slickr_flickr_set_lightboxrel(&$params, $rand_id) {
       case "shutter":   $lightboxrel = 'rel="lightbox['.$rand_id.']"';  break;
       case "sf-lbox-manual":
       case "sf-lbox-auto": $lightboxrel = 'rel="sf-lightbox"' ; break;
+      case "none": $lightboxrel = '' ; break;      
       default: 	$lightboxrel = 'rel="'.$params['lightbox'].'['.$rand_id.']"';
       }
     $params['lightboxrel'] = $lightboxrel;
@@ -251,6 +258,7 @@ function slickr_flickr_image($photo, $params) {
             //return '<a href="'.$full_url.'"><img src="'.$thumb_url.'" alt="'.$alt.'" title="'.$captiontitle.'" />';
         }
         default: {
+        	if ($params['lightbox']=="none") $full_url = $link; 
             $thumbcaption = $params['thumbnail_captions']=="on"?('<br/><span class="slickr-flickr-caption">'.$title.'</span>'):"";
             $lightbox_title = ($params["captions"]=="on" ? $captiontitle :"") . ($params["descriptions"]=="on" ? $description : "");
             return '<a '.$params['lightboxrel'].' href="'.$full_url.'" title="'.$lightbox_title.'"><img src="'.$thumb_url.'"'.$params['image_style'].' alt="'.$alt.'" title="'.$title.'" />'.$thumbcaption.'</a>';
