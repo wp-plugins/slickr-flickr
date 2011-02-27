@@ -3,8 +3,8 @@ Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
-Tested up to: 3.0.5
-Stable tag: 1.23
+Tested up to: 3.1.0
+Stable tag: 1.24
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -47,6 +47,12 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 
 == Changelog ==
+
+= 1.24 =
+* Added lightbox="none" option to link thumbnails directly to Flickr without a lightbox
+* Added nav="above|below|none" to allow control of galleria navigation menu
+* Updated readme.txt to indicate support for WordPress 3.1.0
+* Fixed version number 
 
 = 1.23 =
 * Fix "items" bug where the requested number of photos to be returned was being ignored 
@@ -180,8 +186,8 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Upgrade Notice ==
 
-= 1.23 = 
-* Mandatory - fixes bug in 1.22 which meant to many photos were being returned
+= 1.24= 
+* Highly recommended  - 1.22 has a bug in handling the number of items
 
 
 == How to Use The Plugin ==
