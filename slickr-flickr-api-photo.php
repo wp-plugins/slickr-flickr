@@ -11,12 +11,12 @@ class slickr_flickr_api_photo {
   var $link;
   var $original;
 
-  function __construct($item) {
+  function __construct($user_id, $item) {
     $farmid = $item['farm']; 
     $serverid = $item['server'];
     $id = $item['id'];
     $secret = $item['secret'];
-    $owner = $item['owner'];
+    $owner = array_key_exists('owner',$item) ? $item['owner'] : $user_id;
     $this->url = "http://farm{$farmid}.static.flickr.com/{$serverid}/{$id}_{$secret}.jpg";
     $this->link = "http://www.flickr.com/photos/{$owner}/{$id}";
     $this->original= array_key_exists('url_o',$item) ? $item['url_o'] : '' ;

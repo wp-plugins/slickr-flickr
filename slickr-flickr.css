@@ -4,6 +4,8 @@
 .slickr-flickr-galleria.portrait { width: 500px; }
 .slickr-flickr-galleria.landscape.small { width: 260px; }
 .slickr-flickr-galleria.portrait.small { width: 200px; }
+.slickr-flickr-galleria.landscape.m640 { width: 660px; }
+.slickr-flickr-galleria.portrait.m640 { width: 500px; }
 .slickr-flickr-galleria div.galleria_container {background-color:transparent; margin-bottom: 15px; text-align:center; }
 .slickr-flickr-galleria div.galleria_container img {margin-bottom: 5px;}
 .slickr-flickr-galleria span.caption{font-style:italic;color:#887;text-align:center;}
@@ -24,8 +26,8 @@
 .slickr-flickr-gallery ul li { display: inline-block; vertical-align: top; overflow:hidden; background: none; float:none; margin: 2px; text-align: center; }
 *:first-child+html .slickr-flickr-gallery ul li {display:inline} /* for IE7 */
 * html .slickr-flickr-gallery ul li {display:inline} /* for IE6 */
-.slickr-flickr-gallery ul img {  border: 1px solid #A9A9A9;  margin: 0; padding:4px; position:relative; }
-.slickr-flickr-gallery ul a:hover img { background-color: brown; }
+.slickr-flickr-gallery img {  border: 1px solid #A9A9A9;  margin: 0; padding:4px; position:relative; }
+.slickr-flickr-gallery img.hover { background-color: brown; }
 .slickr-flickr-gallery ul li a { text-decoration : none;}
 .slickr-flickr-gallery ul li a span{ font-size: 0.7em;}
 .slickr-flickr-gallery p.slickr-flickr-attribution { font-style: italic; margin-bottom: 0px;}
@@ -47,9 +49,12 @@
 .slickr-flickr-slideshow div.last-active { z-index:9; }
 .slickr-flickr-slideshow div.last-active p { display : block}
 
+.slickr-flickr-slideshow.landscape.original { height: 400px }
 .slickr-flickr-slideshow.landscape.medium { height: 400px }
 .slickr-flickr-slideshow.landscape.medium.descriptions { height: 450px }
 .slickr-flickr-slideshow.landscape.medium div img { max-height: 360px;}
+
+.slickr-flickr-slideshow.portrait.original { height: 525px }
 .slickr-flickr-slideshow.portrait.medium { height: 525px }
 .slickr-flickr-slideshow.portrait.medium.descriptions { height: 570px }
 .slickr-flickr-slideshow.portrait.medium div img { max-height: 485px; }

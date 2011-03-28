@@ -37,8 +37,7 @@ class slickr_flickr_photo {
 
     $this->description = $enclosure==null ? "" : html_entity_decode($enclosure->get_description());
     if ($this->description == "") {
-        preg_match_all('/<p>([^"]*)<\/p>([^>]*)/i', $data, $m);
-        $this->description = "<p>".$m[1][0]."</p>";
+        if (preg_match_all('/<p>([^"]*)<\/p>([^>]*)/i', $data, $m)) $this->description = "<p>".$m[1][0]."</p>";
         }
     $this->description = $this->cleanup($this->description);
   }
