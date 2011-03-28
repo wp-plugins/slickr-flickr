@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
 Tested up to: 3.1.0
-Stable tag: 1.24
+Stable tag: 1.25
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -48,6 +48,16 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 1.25 =
+* Added new parameters "page" and "per_page" to allow selection of photos by page
+* Added new parameter "thumbnail_border" to allow override of thumbnail hover color (Pro Edition only)
+* Added new parameter "target" for slideshow link so it can open a new window
+* Added new parameter "options" to give support for Galleria 1.2 options
+* Tweaked Galleria Classic skin to improve its appearance on light colored sites
+* Moved javascript into footer to improve page load times
+* Fixed bug with Flickr Link when displaying a gallery of a photoset
+* Fixed bug in the link to the RSS feed when no photos are returned
+
 = 1.24 =
 * Added lightbox="none" option to link thumbnails directly to Flickr without a lightbox
 * Added nav="above|below|none" to allow control of galleria navigation menu
@@ -64,8 +74,8 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 * Improved slideshow sizing
 * Added galleria 1.2 option
 * Increased photoset search from 20 to 50 photos
-* Added unlimited search for photosets  (Pro Edition only)
-* Added search by post publish date  (Pro Edition only)
+* Added unlimited search for photosets (Pro Edition only)
+* Added search by post publish date (Pro Edition only)
 
 = 1.21 =
 * Added automatic failover from Flickr API to Flickr RSS if no photos are returned (Pro Edition only)
@@ -186,8 +196,8 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Upgrade Notice ==
 
-= 1.24= 
-* Highly recommended  - 1.22 has a bug in handling the number of items
+= 1.25 = 
+* Recommended  - has two bug fixes
 
 
 == How to Use The Plugin ==
@@ -211,8 +221,7 @@ If you don't want to specify all the settings for every slideshow you can set up
 * Select the default type of display - gallery, slideshow or galleria (a slideshow/gallery combo)
 * Choose whether photos captions are displayed
 * Enter the default delay in seconds before the slideshow moves on to the next slide
-* Choose the lightbox (manual play, auto play, ThickBox, ShadowBox, FancyBox, Shutterbox, SlimBox LightBox Plus, WP PrettyPhoto or Evolution LightBox)
-
+* Choose the LightBox (manual play, auto play, ThickBox, ShadowBox, FancyBox, Shutterbox, SlimBox LightBox Plus, WP PrettyPhoto or Evolution LightBox)
 
 == Links ==
 

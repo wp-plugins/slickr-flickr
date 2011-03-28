@@ -77,6 +77,9 @@ function slickr_flickr_options_panel() {
 
 if (isset($_POST['cache'])) {
    slickr_flickr_clear_cache();
+   $class = "updated fade";
+   $message = "WordPress RSS cache has been cleared successfully";
+   echo '<div id="message" class="' . $class .' "><p>' . $message. '</p></div>';   
 }
 
 $cache = true;
@@ -133,6 +136,7 @@ $colorbox = $options['lightbox']=="colorbox"?"selected":"";
 $shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
 $slimbox = $options['lightbox']=="slimbox"?"selected":"";
 $shutter = $options['lightbox']=="shutter"?"selected":"";
+$norel = $options['lightbox']=="norel"?"selected":"";
 $galleria_10 = $options['galleria']=="galleria_10"?"selected":"";
 $galleria_12 = $options['galleria']=="galleria_12"?"selected":"";
 $multiple_fetch = $pro_options['multiple_fetch']=="1"?"checked":"";
@@ -179,12 +183,6 @@ print <<< ADMIN_PANEL
 <p>A Flickr API key looks something like this : 5aa7aax73kljlkffkf2348904582b9cc and you can find your Flickr API Key by logging in to Flickr
 and then visiting <a target="_blank" href="http://www.flickr.com/services/api/keys/">Flickr API Keys</a></p>
 <label for="flickr_api_key">Flickr API Key: </label><input name="flickr_api_key" type="text" id="flickr_api_key" style="width:320px" value="{$options['api_key']}" />
-
-<h3>Flickr Secret Key (Pro Edition Only)</h3>
-<p>The Flickr Secret Key is used if you want to be use an authenticated connection that is required for functions like 'Safe_search'.</p>
-<p>A Flickr Secret key looks something like this : 5aa7aax73kljlkffkf2348904582b9cc and you can find your Flickr Secret Key by logging in to Flickr
-and then visiting <a target="_blank" href="http://www.flickr.com/services/api/keys/">Flickr API Keys</a></p>
-<label for="flickr_secret_key">Flickr Secret Key: </label><input name="flickr_secret_key" type="text" id="flickr_secret_key" style="width:320px" value="{$options['secret_key']}" />
 
 <h3>Slickr Flickr Pro Licence Key</h3>
 <p>The Slickr Flickr Pro Licence Key is required if you want to get support through the Slickr Flickr Forum and also use some of the <a href="http://www.slickrflickr.com/pro/">Slickr Flickr Pro Bonus features</a>.</p>
@@ -234,8 +232,8 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <label for="flickr_transition">Fade Transition Time: </label><input name="flickr_transition" type="text" id="flickr_transition" value="{$options['transition']}" />
 
 <h3>Lightbox</h3>
-<p>If you leave this blank then the plugin will use the standard lightbox.</p>
-<p>If you select lightbox slideshow then when a photo is clicked the overlaid lightbox will automatically play the slideshow.</p>
+<p>If you leave this blank then the plugin will use the standard LightBox.</p>
+<p>If you select LightBox slideshow then when a photo is clicked the overlaid lightbox will automatically play the slideshow.</p>
 <p>If you select ShadowBox then it will use the ShadowBox jQuery plugin which is bundled with this plugin.</p>
 <p>If you select ThickBox then it will use the standard WordPress lightbox plugin which is pre-installed with Wordpress.</p>
 <p><b>If you select one of the other lightboxes then you need to install that lightbox plugin independently from Slickr Flickr.</b></p>
@@ -251,6 +249,7 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <option value="shutter" {$shutter}>Shutter Reloaded for Wordpress (requires separate installation)</option>
 <option value="slimbox" {$slimbox}>SlimBox for Wordpress (requires separate installation)</option>
 <option value="prettyphoto" {$prettyphoto}>WP Pretty Photo (requires separate installation)</option>
+<option value="norel" {$norel}>Some Other LightBox</option>
 </select>
 
 
@@ -263,7 +262,7 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 
 <p class="submit">
 <input type="submit" name="options_update" value="Save Changes" />
-<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_api_key,flickr_secret_key,slickr_licence,slickr_multiple_fetch,slickr_manual_sizing,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_transition,flickr_lightbox,flickr_galleria" />
+<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_api_key,slickr_licence,slickr_multiple_fetch,slickr_manual_sizing,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_transition,flickr_lightbox,flickr_galleria" />
 </p>
 </form>
 

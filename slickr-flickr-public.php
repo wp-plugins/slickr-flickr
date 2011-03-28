@@ -32,23 +32,28 @@
  * @param thumbnail_size -> square, thumbnail, small - default is square
  * @param thumbnail_scale -> scaling factor - default is 100
  * @param thumbnail_captions -> on or off - default is off 
+ * @param thumbnail_border -> alternative hightlight color for thumbnail
  * @param photos_per_row -> maximum number number of thumbnails in a gallery row
  * @param align -> left, right or center
  * @param border -> whether slideshow border is on or off - default is off
  * @param descriptions -> show descriptions beneath title caption - default is off
  * @param flickr_link -> include a link to the photo on Flickr on the lightbox - default is off
  * @param link -> url to visit on clicking slideshow
+ * @param target -> name of window for showing the slideshow link url - default is the same window: _self
  * @param attribution -> credit the photographer
  * @param nav -> galleria navigation - none, above, below (if not supplied navigation is both above and below)
  * @param sort -> sort photos by date, title or description
  * @param direction -> sort ascending or descending 
+ * @param per_page -> photos per page 
+ * @param page -> page number  
 */
 require_once(dirname(__FILE__).'/slickr-flickr-feed.php');
 require_once(dirname(__FILE__).'/slickr-flickr-photo.php');
 require_once(dirname(__FILE__).'/slickr-flickr-api-photo.php');
 
 function slickr_flickr_display ($attr) {
-  $params = shortcode_atts( slickr_flickr_get_options(), $attr ); //apply plugin defaults
+  $params = shortcode_atts( slickr_flickr_get_options(), $attr ); //apply plugin defaults    
+  foreach ( $params as $k => $v ) if (($k != 'attribution') && ($k != 'options')) $params[$k] = strtolower($v); //set all params as lower case
   if (empty($params['id'])) return "<p>Please specify a Flickr ID for this ".$params['type']."</p>";
   if ( (!empty($params['tagmode'])) && empty($params['tag']) && ($params['search']=="photos")) return "<p>Please set up a Flickr tag for this ".$params['type']."</p>";
   if (empty($params['api_key']) && ($params['use_key'] == "y")) return "<p>Please add your Flickr API Key in Slickr Flickr Admin settings to fetch more than 20 photos.</p>";
@@ -92,7 +97,7 @@ NAV;
         slickr_flickr_set_thumbnail_params($params);
         slickr_flickr_set_lightboxrel($params,$rand_id);
         $divstart = '<div id="'.$divid.'" class="slickr-flickr-gallery">'. $attribution . '<ul'.$params['gallery_class'].$params['gallery_style'].'>';
-        $divend = '</ul></div>'.$divclear.($params['lightbox'] == "sf-lbox-auto" ? slickr_flickr_set_options($divid,slickr_flickr_lightbox_options($params)) : "");
+        $divend = '</ul></div>'.$divclear. slickr_flickr_set_options($divid,slickr_flickr_lightbox_options($params));
         $element='li';
         $element_style = $params['thumbnail_style'];
         }
@@ -140,7 +145,7 @@ function slickr_flickr_fetch($params) {
         if ($feed->get_count() < $params['per_page']) $more_photos = false;  
      }  
   } else {
-        $photos = $feed->fetch_photos();
+        $photos = $feed->fetch_photos($params['page']);
   }
   if ($feed->is_error()) return $feed->get_message();
   if (!empty($params['sort'])) $photos = slickr_flickr_sort ($photos, $params['sort'], $params['direction']);
@@ -157,7 +162,7 @@ function slickr_flickr_force_api_key(&$params) {
 
 function slickr_flickr_api_required($params) {
 	return (! empty($params['license'])) || (! empty($params['date'])) || (! empty($params['before'])) || (! empty($params['after']))
-		|| ( !empty($params['tag']) && ($params["search"]=="groups")); 
+		|| ($params['page'] > 1) || ( !empty($params['tag']) && ($params["search"]=="groups")); 
 }
 
 function slickr_flickr_check_clear_cache() {
@@ -185,15 +190,16 @@ function slickr_flickr_set_lightboxrel(&$params, $rand_id) {
       case "shadowbox": $lightboxrel = 'rel="shadowbox['.$rand_id.']"'; break;
       case "thickbox": $lightboxrel = 'rel="thickbox['.$rand_id.']" class="thickbox" '; break;
       case "evolution": $lightboxrel = 'rel="lightbox'.$rand_id.'" class="lightbox" '; break;
-      case "fancybox":   $lightboxrel = 'rel="fancybox['.$rand_id.']" class="fancybox" ';  break;
+      case "fancybox":   $lightboxrel = 'rel="fancybox_'.$rand_id.'" class="fancybox" ';  break;
       case "prettyphoto": $lightboxrel = 'rel="wp-prettyPhoto-'.$rand_id.'"' ; break;      
       case "colorbox":
       case "slimbox":
       case "shutter":   $lightboxrel = 'rel="lightbox['.$rand_id.']"';  break;
       case "sf-lbox-manual":
       case "sf-lbox-auto": $lightboxrel = 'rel="sf-lightbox"' ; break;
-      case "none": $lightboxrel = '' ; break;      
-      default: 	$lightboxrel = 'rel="'.$params['lightbox'].'['.$rand_id.']"';
+      case "none":
+      case "norel": $lightboxrel = '' ; break;      
+      default: 	$lightboxrel = 'rel="'.$params['lightbox'].'_'.$rand_id.'"';
       }
     $params['lightboxrel'] = $lightboxrel;
 }
@@ -293,6 +299,7 @@ function slickr_flickr_slideshow_options($params) {
     $options['autoplay'] = $params['autoplay']=="off"?false:true;
     $options['transition'] = 500;
     $options['link'] = slickr_flickr_set_slideshow_onclick($params);
+    $options['target'] = array_key_exists('target',$params) ? $params['target'] : "_self";    
     if (slickr_flickr_check_validity()) {
     	if ($params['width']) $options['width'] = $params['width'];
     	if ($params['height']) $options['height'] = $params['height'];
@@ -302,29 +309,43 @@ function slickr_flickr_slideshow_options($params) {
 }
 
 function slickr_flickr_lightbox_options($params) {
-    $options['nextSlideDelay'] = $params['delay'] * 1000;
-    $options['autoPlay'] = $params['autoplay']=="on"?true:false;
+    $options = array();
+    if ($params['lightbox'] == "sf-lbox-auto") {
+    	$options['nextSlideDelay'] = $params['delay'] * 1000;
+    	$options['autoPlay'] = $params['autoplay']=="on"?true:false;
+	}
+    if (array_key_exists('thumbnail_border',$params) && slickr_flickr_check_validity()) $options['border'] = $params['thumbnail_border']; 
 	return $options;
 }
 
 function slickr_flickr_galleria_options($params) {
    
-        //$options['autoplay'] = $params['delay']*1000; 
-        //$options['transition'] = 'fade';
-        //$options['transition_speed'] = $params['transition']*1000;
-        //$options['show_info'] = $params['captions']=='on' ? true: false;
-        //$options['image_crop'] = true;
-        //$options['carousel'] = true;
-
-        $options['delay'] = $params['delay'] * 1000;
-        $options['autoPlay'] = $params['autoplay']=="on"?true:false;
-        $options['captions'] = $params['captions']=="on"?true:false;
-        $options['descriptions'] = $params['descriptions']=="on"?true:false;
-		return $options;
+	if ($params['galleria'] == 'galleria_12') {
+		if (empty($params['options'])) {
+    	    $options['autoplay'] = $params['delay']*1000; 
+    	    $options['transition'] = 'fade';
+    	    $options['transition_speed'] = $params['transition']*1000;
+    	    $options['show_info'] = $params['captions']=='on' ? true: false;
+    	    $options['image_crop'] = true;
+    	    $options['carousel'] = true;
+		} else {
+	    	$options = str_replace(';;',';',trim($params['options']).';');
+			if ((preg_match_all("/([^:\s]+):([^;]+);/i", $options, $pairs)) && (count($pairs)>2)) $options = array_combine($pairs[1], $pairs[2]);
+    	}
+	} else {
+		$options['delay'] = $params['delay'] * 1000;
+		$options['autoPlay'] = $params['autoplay']=="on"?true:false;
+		$options['captions'] = $params['captions']=="on"?true:false;
+		$options['descriptions'] = $params['descriptions']=="on"?true:false;
+    }
+	return $options;
 }
 
 function slickr_flickr_set_options($divid, $options) {
-     return '<script type="text/javascript">jQuery("#'.$divid.'").data("options",'.json_encode($options).');</script>';
+	if (count($options) > 0)
+     	return '<script type="text/javascript">jQuery("#'.$divid.'").data("options",'.json_encode($options).');</script>';
+	else
+		return '';
 }
 
 function sort_by_description_descending($a, $b) { return strcmp($b->get_description(),$a->get_description()); }
@@ -334,44 +355,49 @@ function sort_by_title_ascending($a, $b) { return strcmp($a->get_title(),$b->get
 function sort_by_date_ascending($a, $b) { return ($a->get_date() <= $b->get_date()) ? -1 : 1; }
 function sort_by_date_descending($a, $b) { return ($a->get_date() > $b->get_date()) ? -1 : 1; }
 
-function slickr_flickr_header() {
+function slickr_flickr_init() {
 
     $path = SLICKR_FLICKR_PLUGIN_URL;
 
     $options = slickr_flickr_get_options();
 
+    $deps = array('jquery');
     switch ($options['lightbox']) {
      case 'sf-lbox-manual': {
-        wp_enqueue_style('lightbox', $path."/lightbox/css/jquery.lightbox-0.5.css");
-        wp_enqueue_script('lightbox', $path."/lightbox/js/jquery.lightbox-0.5.js", array('jquery'));
+        wp_enqueue_style('lightbox', $path."/lightbox/css/jquery.lightbox-0.5.css","0.5");
+        wp_enqueue_script('lightbox', $path."/lightbox/js/jquery.lightbox-0.5.js", array('jquery'),SLICKR_FLICKR_VERSION,true);
+        $deps[] = 'lightbox';
         }
      case 'sf-lbox-auto': {
         wp_enqueue_style('lightbox', $path."/lightbox-slideshow/lightbox.css");
-        wp_enqueue_script('lightbox', $path."/lightbox-slideshow/lightbox-slideshow.js", array('jquery'));
+        wp_enqueue_script('lightbox', $path."/lightbox-slideshow/lightbox-slideshow.js", array('jquery'),SLICKR_FLICKR_VERSION,true);
+        $deps[] = 'lightbox';
         break;
         }
     case 'thickbox': { //preinstalled by wordpress but needs to be activated
        wp_enqueue_style('thickbox');
        wp_enqueue_script('thickbox');
-       break;
+       $deps[] = 'thickbox';
+ 	   break;
     }
     default: { break; } //use another lightbox plugin such as fancybox, shutter, colorbox
     }
      
     if ($options['galleria'] =="galleria_12") {
-    	wp_enqueue_style('galleria-classic', $path."/galleria12/galleria.classic.css");
-    	wp_enqueue_script('galleria', $path."/galleria12/galleria.js", array('jquery'));
-    	wp_enqueue_script('galleria-classic', $path."/galleria12/galleria.classic.js", array('galleria'));    
-
+    	wp_enqueue_style('galleria-classic', $path."/galleria12/galleria.classic.css","1.2");
+    	wp_enqueue_script('galleria', $path."/galleria12/galleria.js", array('jquery'),"1.2",true);
+    	wp_enqueue_script('galleria-classic', $path."/galleria12/galleria.classic.js", array('galleria'),"1.2",true);    
+        $deps[] = 'galleria';
     } else {
     	wp_enqueue_style('galleria', $path."/galleria/galleria.css");
-    	wp_enqueue_script('galleria', $path."/galleria/galleria.noconflict.js", array('jquery'));
+    	wp_enqueue_script('galleria', $path."/galleria/galleria.noconflict.js", array('jquery'),SLICKR_FLICKR_VERSION,true);
+        $deps[] = 'galleria';
 	}
-    wp_enqueue_style('slickr-flickr', $path."/slickr-flickr.css");
-    wp_enqueue_script('slickr-flickr', $path."/slickr-flickr.js", array('jquery','galleria'));
+    wp_enqueue_style('slickr-flickr', $path."/slickr-flickr.css",SLICKR_FLICKR_VERSION);
+    wp_enqueue_script('slickr-flickr', $path."/slickr-flickr.js", $deps,SLICKR_FLICKR_VERSION,true);
 }
 
 add_shortcode('slickr-flickr', 'slickr_flickr_display');
-add_action('init', 'slickr_flickr_header');
+add_action('init', 'slickr_flickr_init');
 add_filter('widget_text', 'do_shortcode', 11);
 ?>

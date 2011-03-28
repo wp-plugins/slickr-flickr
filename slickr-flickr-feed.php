@@ -12,6 +12,7 @@ class slickr_flickr_feed{
   var $extras = "description,date_taken,url_o,dims_o"; //extra params to getch when using API
   var $container = ""; //XML container of photo elements
   var $api_key = ''; //Flickr API Key
+  var $user_id = ''; //Flickr NS ID 
   var $flickr; //phpFlickr Object
   
   function get_photos() { return $this->photos; }
@@ -27,16 +28,16 @@ class slickr_flickr_feed{
  public function fetch_photos($page=0) {
     $this->photos = array();
     $this->count=0;
-	if ($page > 0)  $this->args['page'] = $page ;
+	if ($page > 1)  $this->args['page'] = $page ;
  	if ($this->use_rss) {
  		$rss = fetch_feed($this->get_feed_url());  //use WordPress simple pie feed handler 
         if ( is_wp_error($rss) ) {
         	$this->message = "<p>Error fetching Flickr photos: ".$rss->get_error_message()."</p>";  
 			$this->error = true;
 		} else {
-	    	$numitems = $rss->get_item_quantity($this->args['per_page']);
+	    	$numitems = $rss->get_item_quantity($this->args["per_page"]);
 	        if ($numitems == 0)  {
-	        	$this->message = '<p>No photos available right now.</p><p>Please verify your settings, clear your RSS cache on the Slickr Flickr Admin page and check your <a target="_blank" href="'.$flickr_feed.'">Flickr feed</a></p>';
+	        	$this->message = '<p>No photos available right now.</p><p>Please verify your settings, clear your RSS cache on the Slickr Flickr Admin page and check your <a target="_blank" href="'.$this->get_feed_url().'">Flickr feed</a></p>';
 				$this->error = true;
 			} else {
 	        	$rss_items = $rss->get_items(0, $numitems);
@@ -56,7 +57,7 @@ class slickr_flickr_feed{
 		$resp = $this->flickr->call($this->method, $this->args);
 		if ($resp) {
 			$results = $resp[$this->container];
-    		foreach ($results['photo'] as $photo) { $photos[] = new slickr_flickr_api_photo($photo); }
+    		foreach ($results['photo'] as $photo) { $photos[] = new slickr_flickr_api_photo($this->user_id,$photo); }
     	} else {
 			$this->message = $this->flickr->error_msg ;
     		$this->error = true;
@@ -74,6 +75,7 @@ class slickr_flickr_feed{
 
   function build_command($params) {
   	$tags = strtolower(str_replace(" ","",$params['tag']));
+	$this->user_id = $params['id'];	
   	$group = strtolower(substr($params['group'],0,1));
   	$this->use_rss = true;
   	if ($params['use_key'] == 'y') {

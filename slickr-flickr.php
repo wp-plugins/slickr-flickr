@@ -3,7 +3,7 @@
 Plugin Name: Slickr Flickr
 Plugin URI: http://www.slickrflickr.com
 Description: Displays photos from Flickr in slideshows and galleries
-Version: 1.24
+Version: 1.25
 Author: Russell Jamieson
 Author URI: http://www.russelljamieson.com
 
@@ -22,7 +22,7 @@ Copyright 2011 Russell Jamieson (russell.jamieson@gmail.com)
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.24');
+if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.25');
 if (!defined('SLICKR_FLICKR_FOLDER')) define('SLICKR_FLICKR_FOLDER', 'slickr-flickr');
 if (!defined('SLICKR_FLICKR_HOME')) define('SLICKR_FLICKR_HOME', 'http://wordpress.org/extend/plugins/'.SLICKR_FLICKR_FOLDER.'/');
 if (!defined('SLICKR_FLICKR_PATH')) define('SLICKR_FLICKR_PATH', SLICKR_FLICKR_FOLDER.'/slickr-flickr.php');
@@ -64,16 +64,21 @@ $slickr_flickr_defaults = array(
     'thumbnail_size' => '',
     'thumbnail_scale' => '',
     'thumbnail_captions' => '',
+    'thumbnail_border' => '',
     'photos_per_row' => '',
     'align' => '',
     'border' => '',
     'descriptions' => '',
     'flickr_link' => '',
     'link' => '',
+    'target' => '',
     'attribution' => '',
     'nav' => '',
+    'options' => '',
     'sort' => '',
-    'direction' => ''
+    'direction' => '',
+    'per_page' => 50,
+    'page' => 1
     );
 
 function slickr_flickr_get_options ($cache = true) {
