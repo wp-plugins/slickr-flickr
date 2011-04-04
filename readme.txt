@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
 Tested up to: 3.1.0
-Stable tag: 1.25
+Stable tag: 1.26
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, or sidebar widgets
 
 == Description ==
@@ -47,6 +47,10 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 
 == Changelog ==
+
+= 1.26 =
+* Fixed bug that "items" was not being used to limit to number of photos when more than 50 were being selected
+* Moved all jQuery code into the footer
 
 = 1.25 =
 * Added new parameters "page" and "per_page" to allow selection of photos by page
@@ -196,8 +200,8 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Upgrade Notice ==
 
-= 1.25 = 
-* Recommended  - has two bug fixes
+= 1.26 = 
+* Recommended - bug fix - moved all jQuery code into footer
 
 
 == How to Use The Plugin ==

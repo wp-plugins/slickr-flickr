@@ -72,8 +72,10 @@ function slickr_flickr_start_slideshows() {
      		if (s.hasClass("descriptions")) divheight += 50;
  	    	slickr_flickr_set_slideshow_height(s,imgheight,divheight);
  		}
-    	if ('delay' in options) delay = options['delay'];
-    	if ((!(delay == undefined)) && ((mindelay == 0) || (delay < mindelay))) mindelay = delay;
+    	if ('delay' in options) {
+    		delay = options['delay'];
+    	    if ((!(delay == undefined)) && ((mindelay == 0) || (delay < mindelay))) mindelay = delay;
+		}
     });
 	if (mindelay > 0) {
 	    slickr_flickr_slideshow_timer = setInterval("slickr_flickr_next_slides()",mindelay);
@@ -81,25 +83,25 @@ function slickr_flickr_start_slideshows() {
     }
 }
 
-jQuery.noConflict(); jQuery(document).ready(function($) {
-    $(".slickr-flickr-galleria").each(function($index){
-        var $options = $(this).data("options");
-        $(this).galleria($options);
+function slickr_flickr_start() {
+    jQuery(".slickr-flickr-galleria").each(function(index){
+        var $options = jQuery(this).data("options");
+        jQuery(this).galleria($options);
     });
-    $(".slickr-flickr-gallery").find('img').hover( 
-		function(){ $(this).addClass('hover');},
-		function(){ $(this).removeClass('hover');}); 	
-    $(".slickr-flickr-gallery").each( function (index) {	
-        $options = $(this).data("options");
-  		if ($options && ('border' in $options)) {
-  			$id = $(this).attr('id');
-	 		$('<style type="text/css">#'+$id+' img.hover{ background-color:'+$options['border']+'; }</style>').appendTo('head');
+    jQuery(".slickr-flickr-gallery").find('img').hover( 
+		function(){ jQuery(this).addClass('hover');},
+		function(){ jQuery(this).removeClass('hover');}); 	
+    jQuery(".slickr-flickr-gallery").each( function (index) {	
+        $options = jQuery(this).data("options");
+  		if ($options && ('border' in $options) && ($options['border'] != '')) {
+  			$id = jQuery(this).attr('id');
+	 		jQuery('<style type="text/css">#'+$id+' img.hover{ background-color:'+$options['border']+'; }</style>').appendTo('head');
  			}
  	});
-    if ($('a[rel="sf-lightbox"]').size() > 0) {
-        $(".slickr-flickr-gallery,.slickr-flickr-slideshow").each( function (index) {
- 			$(this).find('a[rel="sf-lightbox"]').lightBox($options);
+    if (jQuery('a[rel="sf-lightbox"]').size() > 0) {
+        jQuery(".slickr-flickr-gallery,.slickr-flickr-slideshow").each( function (index) {
+ 			jQuery(this).find('a[rel="sf-lightbox"]').lightBox($options);
         });
     }   
     slickr_flickr_start_slideshows();
-});
+}
