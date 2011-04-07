@@ -53,7 +53,7 @@ require_once(dirname(__FILE__).'/slickr-flickr-api-photo.php');
 
 function slickr_flickr_display ($attr) {
   $params = shortcode_atts( slickr_flickr_get_options(), $attr ); //apply plugin defaults    
-  foreach ( $params as $k => $v ) if (($k != 'attribution') && ($k != 'options')) $params[$k] = strtolower($v); //set all params as lower case
+  foreach ( $params as $k => $v ) if (($k != 'id') && ($k != 'options') && ($k != 'attribution')) $params[$k] = strtolower($v); //set all params as lower case
   if (empty($params['id'])) return "<p>Please specify a Flickr ID for this ".$params['type']."</p>";
   if ( (!empty($params['tagmode'])) && empty($params['tag']) && ($params['search']=="photos")) return "<p>Please set up a Flickr tag for this ".$params['type']."</p>";
   if (empty($params['api_key']) && ($params['use_key'] == "y")) return "<p>Please add your Flickr API Key in Slickr Flickr Admin settings to fetch more than 20 photos.</p>";
