@@ -253,6 +253,8 @@ $$ = $j.fn.galleria = function(options) {
 
 			}).attr('src', _src);
     	});
+    	
+    	$j(this).css('visibility','visible'); 
 
         $j(this).find('.nav .nextSlide').click(function() {
 		      _stop_galleria_show();

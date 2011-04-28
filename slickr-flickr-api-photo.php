@@ -26,7 +26,6 @@ class slickr_flickr_api_photo {
     $height = array_key_exists('o_height',$item) ? $item['o_height'] : 0 ;
     $width = array_key_exists('o_width',$item) ? $item['o_width'] : 0 ;
     $this->orientation = $height > $width ? "portrait" : "landscape" ;
- 
   }
 
   function get_url() { return $this->url; }
@@ -63,6 +62,5 @@ class slickr_flickr_api_photo {
     return implode('/', $url_array);
   }
   
-
 }
 ?>

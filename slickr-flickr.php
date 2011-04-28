@@ -3,7 +3,7 @@
 Plugin Name: Slickr Flickr
 Plugin URI: http://www.slickrflickr.com
 Description: Displays photos from Flickr in slideshows and galleries
-Version: 1.27
+Version: 1.28
 Author: Russell Jamieson
 Author URI: http://www.russelljamieson.com
 
@@ -22,7 +22,7 @@ Copyright 2011 Russell Jamieson (russell.jamieson@gmail.com)
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.27');
+if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.28');
 if (!defined('SLICKR_FLICKR_FOLDER')) define('SLICKR_FLICKR_FOLDER', 'slickr-flickr');
 if (!defined('SLICKR_FLICKR_HOME')) define('SLICKR_FLICKR_HOME', 'http://wordpress.org/extend/plugins/'.SLICKR_FLICKR_FOLDER.'/');
 if (!defined('SLICKR_FLICKR_PATH')) define('SLICKR_FLICKR_PATH', SLICKR_FLICKR_FOLDER.'/slickr-flickr.php');
@@ -41,6 +41,7 @@ $slickr_flickr_defaults = array(
     'tag' => '',
     'tagmode' => '',
     'set' => '',
+    'gallery' => '',
     'license' => '',
     'date_type' => '',
     'date' => '',
@@ -51,7 +52,8 @@ $slickr_flickr_defaults = array(
     'type' => 'gallery',
     'captions' => 'on',
     'lightbox' => 'sf-lbox-manual',
-    'galleria'=> '',
+    'galleria'=> 'galleria-1.0',
+    'galleria_theme'=> 'classic',
     'delay' => '5',
     'transition' => '0.5',
     'start' => '1',
@@ -78,7 +80,9 @@ $slickr_flickr_defaults = array(
     'sort' => '',
     'direction' => '',
     'per_page' => 50,
-    'page' => 1
+    'page' => 1,
+    'restrict' => '',
+    'scripts_in_footer' => false
     );
 
 function slickr_flickr_get_options ($cache = true) {
@@ -119,6 +123,11 @@ function slickr_flickr_pro_get_options ($cache = true) {
      $slickr_flickr_pro_options = shortcode_atts( $slickr_flickr_pro_defaults, $slickr_options);
    }
    return $slickr_flickr_pro_options;
+}
+
+function slickr_flickr_scripts_in_footer() {
+    $options = slickr_flickr_get_options();
+    return $options['scripts_in_footer'];
 }
 
 function slickr_flickr_get_licence(){
@@ -190,16 +199,8 @@ function slickr_flickr_clear_cache() {
 }
 
 function slickr_flickr_fix_protocol($url) {
-   if(is_ssl()) {
-       return str_replace('http://', 'https://', $url);
-   } else {
-       return $url;
-   }
+   return is_ssl() ? str_replace('http://', 'https://', $url) : $url;
 }
 
-if (is_admin()) {
-  require_once(dirname(__FILE__).'/slickr-flickr-admin.php');
-} else  {
-  require_once(dirname(__FILE__).'/slickr-flickr-public.php');
-}
+require_once(dirname(__FILE__).'/slickr-flickr-'.(is_admin()?'admin':'public').'.php');
 ?>

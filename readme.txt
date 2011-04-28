@@ -3,9 +3,9 @@ Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
-Tested up to: 3.1.1
-Stable tag: 1.27
-A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, or sidebar widgets
+Tested up to: 3.1.2
+Stable tag: 1.28
+A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
 
 == Description ==
 * Displays Flickr photos as a gallery, a galleria, or an unbranded slideshow (i.e. not Flickr's own slideshow widget)
@@ -28,7 +28,6 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 1. If you have no photos in Flickr with this tag then no pictures are displayed
 1. See http://www.slickrflickr.com/how-to/how-to-install-slickr-flickr-plugin for more about the plugin installation
 
-
 == Frequently Asked Questions ==
 
 See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questions and answers about Slickr Flickr
@@ -47,6 +46,17 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 
 == Changelog ==
+
+= 1.28 =
+* Added option search="galleries" gallery="your gallery id" to display a Flickr gallery - this now automatically converts from the public gallery id to the compound gallery id so you no longer have to lookup the full compound gallery id
+* Added option restrict="orientation" to filter photos so only those of the desired orientation are displayed
+* Added admin option not to load Galleria at all if you don't use this form of display
+* Added admin option to select the Galleria theme
+* Updated Galleria script to version 1.2.3
+* Added admin option to allow jQuery to be in either the header or footer (this fixes mootools loading issue with Featured Content Gallery Plugin)
+* Added annual payment option for Slickr Flickr Pro Support Membership
+* Added lifetime single payment option for Slickr Flickr Pro Support Membership
+
 
 = 1.27 =
 * Fixed bug that converted Flickr ID to lower case - my bad
@@ -203,8 +213,8 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Upgrade Notice ==
 
-= 1.27 = 
-* Mandatory - Fix to serious bug in Slickr Flickr version 1.26 - apologies for this
+= 1.28 = 
+* Recommended - improved compatibility with other plugins
 
 == How to Use The Plugin ==
 

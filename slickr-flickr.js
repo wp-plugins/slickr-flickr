@@ -1,6 +1,8 @@
 var slickr_flickr_slideshow_timer;
 var slickr_flickr_slideshow_timer_on = false;
 
+jQuery.noConflict();
+
 function  slickr_flickr_next_slide(obj) {
     var j = jQuery(obj);
     if (j.children('div').length == 1)  return ;
@@ -64,17 +66,19 @@ function slickr_flickr_start_slideshows() {
    jQuery('.slickr-flickr-slideshow').each(function(index){
         var s =jQuery(this);
    		options = s.data('options');
-    	if ('link' in options)  slickr_flickr_set_slideshow_click(s,options['link'],options['target']);
-    	if ('width' in options)  slickr_flickr_set_slideshow_width(s,options['width']);
-     	if ('height' in options)  {
-     		imgheight = parseInt(options['height']);
-     		divheight = imgheight+40;
-     		if (s.hasClass("descriptions")) divheight += 50;
- 	    	slickr_flickr_set_slideshow_height(s,imgheight,divheight);
- 		}
-    	if ('delay' in options) {
-    		delay = options['delay'];
-    	    if ((!(delay == undefined)) && ((mindelay == 0) || (delay < mindelay))) mindelay = delay;
+   		if (options) {
+    		if ('link' in options)  slickr_flickr_set_slideshow_click(s,options['link'],options['target']);
+    		if ('width' in options)  slickr_flickr_set_slideshow_width(s,options['width']);
+     		if ('height' in options)  {
+     			imgheight = parseInt(options['height']);
+     			divheight = imgheight+40;
+     			if (s.hasClass("descriptions")) divheight += 50;
+ 	    		slickr_flickr_set_slideshow_height(s,imgheight,divheight);
+ 			}
+    		if ('delay' in options) {
+    			delay = options['delay'];
+    		    if ((!(delay == undefined)) && ((mindelay == 0) || (delay < mindelay))) mindelay = delay;
+    		}
 		}
     });
 	if (mindelay > 0) {

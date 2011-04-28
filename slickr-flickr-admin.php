@@ -137,10 +137,11 @@ $shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
 $slimbox = $options['lightbox']=="slimbox"?"selected":"";
 $shutter = $options['lightbox']=="shutter"?"selected":"";
 $norel = $options['lightbox']=="norel"?"selected":"";
-$galleria_10 = $options['galleria']=="galleria_10"?"selected":"";
-$galleria_12 = $options['galleria']=="galleria_12"?"selected":"";
-$multiple_fetch = $pro_options['multiple_fetch']=="1"?"checked":"";
-$manual_sizing = $pro_options['manual_sizing']=="1"?"checked":"";
+$galleria_10 = $options['galleria']=="galleria-1.0"?"selected":"";
+$galleria_12 = $options['galleria']=="galleria-1.2"?"selected":"";
+$galleria_123 = $options['galleria']=="galleria-1.2.3"?"selected":"";
+$galleria_none = $options['galleria']=="galleria-none"?"selected":"";
+$scripts_in_footer = $options['scripts_in_footer']=="1"?"checked":"";
 $clear_cache = $pro_options['clear-cache']=="1"?"checked":"";
 $licence = $pro_options['licence'];
 if (! empty($licence)) {
@@ -153,20 +154,15 @@ print <<< ADMIN_PANEL
 <div class="wrap">
 <div style="float:left; width:70%">
 <h2>Slickr Flickr Options</h2>
-
 <p>For help on gettting the best from Slickr Flickr visit the <a href="http://www.slickrflickr.com/">Slickr Flickr Plugin Home Page</a></p>
-
 <p><b>We recommend you fill in your Flickr ID. All the other fields are optional</b></p>
-
 <form method="post" id="slickr_flickr_options">
-
 <h3>Flickr Id</h3>
 <p>The Flickr Id is required for you to be able to access your photos.</p>
 <p>If you supply it here, the plugin will remember it so you do not need to supply it for every gallery and every slideshow.</p>
 <p>You are still able to supply a Flickr id for an individual slideshow perhaps where you want to display photos from a friends Flickr account</p>
 <p>A Flickr Id looks something like this : 12345678@N00 and you can find your Flickr ID at <a target="_blank" href="http://idgettr.com/">idgettr.com</a></p>
 <label for="flickr_id">Flickr Id: </label><input name="flickr_id" type="text" id="flickr_id" value="{$options['id']}" />
-
 <h3>Flickr User or Group</h3>
 <p>If you leave this blank then the plugin will assume your default Flickr ID is a user ID</p>
 <p>If you make a selection here, the plugin will remember it so you do not need to supply it for each photo display.</p>
@@ -176,26 +172,22 @@ print <<< ADMIN_PANEL
 <option value="n" {$is_user}>user</option>
 <option value="y" {$is_group}>group</option>
 </select>
-
 <h3>Flickr API Key</h3>
 <p>The Flickr API Key is used if you want to be able to get more than 20 photos at a time.</p>
 <p>If you supply it here, the plugin will remember it so you do not need to supply it for every gallery and every slideshow.</p>
 <p>A Flickr API key looks something like this : 5aa7aax73kljlkffkf2348904582b9cc and you can find your Flickr API Key by logging in to Flickr
 and then visiting <a target="_blank" href="http://www.flickr.com/services/api/keys/">Flickr API Keys</a></p>
 <label for="flickr_api_key">Flickr API Key: </label><input name="flickr_api_key" type="text" id="flickr_api_key" style="width:320px" value="{$options['api_key']}" />
-
 <h3>Slickr Flickr Pro Licence Key</h3>
 <p>The Slickr Flickr Pro Licence Key is required if you want to get support through the Slickr Flickr Forum and also use some of the <a href="http://www.slickrflickr.com/pro/">Slickr Flickr Pro Bonus features</a>.</p>
 {$version_info["notice"]}
 <label for="slickr_licence">Slickr Flickr Licence Key: </label><input name="slickr_licence" id="slickr_licence" type="password" style="width:320px" value="{$licence}" />&nbsp;{$key_status_indicator}
-
 <h3>Number Of Photos To Display (Maximum is 20 for fetch using Flickr ID, 50 for Flickr API Key and unlimited for Pro version)</h3>
 <p>If you leave this blank then the plugin will display up to a maximum of 20 photos in each gallery or slideshow.</p>
 <p>If you supply a number it here, the plugin will remember it so you do not need to supply it for every gallery and every slideshow.</p>
 <p>You are still able to supply the number of photos to display for individual slideshow by specifying it in the post</p>
 <p>For example [slickr-flickr tag="bahamas" items="10"] displays up to ten photos tagged with bahamas</p>
 <label for="flickr_items">Number of Photos:&nbsp;</label><input name="flickr_items" type="text" id="flickr_items" value="{$options['items']}" />
-
 <h3>Type of Display</h3>
 <p>If you leave this blank then the plugin will display a gallery</p>
 <p>If you make a selection here, the plugin will remember it so you do not need to supply it for each photo display.</p>
@@ -206,7 +198,6 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <option value="galleria" {$is_galleria}>a slideshow with a gallery of thumbnail images below</option>
 <option value="slideshow" {$is_slideshow}>a slideshow of medium size images</option>
 </select>
-
 <h3>Captions</h3>
 <p>If you leave this blank then the plugin will display captions beneath photos in a slideshow</p>
 <p>If you make a selection here, the plugin will remember it so you do not need to supply it for each slideshow.</p>
@@ -216,21 +207,18 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <option value="on" {$captions_on}>on</option>
 <option value="off" {$captions_off}>off</option>
 </select>
-
 <h3>Delay Between Slides</h3>
 <p>If you leave this blank then the plugin will move the slideshow on every 5 seconds.</p>
 <p>If you supply a number it here, the plugin will remember it so you do not need to supply it for every slideshow.</p>
 <p>You are still able to supply a different delay for individual slideshow by specifying it in the post</p>
 <p>For example [slickr-flickr tag="bahamas" delay="10"] displays a slideshow with a ten second delay between slides</p>
 <label for="flickr_delay">Slide Transition Delay: </label><input name="flickr_delay" type="text" id="flickr_delay" value="{$options['delay']}" />
-
 <h3>Fade Transition Time</h3>
 <p>If you leave this blank then the plugin will take half a second to fade one slide into the next.</p>
 <p>If you supply a number it here, the plugin will remember it so you do not need to supply it for every slideshow.</p>
 <p>You are still able to supply a different delay for individual slideshow by specifying it in the post</p>
 <p>For example [slickr-flickr tag="bahamas" transition="2"] displays a slideshow with a 2 second fade transition between slides</p>
 <label for="flickr_transition">Fade Transition Time: </label><input name="flickr_transition" type="text" id="flickr_transition" value="{$options['transition']}" />
-
 <h3>Lightbox</h3>
 <p>If you leave this blank then the plugin will use the standard LightBox.</p>
 <p>If you select LightBox slideshow then when a photo is clicked the overlaid lightbox will automatically play the slideshow.</p>
@@ -249,23 +237,28 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <option value="shutter" {$shutter}>Shutter Reloaded for Wordpress (requires separate installation)</option>
 <option value="slimbox" {$slimbox}>SlimBox for Wordpress (requires separate installation)</option>
 <option value="prettyphoto" {$prettyphoto}>WP Pretty Photo (requires separate installation)</option>
-<option value="norel" {$norel}>Some Other LightBox</option>
+<option value="norel" {$norel}>Some Other LightBox(requires separate installation)</option>
 </select>
-
-
 <h3>Galleria</h3>
-<p>If you leave this blank then the plugin will use the galleria 1.0.</p>
+<p>Choose which version of the galleria you want to use:</p>
 <label for="flickr_galleria">Galleria</label><select name="flickr_galleria" id="flickr_galleria">
-<option value="galleria_10" {$galleria_10}>Galleria 1.0 - original version</option>
-<option value="galleria_12" {$galleria_12}>Galleria 1.2 - with carousel and skins</option>
+<option value="galleria-1.0" {$galleria_10}>Galleria 1.0 - original version</option>
+<option value="galleria-1.2" {$galleria_12}>Galleria 1.2 - with carousel and skins</option>
+<option value="galleria-1.2.3" {$galleria_123}>Galleria 1.2.3 - latest version</option>
+<option value="galleria-none" {$galleria_none}>Galleria not required so do not load the script</option>
 </select>
-
+<h3>Galleria Theme</h3>
+<p>Change this value is you have purchased or written a Galleria theme and placed the theme folder in the ./wp-content/plugins/slickr-flickr/galleria-1.2.3/themes folder for the version of the galleria you have selected above</p>
+<p>The default theme is "classic"</p>
+<label for="flickr_galleria_theme">Galleria Theme: </label><input name="flickr_galleria_theme" type="text" id="flickr_galleria_theme" value="{$options['galleria_theme']}" />
+<h3>Load JavaScript In Footer</h3>
+<p>This option allows you to load Javascript in the footer which should made your pages appear sooner</p>
+<label for="flickr_scripts_in_footer">Load scripts in Footer</label><input type="checkbox" name="flickr_scripts_in_footer" id="flickr_scripts_in_footer" value="1" {$scripts_in_footer} />
 <p class="submit">
 <input type="submit" name="options_update" value="Save Changes" />
-<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_api_key,slickr_licence,slickr_multiple_fetch,slickr_manual_sizing,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_transition,flickr_lightbox,flickr_galleria" />
+<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_api_key,slickr_licence,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_transition,flickr_lightbox,flickr_galleria,flickr_galleria_theme,flickr_scripts_in_footer" />
 </p>
 </form>
-
 <h3>Clear RSS Cache</h3>
 <p>If you have a RSS caching issue where your Flickr updates have not yet appeared on Wordpress then click the button below to clear the RSS cache</p>
 <form method="post" id="slickr_flickr_cache">
