@@ -3,13 +3,6 @@
  * Copyright (c) 2010, Aino
  * Licensed under the MIT license.
  */
-.landscape.m640 .galleria-container { width: 640px; height: 520px; }
-.portrait.m640 .galleria-container{ width: 500px; height: 720px;  }
-.landscape.medium .galleria-container { width: 480px; height: 400px; }
-.portrait.medium .galleria-container{ width: 400px; height: 580px;  }
-.landscape.small .galleria-container { width: 240px; height: 220px;  }
-.portrait.small .galleria-container { width: 200px; height: 300px; }
-.small .galleria-image-nav {display:none;}
  
 .galleria-container {
     position: relative;
@@ -30,12 +23,17 @@
     overflow:hidden;
 }
 .galleria-thumbnails-container {
-    height: 50px;
+    min-height: 40px;
+    max-height:120px;
     bottom: 0;
     position: absolute;
     left: 10px;
     right: 10px;
     z-index: 2;
+    overflow: auto;
+}
+.galleria-thumbnails-container.galleria-carousel {
+    height: 50px;
 }
 .galleria-carousel .galleria-thumbnails-list {
     margin: 0 20px;
@@ -70,15 +68,16 @@
     background: url(classic-loader.gif) no-repeat 2px 2px;
 }
 .galleria-info {
-    width: 75%;
+    width: 65%;
     top: 15px;
     left: 25px;
     z-index: 2;
     position: absolute;
 }
 .galleria-info-text {
-    background-color: transparent;
-    padding: 12px;
+    background-color: #DDDDDD;
+    opacity: 0.8;
+    padding: 6px;
     display: none;
     /* IE7 */ zoom:1;
 }
@@ -87,10 +86,10 @@
     margin: 0;
     color: #444;
 }
-.galleria-info-description {
+.galleria-info-description p {
     font: italic 12px/1.4 georgia,serif;
-    margin: 0;
-    color: #bbb;
+    margin: 0 !important;
+    color: #444;
 }
 .galleria-info-title+.galleria-info-description {
     margin-top: 12px;
