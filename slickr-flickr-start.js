@@ -1,0 +1,1 @@
+jQuery(document).ready(function() { slickr_flickr_start(); });
