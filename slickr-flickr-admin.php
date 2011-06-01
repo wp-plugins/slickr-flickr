@@ -1,8 +1,8 @@
 <?php
 /*
 Author: Russell Jamieson
-Author URI: http://www.wordpresswise.com
-Copyright &copy; 2010 &nbsp; Russell Jamieson
+Author URI: http://www.russelljamieson.com
+Copyright &copy; 2010-2011 &nbsp; Russell Jamieson
 */
 add_action('admin_menu', 'add_slickr_flickr_options');
 add_action('init', 'slickr_flickr_admin_header');
@@ -10,9 +10,8 @@ add_action('init', 'slickr_flickr_admin_header');
 //Plugin update actions
 add_filter("transient_update_plugins", 'slickr_flickr_check_update');
 add_filter("site_transient_update_plugins", 'slickr_flickr_check_update');
-add_action('after_plugin_row_'.SLICKR_FLICKR_PATH, 'slickr_flickr_plugin_row_message');
+//add_action('after_plugin_row_'.SLICKR_FLICKR_PATH, 'slickr_flickr_plugin_row_message');
 //add_action('install_plugins_pre_plugin-information', 'slickr_flickr_plugin_version_popup');
-
 
 function slickr_flickr_admin_header() {
     wp_enqueue_style('slickr-flickr-admin', SLICKR_FLICKR_PLUGIN_URL."/slickr-flickr-admin.css");
@@ -25,22 +24,19 @@ function add_slickr_flickr_options() {
 
 function slickr_flickr_check_update($plugin_updates, $cache=true) {
 
-    if (( slickr_flickr_get_licence())
-    && ($latest_version_info = slickr_flickr_get_version_info($cache))
-    && (version_compare(SLICKR_FLICKR_VERSION, $latest_version_info["version"], '<'))) {
-        $current_version_info = is_array($plugin_updates->response) ? $plugin_updates->response[SLICKR_FLICKR_PATH] : "";
-        if(empty($current_version_info)) $current_version_info = new stdClass();
-
-        $current_version_info->id = "0";
-        $current_version_info->new_version = $latest_version_info["version"];
-        $current_version_info->slug = SLICKR_FLICKR_FOLDER;
-        $current_version_info->url = SLICKR_FLICKR_HOME;
-        $current_version_info->package = $latest_version_info["package"];
-        $current_version_info->upgrade_notice = $latest_version_info["notice"];
-
-        $plugin_updates->response[SLICKR_FLICKR_PATH] =  $current_version_info ;
-    } else {
-      if (is_array($plugin_updates->response) && array_key_exists(SLICKR_FLICKR_PATH,$plugin_updates->response)) unset($plugin_updates->response[SLICKR_FLICKR_PATH]);
+    if (slickr_flickr_check_validity()) {
+    	$latest_version_info = slickr_flickr_get_version_info($cache);
+       	if (version_compare(SLICKR_FLICKR_VERSION, $latest_version_info["version"], '<')) {
+        	$current_version_info = is_array($plugin_updates->response) ? $plugin_updates->response[SLICKR_FLICKR_PATH] : "";
+        	if(empty($current_version_info)) $current_version_info = new stdClass();
+	        $current_version_info->id = "0";
+	        $current_version_info->new_version = $latest_version_info["version"];	
+	        $current_version_info->slug = SLICKR_FLICKR_FOLDER;
+	        $current_version_info->url = SLICKR_FLICKR_HOME;
+	        $current_version_info->package = $latest_version_info["package"];
+	        $current_version_info->upgrade_notice = $latest_version_info["notice"];
+        	$plugin_updates->response[SLICKR_FLICKR_PATH] =  $current_version_info ;
+    	}     
     }
     return $plugin_updates;
 }
@@ -129,10 +125,11 @@ $captions_off = $options['captions']=="off"?"selected":"";
 $lightbox_auto = $options['lightbox']=="sf-lbox-auto"?"selected":"";
 $lightbox_manual = $options['lightbox']=="sf-lbox-manual"?"selected":"";
 $thickbox = $options['lightbox']=="thickbox"?"selected":"";
-$evolution = $options['lightbox']=="evolution"?"selected":"";
-$prettyphoto = $options['lightbox']=="prettyphoto"?"selected":"";
-$fancybox = $options['lightbox']=="fancybox"?"selected":"";
 $colorbox = $options['lightbox']=="colorbox"?"selected":"";
+$evolution = $options['lightbox']=="evolution"?"selected":"";
+$fancybox = $options['lightbox']=="fancybox"?"selected":"";
+$highslide = $options['lightbox']=="highslide"?"selected":"";
+$prettyphoto = $options['lightbox']=="prettyphoto"?"selected":"";
 $shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
 $slimbox = $options['lightbox']=="slimbox"?"selected":"";
 $shutter = $options['lightbox']=="shutter"?"selected":"";
@@ -232,6 +229,7 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <option value="thickbox" {$thickbox}>Thickbox (pre-installed with Wordpress)</option>
 <option value="evolution" {$evolution}>Evolution LightBox for Wordpress (requires separate installation)</option>
 <option value="fancybox" {$fancybox}>FancyBox for Wordpress (requires separate installation)</option>
+<option value="highslide" {$highslide}>Highslide for Wordpress Reloaded (requires separate installation)</option>
 <option value="colorbox" {$colorbox}>LightBox Plus for Wordpress (requires separate installation)</option>
 <option value="shadowbox" {$shadowbox}>Shadowbox (requires separate installation)</option>
 <option value="shutter" {$shutter}>Shutter Reloaded for Wordpress (requires separate installation)</option>
@@ -303,6 +301,7 @@ onSubmit="return slickr_flickr_validate_form(this)">
 <h3>Compatible LightBoxes</h3>
 <ul>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/fancybox-for-wordpress/">FancyBox Lightbox for WordPress</a></li>
+<li><a target="_blank" href="http://wordpress.org/extend/plugins/highslide-4-wordpress-reloaded/">Highslide for WordPress Reloaded</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/lightbox-plus/">Lightbox Plus (ColorBox) for WordPress</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/shadowbox-js/">ShadowBox JS</a></li>
 <li><a target="_blank" href="http://wordpress.org/extend/plugins/shutter-reloaded/">Shutter Lightbox for WordPress</a></li>

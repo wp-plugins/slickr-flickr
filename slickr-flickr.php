@@ -3,7 +3,7 @@
 Plugin Name: Slickr Flickr
 Plugin URI: http://www.slickrflickr.com
 Description: Displays photos from Flickr in slideshows and galleries
-Version: 1.28
+Version: 1.29
 Author: Russell Jamieson
 Author URI: http://www.russelljamieson.com
 
@@ -22,7 +22,7 @@ Copyright 2011 Russell Jamieson (russell.jamieson@gmail.com)
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.28');
+if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.29');
 if (!defined('SLICKR_FLICKR_FOLDER')) define('SLICKR_FLICKR_FOLDER', 'slickr-flickr');
 if (!defined('SLICKR_FLICKR_HOME')) define('SLICKR_FLICKR_HOME', 'http://wordpress.org/extend/plugins/'.SLICKR_FLICKR_FOLDER.'/');
 if (!defined('SLICKR_FLICKR_PATH')) define('SLICKR_FLICKR_PATH', SLICKR_FLICKR_FOLDER.'/slickr-flickr.php');
@@ -162,21 +162,42 @@ function slickr_flickr_remote_call($action){
             return $raw_response;
         }
 }
-function slickr_flickr_get_version_info($cache=true){
-        $raw_response = $cache ? get_transient("slickr_flickr_version_info") : "";
-        if(!$raw_response){
-            $raw_response = slickr_flickr_remote_call('version');
-            set_transient("slickr_flickr_version_info", $raw_response, 86400); //cache for 24 hours
-        }
-        if (!$raw_response) return array("valid_key" => "0", "version" => "", "package" => "", "notice" => "");
 
-        $sf_array = explode("||", $raw_response['body']);
-        return array("valid_key" => $sf_array[0], "version" => $sf_array[1], "package" => $sf_array[2], "notice" => $sf_array[3]);
+function slickr_flickr_get_version_info($cache=true){
+    $slickr_flickr_version_info = $cache ? get_transient("slickr_flickr_version_info") : false;
+    if (!$slickr_flickr_version_info) {
+        $raw_response = slickr_flickr_remote_call('version');
+        $slickr_flickr_version = (is_array($raw_response) && array_key_exists('body',$raw_response)) ? explode("||", $raw_response['body']) : array();
+        if (count($slickr_flickr_version) >= 3) {
+            $valid_key = $slickr_flickr_version[0];
+            $version = $slickr_flickr_version[1];            
+            $package = $slickr_flickr_version[2];  
+            $notice = $slickr_flickr_version[3];              
+    		$current= version_compare(SLICKR_FLICKR_VERSION, $version, '<') ? -1 : 1; 
+			}
+		else {
+			$valid_key = false; $version = ""; $package =  "Unknown";  $notice = "Unable to check for new version"; $current = 0;
+		}
+		$slickr_flickr_version_info = compact("valid_key", "version", "package", "notice", "current");
+        set_transient("slickr_flickr_version_info", $slickr_flickr_version_info, 86400); //cache for 24 hours
+	}
+	return $slickr_flickr_version_info;
 }
 
+
 function slickr_flickr_check_validity(){
-    $version_info = slickr_flickr_get_version_info();
-    return $version_info['valid_key'];
+    if (slickr_flickr_get_licence()) {
+    	$version_info = slickr_flickr_get_version_info();
+    	if (array_key_exists('valid_key',$version_info))
+    		return $version_info['valid_key'];
+		else { //previous version cache
+			delete_transient("slickr_flickr_version_info"); //clear cache entry
+		    $version_info = slickr_flickr_get_version_info(false); //rebuild cache
+    		return $version_info['valid_key'];
+			}
+    	}
+    else 
+    	return false;
 }
 
 function slickr_flickr_clear_rss_cache() {
