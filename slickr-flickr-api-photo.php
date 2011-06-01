@@ -33,7 +33,7 @@ class slickr_flickr_api_photo {
   function get_height() { return $this->height; }
   function get_orientation() { return $this->orientation; }
   function get_title() { return $this->title; }
-  function get_description() { return $this->description; }
+  function get_description() { return stripos($this->description,'<p>') === FALSE ? ('<p>'.$this->description.'</p>') : $this->description; }
   function get_date() { return $this->date; }
   function get_link() { return $this->link; }
   function get_original() { return $this->original; }

@@ -1,15 +1,15 @@
 /* Slickr Flickr Galleria */
-.slickr-flickr-galleria { margin: 0px auto; overflow: auto;}
-.slickr-flickr-galleria.landscape { width: 600px; }
+.slickr-flickr-galleria { margin: 0px auto; overflow: auto; }
+.slickr-flickr-galleria.landscape { width: 560px; }
 .slickr-flickr-galleria.portrait { width: 500px; }
 .slickr-flickr-galleria.landscape.small { width: 260px; }
 .slickr-flickr-galleria.portrait.small { width: 200px; }
 .slickr-flickr-galleria.landscape.m640 { width: 660px; }
 .slickr-flickr-galleria.portrait.m640 { width: 500px; }
-.slickr-flickr-galleria.landscape.m640 div.galleria-container { width: 640px; min-height: 520px; }
-.slickr-flickr-galleria.portrait.m640 div.galleria-container{ width: 520px; min-height: 720px;  }
-.slickr-flickr-galleria.landscape.medium div.galleria-container { width: 480px; min-height: 460px; }
-.slickr-flickr-galleria.portrait.medium div.galleria-container{ width: 420px; min-height: 560px;  }
+.slickr-flickr-galleria.landscape.m640 div.galleria-container { min-width: 640px; min-height: 520px; }
+.slickr-flickr-galleria.portrait.m640 div.galleria-container{ min-width: 520px; min-height: 720px;  }
+.slickr-flickr-galleria.landscape.medium div.galleria-container { min-width: 480px; min-height: 480px; }
+.slickr-flickr-galleria.portrait.medium div.galleria-container{ min-width: 420px; min-height: 560px;  }
 .slickr-flickr-galleria.landscape.small div.galleria-container { width: 240px; min-height: 220px;  }
 .slickr-flickr-galleria.portrait.small div.galleria-container { width: 200px; min-height: 300px; }
 .slickr-flickr-galleria.small .galleria-image-nav {display:none;}

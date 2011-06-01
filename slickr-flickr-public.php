@@ -139,11 +139,27 @@ function slickr_flickr_fetch_feed($params) {
 function slickr_flickr_fetch($params) {
   $photos = array();
   if ($params['cache']=='off') slickr_flickr_check_clear_cache();
+  
+  $sources = slickr_flickr_set_sources($params);
+  if ($sources) 
+  		$photos = slickr_flickr_fetch_multiple_sources($params, $sources);
+  else 
+  		$photos = slickr_flickr_fetch_single_source($params) ;
+  
+  if (!is_array($photos)) return $photos;
+  
+  if (!empty($params['restrict'])) $photos = slickr_flickr_restrict($photos, $params);
+  if (!empty($params['sort'])) $photos = slickr_flickr_sort ($photos, $params['sort'], $params['direction']);
+  return $photos; //return array of photos
+}
+
+function slickr_flickr_fetch_single_source($params) {
   $multi_fetch = slickr_flickr_set_fetch_mode($params);
   if (!array_key_exists('per_page',$params)) $params['per_page'] = min(50,$params['items']);
   $feed = new slickr_flickr_feed($params);
   $page=0;
   if ($multi_fetch) {
+    $photos=array();
     $more_photos = true;
     while ($more_photos) {
         $page++;
@@ -151,17 +167,28 @@ function slickr_flickr_fetch($params) {
         if ($feed->get_count() > 0)  $photos = array_merge($photos,$feed->get_photos()); 
         if ($feed->get_count() < $params['per_page']) $more_photos = false;  
         if (count($photos) >= $params["items"]) $more_photos = false;
-     }  
-     if (count($photos) >= $params["items"])  $photos = array_slice($photos,0,$params["items"]);
+ 	} //end while 
+    if (count($photos) >= $params["items"])  $photos = array_slice($photos,0,$params["items"]);
   } else {
         $photos = $feed->fetch_photos($params['page']);
   }
   if ($feed->is_error()) return $feed->get_message();
-  if (!empty($params['restrict'])) $photos = slickr_flickr_restrict($photos, $params);
-  if (!empty($params['sort'])) $photos = slickr_flickr_sort ($photos, $params['sort'], $params['direction']);
   return $photos; //return array of photos
 }
 
+function slickr_flickr_fetch_multiple_sources($params, $sources) {
+  $photos = array();
+  $key = $sources['key'];
+  $values = $sources['vals'];
+  foreach ($values as $value) {
+	$params[$key] = $value;
+  	$feed = new slickr_flickr_feed($params);
+    $feed->fetch_photos($params['page']);
+    if ($feed->get_count() > 0)  $photos = array_merge($photos,$feed->get_photos()); 
+  }
+  if ($feed->is_error()) return $feed->get_message();
+  return $photos; //return array of photos
+}
 
 function slickr_flickr_force_api_key(&$params) {
   if ((empty($params['use_key'])) 
@@ -183,6 +210,15 @@ function slickr_flickr_set_fetch_mode($params) {
   return ($params['use_key']=='y') && ($params['items'] > 50) && (slickr_flickr_check_validity()) ;
 }
 
+function slickr_flickr_set_sources($params) {
+  if (($params['search']=='galleries') && (strpos($params['gallery'],',') !== FALSE) && slickr_flickr_check_validity()) {
+  	$vals = explode(',',$params['gallery']);
+	return array('key'=> 'gallery', 'vals' => $vals);
+  } else {
+   	return false;
+  }
+}
+
 function slickr_flickr_set_slideshow_onclick($params) {
   $link='';
   if (empty($params['link']))
@@ -197,21 +233,23 @@ function slickr_flickr_set_slideshow_onclick($params) {
 
 function slickr_flickr_set_lightboxrel(&$params, $rand_id) {
     switch ($params['lightbox']) {
-      case "shadowbox": $lightboxrel = 'rel="shadowbox['.$rand_id.']"'; break;
-      case "thickbox": $lightboxrel = 'rel="thickbox['.$rand_id.']" class="thickbox" '; break;
-      case "evolution": $lightboxrel = 'rel="lightbox'.$rand_id.'" class="lightbox" '; break;
-      case "fancybox":   $lightboxrel = 'rel="fancybox_'.$rand_id.'" class="fancybox" ';  break;
-      case "prettyphoto": $lightboxrel = 'rel="wp-prettyPhoto-'.$rand_id.'"' ; break;      
-      case "colorbox":
-      case "slimbox":
-      case "shutter":   $lightboxrel = 'rel="lightbox['.$rand_id.']"';  break;
       case "sf-lbox-manual":
-      case "sf-lbox-auto": $lightboxrel = 'rel="sf-lightbox"' ; break;
+      case "sf-lbox-auto": 	$lightboxrel = 'rel="sf-lightbox"' ; break;
+      case "evolution": 	$lightboxrel = 'rel="lightbox'.$rand_id.'" class="lightbox"'; break;
+      case "fancybox": 		$lightboxrel = 'rel="fancybox_'.$rand_id.'" class="fancybox"';  break;
+      case "prettyphoto": 	$lightboxrel = 'rel="wp-prettyPhoto_'.$rand_id.'"' ; break;      
+      case "shadowbox": 	$lightboxrel = 'rel="shadowbox['.$rand_id.']"'; break;
+      case "highslide":
+      case "slimbox":
+      case "colorbox":		$lightboxrel = 'rel="lightbox['.$rand_id.']"';  break;
+      case "shutter":  		$lightboxrel = 'rel="lightbox['.$rand_id.']" class="shutter"';  break;
+      case "thickbox": 		$lightboxrel = 'rel="thickbox-'.$rand_id.'" class="thickbox"'; break;
       case "none":
       case "norel": $lightboxrel = '' ; break;      
       default: 	$lightboxrel = 'rel="'.$params['lightbox'].'_'.$rand_id.'"';
       }
     $params['lightboxrel'] = $lightboxrel;
+    $params['lightbox_id'] = $rand_id;
 }
 
 function slickr_flickr_set_thumbnail_params(&$params) {
@@ -274,12 +312,41 @@ function slickr_flickr_image($photo, $params) {
             //return '<a href="'.$full_url.'"><img src="'.$thumb_url.'" alt="'.$alt.'" title="'.$captiontitle.'" />';
         }
         default: {
-        	if ($params['lightbox']=="none") $full_url = $link; 
-            $thumbcaption = $params['thumbnail_captions']=="on"?('<br/><span class="slickr-flickr-caption">'.$title.'</span>'):"";
-            $lightbox_title = ($params["captions"]=="on" ? $captiontitle :"") . ($params["descriptions"]=="on" ? $description : "");
-            return '<a '.$params['lightboxrel'].' href="'.$full_url.'" title="'.$lightbox_title.'"><img src="'.$thumb_url.'"'.$params['image_style'].' alt="'.$alt.'" title="'.$title.'" />'.$thumbcaption.'</a>';
+			return slickr_flickr_get_lightbox_html ($params, $full_url, $link, $thumb_url, $captiontitle, $title, $description);
         }
     }
+}
+
+function slickr_flickr_get_lightbox_html ($params, $full_url, $link_url, $thumb_url, $a_title, $img_title, $img_alt) {
+    $add_description_to_title = false;
+    $onclick='';
+    switch ($params['lightbox']) {
+      case "highslide": { $a_title = $img_title;  
+      	//$onclick = ' onclick="return hs.expand(this, { autoplay:'.($params['autoplay']=="on"?'true':'false').', slideshowGroup: \'g'.$params['lightbox_id'].'\' });"'; 
+      	break; 
+      	}
+      case "fancybox":  { $a_title = $img_title; break; }
+      case "colorbox": { break ; }  
+      case "prettyphoto": { //prettyphotos uses alt for title and title for description - so swap stuff round
+			if ($params["descriptions"]=="on") {
+				$a_title = strip_tags($img_alt) ;
+      			$img_alt = $img_title; 
+			} else {
+				$a_title = strip_tags($img_title) ;
+				$img_alt='';
+			}
+      		break; 
+      		}
+      default: { $add_description_to_title = $params["descriptions"]=="on"; break; };
+    }
+    $lightbox_title= ($params["captions"]=="on" ? $a_title :"") . ($add_description_to_title ? $img_alt : "");
+    $title = empty($lightbox_title) ? '' : ($title= ' title="'.$lightbox_title.'"');
+    if (($params['lightbox']=='thickbox') && (!empty($lightbox_title))) 
+    	$title = " title='". str_replace("'",'"',$lightbox_title)."'";
+    if ($params['lightbox']=="none") $full_url = empty($params['link']) ? $link_url : $params['link']; //link to flickr if no lightbox
+    $thumbcaption = $params['thumbnail_captions']=="on"?('<br/><span class="slickr-flickr-caption">'.$img_title.'</span>'):"";
+    return '<a '.$params['lightboxrel'].' href="'.$full_url.'"'.$title.$onclick.'><img src="'.$thumb_url.'"'.$params['image_style'].' alt="'.$img_alt.'" title="'.$img_title.'" />'.$thumbcaption.'</a>';
+
 }
 
 function slickr_flickr_get_start($params,$numitems) {
@@ -436,10 +503,8 @@ function slickr_flickr_init() {
     $galleria = array_key_exists('galleria',$options) ? $options['galleria'] : 'galleria-1.0';
     
     switch ($galleria) {
-    case 'galleria-none': {
-        break;
-		}
-
+    case 'galleria-none': { break; }
+    case '':
     case 'galleria_10':
     case 'galleria-1.0': {
         $deps[] = $gname;
@@ -464,10 +529,7 @@ function slickr_flickr_init() {
 	}
     wp_enqueue_style('slickr-flickr', $path."/slickr-flickr.css", SLICKR_FLICKR_VERSION);
     wp_enqueue_script('slickr-flickr', $path."/slickr-flickr.js", $deps, SLICKR_FLICKR_VERSION, $footer_scripts);
-    if ($footer_scripts) 
-		add_filter('print_footer_scripts', 'slickr_flickr_start',100); //do this after enqueued scripts
-    else
-    	wp_enqueue_script('slickr-flickr-start', $path."/slickr-flickr-start.js", $deps, SLICKR_FLICKR_VERSION); //scripts in header
+    add_filter($footer_scripts ? 'print_footer_scripts' : 'print_head_scripts' , 'slickr_flickr_start',100); //run this last
 }
 
 add_action('init', 'slickr_flickr_init');

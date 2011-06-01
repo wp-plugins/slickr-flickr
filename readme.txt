@@ -3,8 +3,8 @@ Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
-Tested up to: 3.1.2
-Stable tag: 1.28
+Tested up to: 3.1.3
+Stable tag: 1.29
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
 
 == Description ==
@@ -14,13 +14,15 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 * Sorts photos by date, title or description
 * With or without captions, photo descriptions and links back to Flickr 
 * With manual or autoplay slideshows
-* Works with various LightBoxes
+* Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
+* Latest version 1.29 fixes the missing update notification and gives multiple Flickr Gallery support for Pro Users 
+* See http://www.slickrflickr.com/about/ for full version history
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
 
-
 == Installation ==
-1. Uncompress the downloaded zip archive in [WordPress install root]/wp-content/plugins or use the WordPress plugin installer
+1. Use the standard WordPress plugin automatic updates system for updating to the latest version on use the manual steps below. 
+1. Uncompress the downloaded zip archive in [WordPress install root]/wp-content/plugins
 1. Activate the plugin in your WordPress plugins control panel
 1. Go to the "Settings" section, and choose "Slickr Flickr"
 1. Type In your Flickr ID (it should look something like 12345678@N00) and then click the Save button
@@ -47,6 +49,14 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 1.29 =
+* Fixed problem with notification that a new version of the plugin is available
+* Added support for Highslide LightBox
+* Improved support for ThickBox to allow use of both Flickr Links and Descriptions
+* Modified Galleria to allow it to support folio as well as classic theme(skin)
+* Fixed bug in formatting of photoset photo descriptions
+* Added support for grouping photos from multiple Flickr Galleries (Pro Edition only)
+
 = 1.28 =
 * Added option search="galleries" gallery="your gallery id" to display a Flickr gallery - this now automatically converts from the public gallery id to the compound gallery id so you no longer have to lookup the full compound gallery id
 * Added option restrict="orientation" to filter photos so only those of the desired orientation are displayed
@@ -56,7 +66,6 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 * Added admin option to allow jQuery to be in either the header or footer (this fixes mootools loading issue with Featured Content Gallery Plugin)
 * Added annual payment option for Slickr Flickr Pro Support Membership
 * Added lifetime single payment option for Slickr Flickr Pro Support Membership
-
 
 = 1.27 =
 * Fixed bug that converted Flickr ID to lower case - my bad
@@ -213,8 +222,8 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Upgrade Notice ==
 
-= 1.28 = 
-* Recommended - improved compatibility with other plugins
+= 1.29 = 
+* Optional - minor update with a couple of bug fixes and a few new features 
 
 == How to Use The Plugin ==
 
