@@ -9,11 +9,12 @@ class slickr_flickr_feed{
   var $args = array(); //arguments
   var $use_rss = true;  //useRSS feed
   var $use_rest = false; //use REST access
-  var $extras = "description,date_taken,url_o,dims_o"; //extra params to getch when using API
-  var $container = ""; //XML container of photo elements
+  var $extras = 'description,date_taken,url_o,dims_o'; //extra params to getch when using API
+  var $container = "photos"; //XML container of photo elements
   var $api_key = ''; //Flickr API Key
   var $user_id = ''; //Flickr NS ID 
-  var $flickr; //phpFlickr Object
+  var $flickr = false; //phpFlickr Object
+  var $cache = false; //plugin cache
   
   function get_photos() { return $this->photos; }
   function get_count() { return count($this->photos); }  
@@ -22,19 +23,19 @@ class slickr_flickr_feed{
  
   function __construct($params) {
     $this->build_command($params);  //set up method and args
-   	if (!$this->use_rss) $this->flickr = new phpFlickr ($params["api_key"], NULL, true);
+   	if (!$this->use_rss) $this->set_php_flickr();
   }
   
   function set_php_flickr() {
 	if ($this->flickr) return true; //set up already
 	if (empty($this->api_key)) return false; //no key so can't set it up
 	$this->flickr = new phpFlickr ($this->api_key, NULL, true); 
+	if ($this->cache=="local") $this->flickr->enableCache ('db', 'mysql://'.DB_USER.':'.DB_PASSWORD.'@'.DB_HOST.'/'.DB_NAME); 
 	return true; //set it up now
   }
 
   function fetch_photos($page=0) {
     $this->photos = array();
-    $this->count=0;
 	if ($page > 1)  $this->args['page'] = $page ;
  	if ($this->use_rss) {
  		$rss = fetch_feed($this->get_feed_url());  //use WordPress simple pie feed handler 
@@ -85,10 +86,10 @@ class slickr_flickr_feed{
   	$tags = strtolower(str_replace(" ","",$params['tag']));
 	$this->user_id = $params['id'];	
   	$group = strtolower(substr($params['group'],0,1));
-  	$this->use_rss = true;
   	if ($params['use_key'] == 'y') {
   	  	$this->use_rest = true;
-		$this->api_key = $params['api_key'];		
+ 		$this->use_rss = true; 
+ 		$this->api_key = $params['api_key'];		
         switch($params['search']) {
            case "favorites": {
                 $this->method = "flickr.favorites.getPublicList";
@@ -115,18 +116,21 @@ class slickr_flickr_feed{
            }
           default: {
                 $this->method = "flickr.photos.search";
-                if ($group=='y') 
-                	$this->args["group_id"] = $params['id'];
-                else 
-                	$this->args["user_id"] = $params['id'];
+                $id = $group=='y' ? 'group_id' : 'user_id'; 
+                $this->args[$id] = $params['id'];
                 if (!empty($params['license'])) $this->args["license"] = $params['license'];
                 $dates = $this->get_dates($params);
                 if (count($dates)>0) $this->args = $this->args + $dates;
                 if (!empty($params['tagmode'])) $this->args["tag_mode"] = $params['tagmode']=="all"?"all":"any";
                 if (!empty($tags)) $this->args['tags'] = $tags;
           }
-       }
+        }
+        if ( !empty($params['private'])) {
+ 			$this->use_rss = false; 
+			slickr_flickr_append_secrets($this->args); //append keys and secrets required for authenticated connection
+  	    }
    } else {
+  		$this->use_rss = true;
  	  	$this->use_api = false;   
         switch($params['search']) {
            case "favorites": { $this->method = "photos_faves.gne"; $this->args = array("nsid" => $params['id']); break; }
@@ -135,10 +139,8 @@ class slickr_flickr_feed{
            case "sets": {$this->method = "photoset.gne"; $this->args = array("nsid" => $params['id'], "set" => $params['set']);  break;}
            default: {
 	           	$this->method = "photos_public.gne";
-               	if ($group=='y') 
-               		$this->args["g"] = $params['id'];
-               	else 
-               		$this->args["id"] = $params['id'];
+               	$id = $group=='y' ? 'g' : 'id'; 
+               	$this->args[$id] = $params['id'];
                 if (!empty($params['tagmode'])) $this->args["tagmode"] = $params['tagmode']=="any"?"any":"all";
                 if (!empty($tags)) $this->args['tags'] = $tags;
            }
