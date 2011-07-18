@@ -3,8 +3,8 @@ Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
-Tested up to: 3.1.3
-Stable tag: 1.29
+Tested up to: 3.2.1
+Stable tag: 1.30
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
 
 == Description ==
@@ -16,7 +16,7 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 * With manual or autoplay slideshows
 * Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
-* Latest version 1.29 fixes the missing update notification and gives multiple Flickr Gallery support for Pro Users 
+* Latest version 1.30 has improved galleria theme support and a random photos option for Pro users
 * See http://www.slickrflickr.com/about/ for full version history
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
 
@@ -48,6 +48,16 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 
 == Changelog ==
+
+= 1.30 =
+* Improved support for Galleria themes such as folio, minimal, widescreen, twelve by removing all slickr flickr CSS that used to affect the galleria and instead using galleria options to set the galleria size - galleria themes are now loaded dynamically rather than statically.
+* Added support for multiple galleries per page when using the ShutterBox lightbox
+* Fixed bug with display of large Galleria photos
+* Fixed bug in passing descriptions to the lightbox even when they are not required
+* Fixed bug in handling empty slideshow link parameter
+* Fixed bug in handling of the autoplay slideshow option
+* Added option to display a random selection of photos from a larger set (Pro Edition only). This uses a local cache so the photos are only fetched from Flickr once per day and hence the performance is optimized. 
+* Did not implement private photos yet as I am having problems making the new Flickr OAuth authentication work properly - will try and get the sifted later this month
 
 = 1.29 =
 * Fixed problem with notification that a new version of the plugin is available
@@ -222,8 +232,8 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Upgrade Notice ==
 
-= 1.29 = 
-* Optional - minor update with a couple of bug fixes and a few new features 
+= 1.30 = 
+* Recommended - minor update with a few bug fixes and a few new features 
 
 == How to Use The Plugin ==
 

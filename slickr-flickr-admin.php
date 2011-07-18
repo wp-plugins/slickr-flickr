@@ -6,6 +6,7 @@ Copyright &copy; 2010-2011 &nbsp; Russell Jamieson
 */
 add_action('admin_menu', 'add_slickr_flickr_options');
 add_action('init', 'slickr_flickr_admin_header');
+add_filter( 'plugin_action_links','slickr_flickr_plugin_action_links', 10, 2 );
 
 //Plugin update actions
 add_filter("transient_update_plugins", 'slickr_flickr_check_update');
@@ -15,7 +16,7 @@ add_filter("site_transient_update_plugins", 'slickr_flickr_check_update');
 
 function slickr_flickr_admin_header() {
     wp_enqueue_style('slickr-flickr-admin', SLICKR_FLICKR_PLUGIN_URL."/slickr-flickr-admin.css");
-    wp_enqueue_script('slickr-flickr-admin', SLICKR_FLICKR_PLUGIN_URL."/slickr-flickr-admin.js");
+    wp_enqueue_script('slickr-flickr-admin', SLICKR_FLICKR_PLUGIN_URL."/slickr-flickr-admin.js",array('jquery','jquery-ui-sortable','postbox'));    
 }
 
 function add_slickr_flickr_options() {
@@ -39,6 +40,14 @@ function slickr_flickr_check_update($plugin_updates, $cache=true) {
     	}     
     }
     return $plugin_updates;
+}
+
+function slickr_flickr_plugin_action_links( $links, $file ) {
+	if ( SLICKR_FLICKR_PATH == $file ) {
+		$settings_link = '<a href="' . admin_url( 'options-general.php?page=slickr-flickr-admin.php' ) . '">Settings</a>';
+		array_unshift( $links, $settings_link );
+	}
+	return $links;
 }
 
 
@@ -83,8 +92,10 @@ $cache = true;
 if (isset($_POST['options_update'])) {
   $flickr_options = array();
   $slickr_options = array();
+
   $options = explode(',', stripslashes($_POST['page_options']));
   if ($options) {
+    $pro_options = slickr_flickr_pro_get_options(false);  
     // retrieve option values from POST variables
     foreach ($options as $option) {
        $option = trim($option);
@@ -92,13 +103,24 @@ if (isset($_POST['options_update'])) {
           $flickr_options[$option] = trim(stripslashes($_POST[$option]));
        else {
           $slickr_options[$option] = trim(stripslashes($_POST[$option]));
-          if (($option == 'slickr_licence') && ($slickr_options[$option] != slickr_flickr_get_licence())) $slickr_options[$option] = md5($slickr_options[$option]);
+          switch ($option) { 
+           	case 'slickr_licence': { 
+          		if ($slickr_options[$option] != slickr_flickr_get_licence()) $slickr_options[$option] = md5($slickr_options[$option]);
+            	break;
+            	}
+            default: {
+            	if ($slickr_options[$option] != $pro_options[$option]) 
+            		$slickr_options[$option] = strrev(base64_encode($slickr_options[$option]));
             }
+		  }
+        }
     }
 
    $class = "updated fade";
    // update database option
-   if (update_option("slickr_flickr_options", $flickr_options) || update_option("slickr_flickr_pro_options", $slickr_options)) {
+   $updates =  update_option("slickr_flickr_options", $flickr_options) ;
+   $updatespro = update_option("slickr_flickr_pro_options", $slickr_options);
+   if ($updates || $updatespro) {
        $message = "<strong>Settings saved.</strong>";
        $cache = false; //force re-read of options and update
    } else
@@ -146,6 +168,23 @@ if (! empty($licence)) {
    $is_pro = $version_info["valid_key"];
    $key_status_indicator = "<img src='" . SLICKR_FLICKR_PLUGIN_URL ."/images/".($is_pro ? "tick" : "cross").".png'/>";
   }
+$consumer_secret = $pro_options['consumer_secret'];
+$token = $pro_options['token'];
+$token_secret = $pro_options['token_secret'];
+
+$pro_panel = <<< PRO_PANEL
+<h3>Flickr API Secret</h3>
+<p>The Flickr API Secret is required if you want to make authenticated requests to Flickr. Fill this in when you obtain your API key as described above.</p>
+<label for="slickr_consumer_secret"> Flickr API Secret: </label><input name="slickr_consumer_secret" id="slickr_consumer_secret" type="password" style="width:320px" value="{$consumer_secret}" />
+<h3> Flickr Authentication Token</h3>
+<p>The Flickr Authentication Token is required if you want to be able to fetch private photos. You can get your token by logging into FLickr then visiting
+the <a href="http://www.flickr.com/services/api/explore/flickr.auth.oauth.getAccessToken">Flickr Access Token</a> page and clicking the "call
+method" button. Then copy the oauth_token value into this fields and the oauth_token_secret into the next field</p>
+<label for="slickr_token">Flickr Token: </label><input name="slickr_token" id="slickr_token" type="password" style="width:320px" value="{$token}" />
+<h3>Flickr Authentication Token Secret</h3>
+<p>The Flickr Authentication Token Secret is required if you want to be able to fetch private photos. Follow the instructions above to obtain your token secret</p>
+<label for="slickr_token_secret">Token Secret: </label><input name="slickr_token_secret" id="slickr_token_secret" type="password" style="width:320px" value="{$token_secret}" />
+PRO_PANEL;
 
 print <<< ADMIN_PANEL
 <div class="wrap">
@@ -217,9 +256,8 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <p>For example [slickr-flickr tag="bahamas" transition="2"] displays a slideshow with a 2 second fade transition between slides</p>
 <label for="flickr_transition">Fade Transition Time: </label><input name="flickr_transition" type="text" id="flickr_transition" value="{$options['transition']}" />
 <h3>Lightbox</h3>
-<p>If you leave this blank then the plugin will use the standard LightBox.</p>
+<p>By default the plugin will use the standard LightBox.</p>
 <p>If you select LightBox slideshow then when a photo is clicked the overlaid lightbox will automatically play the slideshow.</p>
-<p>If you select ShadowBox then it will use the ShadowBox jQuery plugin which is bundled with this plugin.</p>
 <p>If you select ThickBox then it will use the standard WordPress lightbox plugin which is pre-installed with Wordpress.</p>
 <p><b>If you select one of the other lightboxes then you need to install that lightbox plugin independently from Slickr Flickr.</b></p>
 <p><b>Please read this post about <a href="http://www.slickrflickr.com/1717/using-slickr-flickr-with-other-lightboxes">using Slickr Flickr with other lightboxes</a> before choosing, as not all the third party lightbox plugins support photo descriptions and links to Flickr in the photo title.</b></p> 
@@ -253,24 +291,15 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <p>This option allows you to load Javascript in the footer which should made your pages appear sooner</p>
 <label for="flickr_scripts_in_footer">Load scripts in Footer</label><input type="checkbox" name="flickr_scripts_in_footer" id="flickr_scripts_in_footer" value="1" {$scripts_in_footer} />
 <p class="submit">
-<input type="submit" name="options_update" value="Save Changes" />
-<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_api_key,slickr_licence,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_transition,flickr_lightbox,flickr_galleria,flickr_galleria_theme,flickr_scripts_in_footer" />
+<input type="submit"  class="button-primary" name="options_update" value="Save Changes" />
+<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_api_key,slickr_licence,slickr_consumer_secret,slickr_token,slickr_token_secret,flickr_items,flickr_type,flickr_captions,flickr_delay,flickr_transition,flickr_lightbox,flickr_galleria,flickr_galleria_theme,flickr_scripts_in_footer" />
 </p>
 </form>
 <h3>Clear RSS Cache</h3>
 <p>If you have a RSS caching issue where your Flickr updates have not yet appeared on Wordpress then click the button below to clear the RSS cache</p>
 <form method="post" id="slickr_flickr_cache">
 <input type="hidden" name="cache" value="clear"/>
-<input type="submit" name="clear" value="Clear Cache"/>
-</form>
-
-<h3>Donate</h3>
-<p>If you find this plugin useful and use it regularly please feel free to support the writer by donating a few bucks below or visit <a href="http://www.wordpresswise.com/slickr-flickr/donate">Slickr Flickr charity donation</a> page</p>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_s-xclick"/>
-<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----"/>
-<input type="image" src="https://www.paypal.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online."/>
-<img alt="" border="0" src="https://www.paypal.com/en_GB/i/scr/pixel.gif" width="1" height="1"/>
+<input type="submit"  class="button-primary" name="clear" value="Clear Cache"/>
 </form>
 
 <h3>Help With Slickr Flickr</h3>

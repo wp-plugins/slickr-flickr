@@ -3,7 +3,7 @@
 Plugin Name: Slickr Flickr
 Plugin URI: http://www.slickrflickr.com
 Description: Displays photos from Flickr in slideshows and galleries
-Version: 1.29
+Version: 1.30
 Author: Russell Jamieson
 Author URI: http://www.russelljamieson.com
 
@@ -22,7 +22,7 @@ Copyright 2011 Russell Jamieson (russell.jamieson@gmail.com)
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.29');
+if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.30');
 if (!defined('SLICKR_FLICKR_FOLDER')) define('SLICKR_FLICKR_FOLDER', 'slickr-flickr');
 if (!defined('SLICKR_FLICKR_HOME')) define('SLICKR_FLICKR_HOME', 'http://wordpress.org/extend/plugins/'.SLICKR_FLICKR_FOLDER.'/');
 if (!defined('SLICKR_FLICKR_PATH')) define('SLICKR_FLICKR_PATH', SLICKR_FLICKR_FOLDER.'/slickr-flickr.php');
@@ -31,7 +31,7 @@ if (!defined('SLICKR_FLICKR_UPGRADER')) define('SLICKR_FLICKR_UPGRADER', 'http:/
 
 $slickr_flickr_options = array();
 $slickr_flickr_pro_options = array();
-$slickr_flickr_pro_defaults = array('licence' => '',);
+$slickr_flickr_pro_defaults = array('licence' => '','consumer_secret' =>'', 'token' => '', 'token_secret' => '');
 $slickr_flickr_defaults = array(
     'id' => '',
     'group' => 'n',
@@ -82,6 +82,8 @@ $slickr_flickr_defaults = array(
     'per_page' => 50,
     'page' => 1,
     'restrict' => '',
+    'random' => '',
+    //'private' => '',
     'scripts_in_footer' => false
     );
 
@@ -134,6 +136,20 @@ function slickr_flickr_get_licence(){
     global $slickr_flickr_pro_options;
     $slickr_flickr_pro_options = slickr_flickr_pro_get_options();
     return $slickr_flickr_pro_options['licence'];
+}
+
+function slickr_flickr_get_secret($secret){
+    global $slickr_flickr_pro_options;
+    $slickr_flickr_pro_options = slickr_flickr_pro_get_options();
+    return array_key_exists($secret,$slickr_flickr_pro_options) ? base64_decode(strrev($slickr_flickr_pro_options[$secret])) : false;
+}
+
+function slickr_flickr_append_secrets(&$params, $keys = array('consumer_secret','token','token_secret')) {
+    global $slickr_flickr_pro_options;
+    $slickr_flickr_pro_options = slickr_flickr_pro_get_options();
+    foreach ($keys as $key) 
+    	if (array_key_exists($key,$slickr_flickr_pro_options)) 
+    		$params[$key] = base64_decode(strrev($slickr_flickr_pro_options[$key]));
 }
 
 function slickr_flickr_get_upgrader($cache = true){

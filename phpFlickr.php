@@ -68,6 +68,7 @@ if ( !class_exists('phpFlickr') ) {
 			$this->php_version = explode(".", $this->php_version[0]);
 		}
 
+
 		function enableCache ($type, $connection, $cache_expire = 600, $table = 'flickr_cache') {
 			// Turns on caching.  $type must be either "db" (for database caching) or "fs" (for filesystem).
 			// When using db, $connection must be a PEAR::DB connection string. Example:
@@ -260,7 +261,7 @@ if ( !class_exists('phpFlickr') ) {
 		}
 		
 		function request ($command, $args = array(), $nocache = false)
-		{
+		{		    
 			//Sends a request to Flickr's REST endpoint via POST.
 			if (substr($command,0,7) != "flickr.") {
 				$command = "flickr." . $command;
@@ -284,11 +285,13 @@ if ( !class_exists('phpFlickr') ) {
 					}
 					$auth_sig .= $key . $data;
 				}
-				if (!empty($this->secret)) {
+				if (array_key_exists('token_secret',$args)) 
+		    		$args = slickr_flickr_oauth::append_signature('POST', $this->rest_endpoint, $args) ;
+				elseif (!empty($this->secret)) {
 					$api_sig = md5($this->secret . $auth_sig);
 					$args['api_sig'] = $api_sig;
 				}
-				$this->response = $this->post($args);
+  				$this->response = $this->post($args);
 				$this->cache($args, $this->response);
 			}
 			
