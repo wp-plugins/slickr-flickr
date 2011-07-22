@@ -83,6 +83,7 @@ $slickr_flickr_defaults = array(
     'page' => 1,
     'restrict' => '',
     'random' => '',
+    'cache_expiry' => 43200,
     //'private' => '',
     'scripts_in_footer' => false
     );

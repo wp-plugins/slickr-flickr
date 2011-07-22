@@ -117,7 +117,7 @@ NAV;
   } else {
       $photos = slickr_flickr_fetch_feed($params);
       if (! is_array($photos)) return $photos; //return error message if an array of photos is not returned
-      if ($random && (count($photos) > $random)) slickr_flickr_set_cache($unique_id,$photos);
+      if ($random && (count($photos) > $random)) slickr_flickr_set_cache($unique_id,$photos,$params['cache_expiry']);
   }
   if ($random) $photos = slickr_flickr_select_random($photos, $random); 
   $start = slickr_flickr_get_start($params, count($photos));
@@ -490,8 +490,8 @@ function slickr_flickr_get_cache($unique_id) {
 	return get_transient($unique_id);
 }
 
-function slickr_flickr_set_cache($unique_id, $photos) {
-	return set_transient($unique_id, $photos);
+function slickr_flickr_set_cache($unique_id, $photos, $expiry) {
+	return set_transient($unique_id, $photos, $expiry);
 }
 
 function slickr_flickr_select_random($photos,$random) {
