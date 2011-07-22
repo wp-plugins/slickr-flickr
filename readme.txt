@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 1.30
+Stable tag: 1.31
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
 
 == Description ==
@@ -16,7 +16,7 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 * With manual or autoplay slideshows
 * Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
-* Latest version 1.30 has improved galleria theme support and a random photos option for Pro users
+* Latest version 1.31 fixed bug with display of original size photos and also introduced quarterly billing for Slickr Flickr Pro 
 * See http://www.slickrflickr.com/about/ for full version history
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
 
@@ -48,6 +48,10 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 
 == Changelog ==
+
+= 1.31 =
+* Fixed bug with display of original size photos
+* Introduced quarterly billing option for Slickr Flickr Pro users
 
 = 1.30 =
 * Improved support for Galleria themes such as folio, minimal, widescreen, twelve by removing all slickr flickr CSS that used to affect the galleria and instead using galleria options to set the galleria size - galleria themes are now loaded dynamically rather than statically.
@@ -232,8 +236,8 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Upgrade Notice ==
 
-= 1.30 = 
-* Recommended - minor update with a few bug fixes and a few new features 
+= 1.31 = 
+* Recommended - bug fix for original size photos
 
 == How to Use The Plugin ==
 
