@@ -51,6 +51,7 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 = 1.31 =
 * Fixed bug with display of original size photos
+* Added option to control period of caching random photos
 * Introduced quarterly billing option for Slickr Flickr Pro users
 
 = 1.30 =
