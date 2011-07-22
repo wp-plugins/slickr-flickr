@@ -111,7 +111,7 @@ NAV;
         $element_style = $params['thumbnail_style'];
         }
   }
-  $random = array_key_exists('random',$params) ? $params['random'] : 0;
+  $random = (array_key_exists('random',$params) && slickr_flickr_check_validity()) ? $params['random'] : 0;
   if ($random && $photos = slickr_flickr_get_cache($unique_id)) {
       //photos from cache
   } else {
