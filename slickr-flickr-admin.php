@@ -152,6 +152,7 @@ $evolution = $options['lightbox']=="evolution"?"selected":"";
 $fancybox = $options['lightbox']=="fancybox"?"selected":"";
 $highslide = $options['lightbox']=="highslide"?"selected":"";
 $prettyphoto = $options['lightbox']=="prettyphoto"?"selected":"";
+$prettyphotos = $options['lightbox']=="prettyphotos"?"selected":"";
 $shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
 $slimbox = $options['lightbox']=="slimbox"?"selected":"";
 $shutter = $options['lightbox']=="shutter"?"selected":"";
@@ -272,7 +273,8 @@ and then visiting <a target="_blank" href="http://www.flickr.com/services/api/ke
 <option value="shadowbox" {$shadowbox}>Shadowbox (requires separate installation)</option>
 <option value="shutter" {$shutter}>Shutter Reloaded for Wordpress (requires separate installation)</option>
 <option value="slimbox" {$slimbox}>SlimBox for Wordpress (requires separate installation)</option>
-<option value="prettyphoto" {$prettyphoto}>WP Pretty Photo (requires separate installation)</option>
+<option value="prettyphoto" {$prettyphoto}>WP Pretty Photo - single photos only(requires separate installation)</option>
+<option value="prettyphotos" {$prettyphotos}>WP Pretty Photo - with gallery (as above and requires setting to use bundled jQuery)</option>
 <option value="norel" {$norel}>Some Other LightBox(requires separate installation)</option>
 </select>
 <h3>Galleria</h3>

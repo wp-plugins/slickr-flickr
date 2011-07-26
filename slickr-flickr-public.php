@@ -253,7 +253,7 @@ function slickr_flickr_set_lightboxrel(&$params, $rand_id) {
       case "sf-lbox-auto": 	$lightboxrel = 'rel="sf-lightbox"' ; break;
       case "evolution": 	$lightboxrel = 'class="lightbox" rel="group'.$rand_id.'" '; break;
       case "fancybox": 		$lightboxrel = 'rel="fancybox_'.$rand_id.'" class="fancybox"';  break;
-      //case "prettyphoto": 	$lightboxrel = 'rel="wp-prettyPhoto[g'.$rand_id.']"' ; break; 
+      case "prettyphotos": 	$lightboxrel = 'rel="wp-prettyPhoto[g'.$rand_id.']"' ; break; 
       case "prettyphoto": 	$lightboxrel = 'rel="wp-prettyPhoto"' ; break; 
       case "shadowbox": 	$lightboxrel = 'rel="shadowbox['.$rand_id.']"'; break;
       case "highslide":
@@ -344,6 +344,7 @@ function slickr_flickr_get_lightbox_html ($params, $full_url, $link_url, $thumb_
       	}
       case "fancybox":  { $a_title = $img_title; break; }
       case "colorbox": { break ; }  
+      case "prettyphotos":      
       case "prettyphoto": { //prettyphotos uses alt for title and title for description - so swap stuff round
 			if ($params["descriptions"]=="on") {
 				$a_title = strip_tags($img_alt) ;
@@ -431,8 +432,7 @@ function slickr_flickr_lightbox_options($params) {
 }
 
 function slickr_flickr_galleria_options($params) {
-    $options = slickr_flickr_get_options();
-    $theme = $options['galleria_theme'];    
+    $options = array();
 	if ($params['galleria'] == 'galleria-1.0') {
 		$options['delay'] = $params['delay'] * 1000;
 		$options['autoPlay'] = $params['autoplay']=='on'?true:false;
@@ -458,7 +458,7 @@ function slickr_flickr_galleria_options($params) {
 				}
 			}
     	}
-        if ($theme=='classic') {	
+        if ('classic'== slickr_flickr_get_option('galleria_theme')) {	
             $p = $params['orientation']=="portrait";
 			switch ($params['size']) {
 				case "small": { $h=$p?300:220; $w=$p?200:240; break;} 
