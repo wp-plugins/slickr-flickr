@@ -1,5 +1,8 @@
 <?php
+require_once(dirname(__FILE__).'/slickr-flickr-photo.php');
+require_once(dirname(__FILE__).'/slickr-flickr-api-photo.php');
 require_once (dirname(__FILE__).'/phpFlickr.php');
+
 class slickr_flickr_feed{
 
   var $photos = array(); //results

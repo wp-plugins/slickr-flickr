@@ -72,7 +72,7 @@ function slickr_flickr_start_slideshows() {
     		if (('width' in options) && (options['width'] != ''))  slickr_flickr_set_slideshow_width(s,options['width']);
      		if (('height' in options) && (options['height'] != ''))  {
      			imgheight = parseInt(options['height']);
-     			divheight = imgheight+40;
+     			divheight = imgheight+ (s.hasClass("nocaptions") ? 0 : 30);
      			if (s.hasClass("descriptions")) divheight += 50;
  	    		slickr_flickr_set_slideshow_height(s,imgheight,divheight);
  			}
@@ -83,6 +83,7 @@ function slickr_flickr_start_slideshows() {
 		}
     });
 	if (mindelay > 0) {
+		slickr_flickr_stop_slideshows();
 	    slickr_flickr_slideshow_timer = setInterval("slickr_flickr_next_slides()",mindelay);
 	    slickr_flickr_slideshow_timer_on = true;
     }

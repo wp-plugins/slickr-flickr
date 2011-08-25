@@ -1,10 +1,10 @@
 === Slickr Flickr ===
 Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
-Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
+Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, highslide, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 1.32
+Stable tag: 1.33
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
 
 == Description ==
@@ -16,12 +16,11 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 * With manual or autoplay slideshows
 * Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
-* Latest version 1.32 fixed bug with missing galleria height and width and added support for WP Pretty-Photo Galleries 
-* See http://www.slickrflickr.com/about/ for full version history
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
+* Latest version 1.33 supports double quotes in photo titles and descriptions and adds support for private photos for Pro users 
 
 == Installation ==
-1. Use the standard WordPress plugin automatic updates system for updating to the latest version on use the manual steps below. 
+1. Use the standard WordPress plugin automatic updates system for installing and updating to the latest version or use the manual steps below. 
 1. Uncompress the downloaded zip archive in [WordPress install root]/wp-content/plugins
 1. Activate the plugin in your WordPress plugins control panel
 1. Go to the "Settings" section, and choose "Slickr Flickr"
@@ -42,210 +41,32 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 
 == Screenshots ==
-1. Example of more than one Flickr Gallery and more than onb Flickr Slideshow in action on a single page
+1. Example of more than one Flickr Gallery and more than one Flickr Slideshow in action on a single page
 1. Example of a Flickr galleria (a display including a large photo with thumbnails below)
 1. Example of an overlaid lightbox which appears on clicking a thumbnail
 
 
 == Changelog ==
 
+= 1.33 =
+* Added support for single and double quotes in photo titles and descriptions.
+* Reduced amount of white space below a slideshow image if captions are off.
+* Added new parameter, "bottom" to control the spacing at the bottom of a slideshow, galleria or gallery.
+* Added feature to galleria 1.0 to hide the start and stop navigation links if you specify pause="off". 
+* Added ability to specify a default value for galleria 1.2.3 options on the admin settings panel.
+* Updated Slickr Flickr Admin Settings to support standard WordPress metabox features: screen options and panels than can be closed or hidden. 
+* Added support for private photos. (Pro Edition)
+
 = 1.32 =
 * Fixed bug with display of height and width of galleria
 * Added option for WP Pretty Photo LightBox to support a gallery
 
-= 1.31 =
-* Fixed bug with display of original size photos
-* Added option to control period of caching random photos
-* Introduced quarterly billing option for Slickr Flickr Pro users
-
-= 1.30 =
-* Improved support for Galleria themes such as folio, minimal, widescreen, twelve by removing all slickr flickr CSS that used to affect the galleria and instead using galleria options to set the galleria size - galleria themes are now loaded dynamically rather than statically.
-* Added support for multiple galleries per page when using the ShutterBox lightbox
-* Fixed bug with display of large Galleria photos
-* Fixed bug in passing descriptions to the lightbox even when they are not required
-* Fixed bug in handling empty slideshow link parameter
-* Fixed bug in handling of the autoplay slideshow option
-* Added option to display a random selection of photos from a larger set (Pro Edition only). This uses a local cache so the photos are only fetched from Flickr once per day and hence the performance is optimized. 
-* Did not implement private photos yet as I am having problems making the new Flickr OAuth authentication work properly - will try and get the sifted later this month
-
-= 1.29 =
-* Fixed problem with notification that a new version of the plugin is available
-* Added support for Highslide LightBox
-* Improved support for ThickBox to allow use of both Flickr Links and Descriptions
-* Modified Galleria to allow it to support folio as well as classic theme(skin)
-* Fixed bug in formatting of photoset photo descriptions
-* Added support for grouping photos from multiple Flickr Galleries (Pro Edition only)
-
-= 1.28 =
-* Added option search="galleries" gallery="your gallery id" to display a Flickr gallery - this now automatically converts from the public gallery id to the compound gallery id so you no longer have to lookup the full compound gallery id
-* Added option restrict="orientation" to filter photos so only those of the desired orientation are displayed
-* Added admin option not to load Galleria at all if you don't use this form of display
-* Added admin option to select the Galleria theme
-* Updated Galleria script to version 1.2.3
-* Added admin option to allow jQuery to be in either the header or footer (this fixes mootools loading issue with Featured Content Gallery Plugin)
-* Added annual payment option for Slickr Flickr Pro Support Membership
-* Added lifetime single payment option for Slickr Flickr Pro Support Membership
-
-= 1.27 =
-* Fixed bug that converted Flickr ID to lower case - my bad
-
-= 1.26 =
-* Fixed bug that "items" was not being used to limit to number of photos when more than 50 were being selected
-* Moved all jQuery code into the footer
-
-= 1.25 =
-* Added new parameters "page" and "per_page" to allow selection of photos by page
-* Added new parameter "thumbnail_border" to allow override of thumbnail hover color (Pro Edition only)
-* Added new parameter "target" for slideshow link so it can open a new window
-* Added new parameter "options" to give support for Galleria 1.2 options
-* Tweaked Galleria Classic skin to improve its appearance on light colored sites
-* Moved javascript into footer to improve page load times
-* Fixed bug with Flickr Link when displaying a gallery of a photoset
-* Fixed bug in the link to the RSS feed when no photos are returned
-
-= 1.24 =
-* Added lightbox="none" option to link thumbnails directly to Flickr without a lightbox
-* Added nav="above|below|none" to allow control of galleria navigation menu
-* Updated readme.txt to indicate support for WordPress 3.1.0
-* Fixed version number 
-
-= 1.23 =
-* Fix "items" bug where the requested number of photos to be returned was being ignored 
-
-= 1.22 =
-* Added Flickr commons license selection  
-* Added search by date taken and date uploaded
-* Added search by tag for group photos
-* Improved slideshow sizing
-* Added galleria 1.2 option
-* Increased photoset search from 20 to 50 photos
-* Added unlimited search for photosets (Pro Edition only)
-* Added search by post publish date (Pro Edition only)
-
-= 1.21 =
-* Added automatic failover from Flickr API to Flickr RSS if no photos are returned (Pro Edition only)
-* Added option to disable captions in the lightbox
-* Added support for machine tags (e.g geo tags)
-* Unbundled ShadowBox - now if you need ShadowBox please install ShadowBox JS plugin
-* Improved support for larger slideshows (Medium 640 and Large sizes)
-* Improved CSS to allow IE6 and IE7 to display gallery of large thumbnails
-* Fix bug with slideshow transitions
-
-= 1.20 =
-* Added support for links back to Flickr in the photo captions in the galleria display
-* Added support for Evolution LightBox and PrettyPhoto LightBox
-* Added better instructions for using third party lightboxes
-* Added slideshow "transition" parameter to override the default transition of 0.5 seconds (Pro version)
-* Added "align" parameter to make it easier to center a gallery or slideshow
-* Improved handling of large thumbnail
-* Improved error reporting when attempting to fetch more than 20 photos from a photoset 
-* Fixed display issues where there is only a single photo in the slideshow
-
-= 1.19 =
-* Reinstated automatic use of API key if more than 20 photos are requested
-* Use https protocol for js and css files if admin site is being run securely
-* Removed warning message when checking for updates
-* Added cursor pointer/hand when hovering over the slideshow to show it is clickable
-* Added Slideshow LightBox display in Pro edition
-
-= 1.18 =
-* Added images folder
-
-= 1.17 =
-* Fix problem with getting photo descriptions
-* Fix problem with using multiple tags
-* Added a "descriptions" class so that there is less white space beneath the slideshow
-* Created Slickr Flickr Pro edition with Priority Support Forum and Bonus Features
-
-= 1.16 =
-* Added medium 640 photos - size="m640"
-* Moved site to http://www.slickrflickr.com
-
-= 1.15 =
-* Renamed Flickr class to avoid conflict with other plugins
-* Fixed bug with thumbnail size
-* Added option to force use of api key (this fixes the issue with missing descriptions when not using the api key)
-* Allow tag not to be specified so most recent photos are returned
-
-= 1.14 =
-* Added search=photos|favorites|friends|groups|sets to allow more than just tagged photos to be selected
-* Added api_key option to allow selection of up to 50 photos
-
-= 1.13 =
-* Added pause=on option for the slideshow so you can pause or resume the slideshow by clicking the photo
-* Added autoplay=off option for the galleria so you can stop the galleria slideshow playing automatically
-* Fixed bug with captions always displaying in the galleria
-* Inhibited display of html on the tooltip popup on placing the mouse over a thumbnail by using the Flickr photo title as the image title attribute and the Flickr photo description as the inage alt attribute
-* Used a default value of "wp_" as the table prefix if none is defined.
- 
-= 1.12 =
-* Fixed bug with captions not displaying in the galleria and also allow more than one galleria slideshow per page
-
-= 1.11 =
-* Fixed bug in slickr-flickr.js when using other lightboxes
-
-= 1.10 =
-* Consolidated script and stylesheet files
-* Added more options for the LightBox: Slimbox
-* Fixed bug with the speed of play of the galleria slideshow
-* Added autoplay off option for the galleria so it does not start automatically 
-* Partial support for multiple galleria on a page (a bug remains - only the last galleria slideshow plays)
-
-= 1.9 =
-* Added missing stylesheet for the admin panel
-* Readme updates
-
-= 1.8 =
-* Added more options for the LightBox: ThickBox, ShadowBox, FancyBox, LightBox Plus and Shutter Reloaded 
-* Option for large thumbnails in the gallery
-* Optional border for the slideshow
-* Automatic slideshow option for the galleria
-* Slickr Flickr Resources Menu on the admin panel
-
-= 1.7 =
-* Add feature in the Slickr Flickr Admin Panel to clear the RSS cache so updates to Flickr appear more quickly on Wordpress
-* Change Galleria size to improve presentation of photos of portarit orientation
-
-= 1.6 =
-* Fix typo in the CSS that controls the height of a small slideshow
-
-= 1.5 =
-* Fix alignment issue with gallery
-
-= 1.4 =
-* Add Galleria display which is a slideshow/gallery combo display
-* Added autoplay option for gallery lightbox
-* Added link to allow a click-through from the slideshow to another page
-* Added tagmode to allow selection of photos across different tags
-* Added option to show attribution to allow credit to be attributed to the photographer
-* Added option to show captions for the thumbnail gallery
-* Added option to set the number of photos per row in the gallery
-* Added option to sort the photos by date, title or description
-* Added option to show descriptions beneath the title in the lightbox display
-* Added option to make the title in the lightbox display a link to the photo on Flickr
-
-= 1.3 =
-* Added support for Flickr Ids that belongs to groups rather than users
-* Changed slideshow background to be transparent rather than white
-* Added feature to allow a random or chosen starting slide for the slideshow - this is useful if the same slideshow appears several pages
-
-= 1.2 =
-* Corrections to Readme File and FAQ Numbering
-
-= 1.1 =
-* Enable shortcode processing in text widgets
-
-= 1.0 =
-* Original version
-
+See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 1.32 = 
-* Mandatory - bug fix for height and width in the galleria
-
-= 1.31 = 
-* Recommended - bug fix for original size photos
+= 1.33 = 
+* Recommended - minor bug fixes and new features
 
 == How to Use The Plugin ==
 
@@ -258,17 +79,15 @@ For the full list of Slickr Flickr parameters go to http://www.slickrflickr.com/
 
 == How to Set Up The Plugin Defaults ==
 
-If you don't want to specify all the settings for every slideshow you can set up some defaults. The default value is used when you have not specified a value on the individual slideshow or gallery.
+If you don't want to specify all the settings for every Flickr slideshow or gallery you can set up some defaults. The default value is used when you have not specified a value on the individual slideshow, gallery or galleria. All the following settings are optional; we only strongly recommend you set the Flickr ID to save having to set it on every use of the plugin.
 
 * Go to the "Settings" section, and choose "Slickr Flickr"
 * Enter your Flickr Id (the ID is of the form 12345678@N00) and choose whether it is a user or group id
 * Enter your Flickr API Key (optional) 
-* Enter your Slickr Flickr Pro license Id (optional)
-* Enter the default number of photos to show
-* Select the default type of display - gallery, slideshow or galleria (a slideshow/gallery combo)
-* Choose whether photos captions are displayed
-* Enter the default delay in seconds before the slideshow moves on to the next slide
-* Choose the LightBox (manual play, auto play, ThickBox, ShadowBox, FancyBox, Shutterbox, SlimBox LightBox Plus, WP PrettyPhoto or Evolution LightBox)
+* Enter your Slickr Flickr Pro Licence (optional) 
+
+
+For more information on the other defaults you can set up, go to http://www.slickrflickr.com/40/how-to-use-slickr-flickr-admin-settings/
 
 == Links ==
 
