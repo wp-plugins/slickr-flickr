@@ -15,15 +15,15 @@ class slickr_flickr_oauth {
     $token = $params['token']; unset($params['token']);
     $token_secret = $params['token_secret']; unset($params['token_secret']);
     $consumer_secret = $params['consumer_secret']; unset($params['consumer_secret']);
-    $params['oauth_signature'] = slickr_flickr_oauth::build_signature($method, $url, $params, $consumer_secret,$token_secret);
+    $params['oauth_signature'] = self::build_signature($method, $url, $params, $consumer_secret,$token_secret);
     return $params;
   }
 
   public static function build_signature($method, $url, $params, $consumer_secret, $token_secret) {
     
    // Urlencode both keys and values
-    $keys = slickr_flickr_oauth::urlencode_rfc3986(array_keys($params));
-    $values = slickr_flickr_oauth::urlencode_rfc3986(array_values($params));
+    $keys = self::urlencode_rfc3986(array_keys($params));
+    $values = self::urlencode_rfc3986(array_values($params));
     $params = array_combine($keys, $values);
 
     uksort($params, 'strcmp');
@@ -44,11 +44,11 @@ class slickr_flickr_oauth {
     }
 
 	$encoded_params =  implode('&', $pairs);
-    $parts = array( strtoupper($method), slickr_flickr_oauth::get_normalized_http_url($url), $encoded_params);
-    $parts = slickr_flickr_oauth::urlencode_rfc3986($parts);
+    $parts = array( strtoupper($method), self::get_normalized_http_url($url), $encoded_params);
+    $parts = self::urlencode_rfc3986($parts);
     $base_string = implode('&', $parts);
 
-    $key_parts = slickr_flickr_oauth::urlencode_rfc3986( array( $consumer_secret, $token_secret ));
+    $key_parts = self::urlencode_rfc3986( array( $consumer_secret, $token_secret ));
     $key = implode('&', $key_parts);
     
     return base64_encode( hash_hmac('sha1', $base_string, $key, true));

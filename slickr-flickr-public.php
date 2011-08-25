@@ -29,6 +29,7 @@
  * @param size -> small, medium, m640, small, large, original - default is medium
  * @param width -> width of slideshow
  * @param height -> height of slideshow
+ * @param bottom -> margin at the bottom of the slideshow/gallery/galleria
  * @param thumbnail_size -> square, thumbnail, small - default is square
  * @param thumbnail_scale -> scaling factor - default is 100
  * @param thumbnail_captions -> on or off - default is off 
@@ -49,10 +50,6 @@
  * @param restrict -> filter results based on orientation  
 */
 require_once(dirname(__FILE__).'/slickr-flickr-feed.php');
-require_once(dirname(__FILE__).'/slickr-flickr-photo.php');
-require_once(dirname(__FILE__).'/slickr-flickr-api-photo.php');
-require_once(dirname(__FILE__).'/slickr-flickr-oauth.php');
-
 
 function slickr_flickr_display ($attr) {
   $params = shortcode_atts( slickr_flickr_get_options(), $attr ); //apply plugin defaults    
@@ -61,20 +58,25 @@ function slickr_flickr_display ($attr) {
   if ( (!empty($params['tagmode'])) && empty($params['tag']) && ($params['search']=="photos")) return "<p>Please set up a Flickr tag for this ".$params['type']."</p>";
   if (empty($params['api_key']) && ($params['use_key'] == "y")) return "<p>Please add your Flickr API Key in Slickr Flickr Admin settings to fetch more than 20 photos.</p>";
   if (empty($params['use_key'])) slickr_flickr_force_api_key($params); //set api_key if required by other parameters
-
+  if (($params['type'] == "slightbox") && (! slickr_flickr_check_validity())) $params['type'] = "slideshow";
   $rand_id = rand(1,1000);
   $unique_id = slickr_flickr_get_unique_id($params,$rand_id);
   $divclear = '<div style="clear:both"></div>';
   $attribution = empty($params['attribution'])?"":('<p class="slickr-flickr-attribution align'.$params['align'].'">'.$params['attribution'].'</p>');
+  $bottom = empty($params['bottom'])?"":(' style="margin-bottom:'.$params['bottom'].'px;"');
   $lightboxrel =""; $thumb_scale ="";
   switch ($params['type']) {
     case "slightbox": {
-        if (empty($params['thumbnail_size'])) $params['thumbnail_size'] = 'medium'; //set default slideshow as Medium
-        slickr_flickr_set_thumbnail_params($params);
+        if (empty($params['thumbnail_size'])) $params['thumbnail_size'] = 'medium'; //set default slideshow size as Medium
         slickr_flickr_set_lightboxrel($params,$rand_id);
+        $divstart = $attribution.'<div id="'.$unique_id.'" class="slickr-flickr-slideshow '.$params['orientation'].' '.$params['thumbnail_size'].($params['descriptions']=="on" ? " descriptions" : "").($params['captions']=="off" ? " nocaptions " : " ").$params['align'].'"'.$bottom.'>';
+        $divend = '</div>'.slickr_flickr_set_options($unique_id,slickr_flickr_slideshow_options($params)).$divclear;
+        $element='div';
+        $element_style='';
+        break;
         }
    case "slideshow": {
-        $divstart = $attribution.'<div id="'.$unique_id.'" class="slickr-flickr-slideshow '.$params['orientation'].' '.$params['size'].($params['descriptions']=="on" ? " descriptions" : "").' '.$params['align'].'">';
+        $divstart = $attribution.'<div id="'.$unique_id.'" class="slickr-flickr-slideshow '.$params['orientation'].' '.$params['size'].($params['descriptions']=="on" ? " descriptions" : "").($params['captions']=="off" ? " nocaptions " : " ").$params['align'].'"'.$bottom.'>';
         $divend = '</div>'.slickr_flickr_set_options($unique_id,slickr_flickr_slideshow_options($params)).$divclear;
         $element='div';
         $element_style='';
@@ -82,12 +84,16 @@ function slickr_flickr_display ($attr) {
         }
    case "galleria": {
         if ($params['galleria'] == 'galleria-1.0') {
-			$style = ' style="visibility:hidden;"';
-        	$nav = <<<NAV
-<p class="nav {$params['size']}"><a href="#" class="prevSlide">&laquo; previous</a> | <a href="#" class="startSlide">start</a> | <a href="#" class="stopSlide">stop</a> | <a href="#" class="nextSlide">next &raquo;</a></p>
+			if (empty($bottom))
+				$style = ' style="visibility:hidden;"';
+            else
+            	$style = substr($bottom,0,strlen($bottom-2)).'visibility:hidden;"';
+            $startstop = $params['pause']== 'off' ? '' : ('| <a href="#" class="startSlide">start</a> | <a href="#" class="stopSlide">stop</a>');
+ 		    $nav = <<<NAV
+<p class="nav {$params['size']}"><a href="#" class="prevSlide">&laquo; previous</a> {$startstop} | <a href="#" class="nextSlide">next &raquo;</a></p>
 NAV;
 		} else {
-			$style = '';
+			$style = $bottom;
 			$nav= '';
 		}
 		switch ($params['nav']) {
@@ -105,7 +111,7 @@ NAV;
    default: {
         slickr_flickr_set_thumbnail_params($params);
         slickr_flickr_set_lightboxrel($params,$rand_id);
-        $divstart = '<div id="'.$unique_id.'" class="slickr-flickr-gallery">'. $attribution . '<ul'.$params['gallery_class'].$params['gallery_style'].'>';
+        $divstart = '<div id="'.$unique_id.'" class="slickr-flickr-gallery"'.$bottom.'>'. $attribution . '<ul'.$params['gallery_class'].$params['gallery_style'].'>';
         $divend = '</ul></div>'.slickr_flickr_set_options($unique_id,slickr_flickr_lightbox_options($params)).$divclear;
         $element='li';
         $element_style = $params['thumbnail_style'];
@@ -271,7 +277,6 @@ function slickr_flickr_set_lightboxrel(&$params, $rand_id) {
 
 function slickr_flickr_set_thumbnail_params(&$params) {
     $thumb_rescale= false;
-    if (($params['type'] == "slightbox") && (! slickr_flickr_check_validity())) { $params['size'] = $params["thumbnail_size"]; $params['type'] = "slideshow"; }
     switch ($params["thumbnail_size"]) {
       case "thumbnail": $thumb_width = 100; $thumb_height = 75; $thumb_rescale = true; break;
       case "small": $thumb_width = 240; $thumb_height = 180; $thumb_rescale = true; break;
@@ -439,16 +444,9 @@ function slickr_flickr_galleria_options($params) {
 		$options['captions'] = $params['captions']=='on'?true:false;
 		$options['descriptions'] = $params['descriptions']=='on'?true:false;
     } else {
-		if (empty($params['options'])) {
-    	    $options['autoplay'] = $params['delay']*1000; 
-    	    $options['transition'] = 'fade';
-    	    $options['transition_speed'] = $params['transition']*1000;
-    	    $options['show_info'] = $params['captions']=='on' ? true: false;
-    	    $options['image_crop'] = true;
-    	    $options['carousel'] = true;
-		} else {
-	    	$options = str_replace(';;',';',trim($params['options']).';');
-			if ((preg_match_all("/([^:\s]+):([^;]+);/i", $options, $pairs)) && (count($pairs)>2)) $options = array_combine($pairs[1], $pairs[2]);
+		if (!empty($params['options'])) {
+	    	$options_list = str_replace(';;',';',trim($params['options']).';');
+			if ((preg_match_all("/([^:\s]+):([^;]+);/i", $options_list, $pairs)) && (count($pairs)>2)) $options = array_combine($pairs[1], $pairs[2]);
 			foreach ($options as $key => $value) {
 				if (is_numeric($value)) {
 					$options[$key] = $value + 0;
@@ -458,6 +456,12 @@ function slickr_flickr_galleria_options($params) {
 				}
 			}
     	}
+    	if (!array_key_exists('autoplay',$options)) $options['autoplay'] = $params['delay']*1000; 
+    	if (!array_key_exists('transition',$options)) $options['transition'] = 'fade';
+    	if (!array_key_exists('transition_speed',$options)) $options['transition_speed'] = $params['transition']*1000;
+    	if (!array_key_exists('show_info',$options)) $options['show_info'] = $params['captions']=='on' ? true: false;
+    	if (!array_key_exists('image_crop',$options)) $options['image_crop'] = true;
+    	if (!array_key_exists('carousel',$options)) $options['carousel'] = true;    	
         if ('classic'== slickr_flickr_get_option('galleria_theme')) {	
             $p = $params['orientation']=="portrait";
 			switch ($params['size']) {

@@ -285,13 +285,14 @@ if ( !class_exists('phpFlickr') ) {
 					}
 					$auth_sig .= $key . $data;
 				}
-				if (array_key_exists('token_secret',$args)) 
+				if (array_key_exists('token_secret',$args)) {
+					require_once(dirname(__FILE__).'/slickr-flickr-oauth.php');				
 		    		$args = slickr_flickr_oauth::append_signature('POST', $this->rest_endpoint, $args) ;
-				elseif (!empty($this->secret)) {
+				} elseif (!empty($this->secret)) {
 					$api_sig = md5($this->secret . $auth_sig);
 					$args['api_sig'] = $api_sig;
 				}
-  				$this->response = $this->post($args);
+				$this->response = $this->post($args);
 				$this->cache($args, $this->response);
 			}
 			
