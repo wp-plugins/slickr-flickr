@@ -64,3 +64,5 @@
 
 .slickr-flickr-slideshow.landscape.original { min-height: 200px; }
 .slickr-flickr-slideshow.portrait.original { min-height: 240px; }
+
+.slickr-flickr-galleria.small.miniml .galleria-info-text { display:none; }

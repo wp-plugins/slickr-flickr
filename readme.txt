@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, highslide, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 1.33
+Stable tag: 1.34
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
 
 == Description ==
@@ -17,7 +17,7 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 * Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
-* Latest version 1.33 supports double quotes in photo titles and descriptions and adds support for private photos for Pro users 
+* Latest version 1.34 includes Galleria 1.25 and implements uses separate thumbnails for the galleria which improves the load time. 
 
 == Installation ==
 1. Use the standard WordPress plugin automatic updates system for installing and updating to the latest version or use the manual steps below. 
@@ -48,6 +48,12 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 1.34 =
+* Bundled with Galleria 1.2.5
+* Galleria now uses thumbnails from Flickr which improves loading time
+* Galleria theme is added as a class on the galleria container which makes it easier to make CSS modifications if you want to. (e.g class="slickr-flickr-galleria landscape small miniml" would appear as the class of the div elements that contains a galleria of small landscape photos that are styled with the miniml galleria theme)
+
+
 = 1.33 =
 * Added support for single and double quotes in photo titles and descriptions.
 * Reduced amount of white space below a slideshow image if captions are off.
@@ -65,8 +71,8 @@ See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 1.33 = 
-* Recommended - minor bug fixes and new features
+= 1.34 = 
+* Recommended - has latest Galleria 1.2.5
 
 == How to Use The Plugin ==
 

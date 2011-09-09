@@ -82,7 +82,7 @@ class slickr_flickr_feed{
   		return 'http://api.flickr.com/services/rest/?method=' . $this->method . 
   			'&lang=en-us&format=feed-rss_200&api_key='.$this->api_key .$this->implode_args($this->args);
     else
-  		return 'http://api.flickr.com/services/feeds/' . $this->method . '?lang=en-us&format=feed-rss_200&' . $this->implode_args($this->args);
+  		return 'http://api.flickr.com/services/feeds/' . $this->method . '?lang=en-us&format=feed-rss_200' . $this->implode_args($this->args);
   }
 
   function build_command($params) {

@@ -303,6 +303,7 @@ LIGHTBOX_PANEL;
 		$galleria_10 = $options['galleria']=="galleria-1.0"?"selected":"";
 		$galleria_12 = $options['galleria']=="galleria-1.2"?"selected":"";
 		$galleria_123 = $options['galleria']=="galleria-1.2.3"?"selected":"";
+		$galleria_125 = $options['galleria']=="galleria-1.2.5"?"selected":"";
 		$galleria_none = $options['galleria']=="galleria-none"?"selected":"";
 		print <<< GALLERIA_PANEL
 <h4>Galleria Version</h4>
@@ -310,7 +311,8 @@ LIGHTBOX_PANEL;
 <label for="flickr_galleria">Galleria</label><select name="flickr_galleria" id="flickr_galleria">
 <option value="galleria-1.0" {$galleria_10}>Galleria 1.0 - original version</option>
 <option value="galleria-1.2" {$galleria_12}>Galleria 1.2 - with carousel and skins</option>
-<option value="galleria-1.2.3" {$galleria_123}>Galleria 1.2.3 - latest version</option>
+<option value="galleria-1.2.3" {$galleria_123}>Galleria 1.2.3 </option>
+<option value="galleria-1.2.5" {$galleria_125}>Galleria 1.2.5 - latest version</option>
 <option value="galleria-none" {$galleria_none}>Galleria not required so do not load the script</option>
 </select>
 <h4>Galleria Theme</h4>
