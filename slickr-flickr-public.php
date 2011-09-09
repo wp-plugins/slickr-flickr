@@ -83,6 +83,7 @@ function slickr_flickr_display ($attr) {
         break;
         }
    case "galleria": {
+        if (empty($params['thumbnail_size'])) $params['thumbnail_size'] = 'square'; //set default thumbnail size as Square
         if ($params['galleria'] == 'galleria-1.0') {
 			if (empty($bottom))
 				$style = ' style="visibility:hidden;"';
@@ -102,7 +103,7 @@ NAV;
 			case "none": { $nav_below = ''; $nav_above = ''; break; } 	
 			default: { $nav_below = $nav; $nav_above = $nav; break; }
 		}
-        $divstart = '<div id="'.$unique_id.'" class="slickr-flickr-galleria '.$params['orientation'].' '.$params['size'].'"'.$style.'>'.$attribution.$nav_above.'<ul>';
+        $divstart = '<div id="'.$unique_id.'" class="slickr-flickr-galleria '.$params['orientation'].' '.$params['size'].' '.$params['galleria_theme'].'"'.$style.'>'.$attribution.$nav_above.'<ul>';
         $divend = '</ul>'.$divclear.$attribution.$nav_below.'</div>'.slickr_flickr_set_options($unique_id,slickr_flickr_galleria_options($params));
         $element='li';
         $element_style='';
@@ -330,8 +331,7 @@ function slickr_flickr_image($photo, $params) {
             return '<a '.$params['lightboxrel'].' href="'.$full_url.'" title="'.$lightbox_title.'"><img '.$imgsize.$border.' src="'.$thumb_url.'"'.$params['thumbnail_dimensions'].' alt="'.$alt.'" title="'.$title.'" /></a>'.$caption;
         }
        case "galleria": {
-            return '<img src="'.$full_url.'" alt="'.$alt.'" title="'.$captiontitle.'" /></a>';
-            //return '<a href="'.$full_url.'"><img src="'.$thumb_url.'" alt="'.$alt.'" title="'.$captiontitle.'" />';
+             return '<a href="'.$full_url.'"><img src="'.$thumb_url.'" alt="'.$alt.'" title="'.$captiontitle.'" /></a>';
         }
         default: {
 			return slickr_flickr_get_lightbox_html ($params, $full_url, $link, $thumb_url, $captiontitle, $title, $alt);
@@ -462,7 +462,8 @@ function slickr_flickr_galleria_options($params) {
     	if (!array_key_exists('show_info',$options)) $options['show_info'] = $params['captions']=='on' ? true: false;
     	if (!array_key_exists('image_crop',$options)) $options['image_crop'] = true;
     	if (!array_key_exists('carousel',$options)) $options['carousel'] = true;    	
-        if ('classic'== slickr_flickr_get_option('galleria_theme')) {	
+        $gtheme = slickr_flickr_get_option('galleria_theme');
+        if (('folio'!= $gtheme) && ('fullscreen' != $gtheme)) {	
             $p = $params['orientation']=="portrait";
 			switch ($params['size']) {
 				case "small": { $h=$p?300:220; $w=$p?200:240; break;} 
@@ -558,8 +559,6 @@ function slickr_flickr_init() {
     
     switch ($galleria) {
     case 'galleria-none': { break; }
-    case '':
-    case 'galleria_10':
     case 'galleria-1.0': {
         $deps[] = $gname;
         $gfolder = $path . "/galleria/";
@@ -567,7 +566,6 @@ function slickr_flickr_init() {
     	wp_enqueue_script($gname, $gfolder."galleria.noconflict.js", array('jquery'), SLICKR_FLICKR_VERSION, $footer_scripts);
         break;
 		}
-    case 'galleria_12':	$options['galleria'] = 'galleria-1.2';	
     default: {
         $deps[] = $gname;
         $theme = $options['galleria_theme'];

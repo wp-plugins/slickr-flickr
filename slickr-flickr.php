@@ -3,7 +3,7 @@
 Plugin Name: Slickr Flickr
 Plugin URI: http://www.slickrflickr.com
 Description: Displays photos from Flickr in slideshows and galleries
-Version: 1.33
+Version: 1.34
 Author: Russell Jamieson
 Author URI: http://www.russelljamieson.com
 
@@ -22,7 +22,7 @@ Copyright 2011 Russell Jamieson (russell.jamieson@gmail.com)
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.33');
+if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.34');
 if (!defined('SLICKR_FLICKR')) define('SLICKR_FLICKR', 'slickr-flickr');
 if (!defined('SLICKR_FLICKR_FOLDER')) define('SLICKR_FLICKR_FOLDER', SLICKR_FLICKR);
 if (!defined('SLICKR_FLICKR_HOME')) define('SLICKR_FLICKR_HOME', 'http://wordpress.org/extend/plugins/'.SLICKR_FLICKR_FOLDER.'/');
@@ -103,10 +103,17 @@ function slickr_flickr_get_options ($cache = true) {
      foreach ($options as $key => $option) {
        if (isset($options[$key]) && strpos($key,"flickr_")==0)  $flickr_options[substr($key,7)] = $option;
      }
-     switch ($flickr_options['lightbox']) {
-          case "lightbox-slideshow": $flickr_options['lightbox'] = 'sf-lbox-auto'; break;
-          case "lightbox": $flickr_options['lightbox'] = 'sf-lbox-manual'; break;
-     }
+     if (array_key_exists('lightbox',$flickr_options))
+     	switch ($flickr_options['lightbox']) {
+          	case "lightbox-slideshow": $flickr_options['lightbox'] = 'sf-lbox-auto'; break;
+          	case "lightbox": $flickr_options['lightbox'] = 'sf-lbox-manual'; break;
+     	}
+     if (array_key_exists('galleria',$flickr_options))
+     	switch ($flickr_options['galleria']) {
+     		case "":
+          	case "galleria_10": $flickr_options['galleria'] = 'galleria-1.0'; break;
+          	case "galleria_12": $flickr_options['galleria'] = 'galleria-1.2'; break;
+     	}
      $slickr_flickr_options = shortcode_atts( $slickr_flickr_defaults, $flickr_options);
    }
    return $slickr_flickr_options;
