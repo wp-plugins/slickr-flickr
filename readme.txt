@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, highslide, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 1.34
+Stable tag: 1.35
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
 
 == Description ==
@@ -17,7 +17,7 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 * Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
-* Latest version 1.34 includes Galleria 1.25 and implements uses separate thumbnails for the galleria which improves the load time. 
+* Latest version 1.35 includes Galleria 1.25 patch that affects Firefox. 
 
 == Installation ==
 1. Use the standard WordPress plugin automatic updates system for installing and updating to the latest version or use the manual steps below. 
@@ -48,6 +48,10 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 1.35 =
+* But fix to Galleria 1.2.5 image loading
+* Fix HTML errors on Slickr Flickr Admin page
+
 = 1.34 =
 * Bundled with Galleria 1.2.5
 * Galleria now uses thumbnails from Flickr which improves loading time
@@ -63,16 +67,13 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 * Updated Slickr Flickr Admin Settings to support standard WordPress metabox features: screen options and panels than can be closed or hidden. 
 * Added support for private photos. (Pro Edition)
 
-= 1.32 =
-* Fixed bug with display of height and width of galleria
-* Added option for WP Pretty Photo LightBox to support a gallery
 
 See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 1.34 = 
-* Recommended - has latest Galleria 1.2.5
+= 1.35 = 
+* Recommended - has fix for Galleria 1.2.5
 
 == How to Use The Plugin ==
 

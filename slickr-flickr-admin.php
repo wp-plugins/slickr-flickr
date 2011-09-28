@@ -45,7 +45,7 @@ class slickr_flickr_admin {
 	}	
 
 	function plugin_action_links( $links, $file ) {
-		if ( SLICKR_FLICKR_PATH == $file ) {
+		if ( is_array($links) && (SLICKR_FLICKR_PATH == $file )) {
 			$settings_link = '<a href="' . admin_url( 'options-general.php?page='.SLICKR_FLICKR_ADMIN) . '">Settings</a>';
 			array_unshift( $links, $settings_link );
 		}
@@ -65,6 +65,9 @@ class slickr_flickr_admin {
 		add_meta_box('slickr-flickr-help', __('Help',SLICKR_FLICKR), array(&$this, 'help_panel'), $this->pagehook, 'side', 'core');
 		add_meta_box('slickr-flickr-cache', __('Caching',SLICKR_FLICKR), array(&$this, 'cache_panel'), $this->pagehook, 'side', 'core');
 		add_meta_box('slickr-flickr-lightboxes', __('Compatible LightBoxes',SLICKR_FLICKR), array(&$this, 'lightboxes_panel'), $this->pagehook, 'side', 'core');
+		global $current_screen;
+		add_contextual_help( $current_screen,
+			'<h3>Slickr Flickr</h3><p>To find out more about using Slickr Flickr to go <a href="'.SLICKR_FLICKR_HOME.'" rel="external">Slickr Flickr WordPress Plugin</a></p>');	
 	}
 
     function use_cache() {
@@ -127,15 +130,19 @@ class slickr_flickr_admin {
    			$version_info = slickr_flickr_get_version_info($cache);
    			$is_pro = $version_info["valid_key"];
    			$notice = $version_info["notice"];
-   			$key_status_indicator = "<img src='" . SLICKR_FLICKR_PLUGIN_URL ."/images/".($is_pro ? "tick" : "cross").".png'/>";
+   			$flag = $is_pro ? 'tick' : 'cross';
+   			$key_status_indicator = '<img src="' . SLICKR_FLICKR_PLUGIN_URL .'/images/'.$flag.'.png" alt="a '.$flag.'" />';
   		}
 		$consumer_secret = md5($pro_options['consumer_secret']);
 		$token = md5($pro_options['token']);
 		$token_secret = md5($pro_options['token_secret']);
         $readonly = $is_pro ? '' : 'readonly="readonly" class="readonly"';
+        $home = SLICKR_FLICKR_HOME;
+        $pro = SLICKR_FLICKR_PRO;
 		print <<< PRO_PANEL
 <h4>Slickr Flickr Pro Licence Key</h4>
-<p>The Slickr Flickr Pro Licence Key is required if you want to get support through the <a href="http://www.diywebmastery.com/slickrflickrpro/forum/">Slickr Flickr Pro Forums</a> and also use some of the <a href="http://www.slickrflickr.com/pro/">Slickr Flickr Pro Bonus features</a>.</p>
+<p>The Slickr Flickr Pro Licence Key is required if you want to get support through the <a href="{$pro}/forum/">Slickr Flickr Pro Forums</a> and 
+also use some of the <a href="{$home}/pro/">Slickr Flickr Pro Bonus features</a>.</p>
 {$notice}
 <label for="slickr_licence">Slickr Flickr Licence Key: </label><input name="slickr_licence" id="slickr_licence" type="password" style="width:320px" value="{$licence}" />&nbsp;{$key_status_indicator}
 <h4>Flickr API Secret</h4>
@@ -145,7 +152,7 @@ class slickr_flickr_admin {
 <h4> Flickr Authentication Token</h4>
 <p>The Flickr Authentication Token is required if you want to be able to fetch private photos.</p>
 <p>The token must be set up with READ permission to access your private photos.</p>
-<p>Please log in to your <a href="http://www.diywebmastery.com/slickrflickrpro/">Slickr Flickr Pro Dashboard</a> for instructions on requesting a Flickr Authentication Token.</p>
+<p>Please log in to your <a href="{$pro}">Slickr Flickr Pro Dashboard</a> for instructions on requesting a Flickr Authentication Token.</p>
 <p>In the next version of Slickr Flickr I will add a "Verify Token" on this page so you can easily check that all the secrets codes have been copied correctly.</p>
 <label for="slickr_token">Flickr Token: </label><input name="slickr_token" id="slickr_token" type="password" style="width:480px" {$readonly} value="{$token}" />
 <h4>Flickr Authentication Token Secret</h4>
@@ -165,14 +172,14 @@ PRO_PANEL;
 
 	function id_panel($post, $metabox) {		
 		$options = slickr_flickr_get_options($this->use_cache());		
-		$is_user = $options['group']!="y"?"selected":"";
-		$is_group = $options['group']=="y"?"selected":"";
+		$is_user = $options['group']!='y'?'selected="selected"':"";
+		$is_group = $options['group']=='y'?'selected="selected"':"";
 		print <<< ID_PANEL
 <h4>Flickr ID</h4>
 <p>The Flickr ID is required for you to be able to access your photos.</p>
 <p>If you supply it here, the plugin will remember it so you do not need to supply it for every gallery and every slideshow.</p>
 <p>You are still able to supply a Flickr ID for an individual slideshow perhaps where you want to display photos from a friends Flickr account</p>
-<p>A Flickr ID looks something like this : 12345678@N00 and you can find your Flickr ID by entering the URL of your Flickr photostream at <a target="_blank" href="http://idgettr.com/">idgettr.com</a></p>
+<p>A Flickr ID looks something like this : 12345678@N00 and you can find your Flickr ID by entering the URL of your Flickr photostream at <a href="http://idgettr.com/" rel="external">idgettr.com</a></p>
 <label for="flickr_id">Flickr ID: </label><input name="flickr_id" type="text" id="flickr_id" value="{$options['id']}" />
 <h4>Flickr User or Group</h4>
 <p>If you leave this blank then the plugin will assume your default Flickr ID is a user ID</p>
@@ -187,23 +194,24 @@ PRO_PANEL;
 <p>The Flickr API Key is used if you want to be able to get more than 20 photos at a time.</p>
 <p>If you supply it here, the plugin will remember it so you do not need to supply it for every gallery and every slideshow.</p>
 <p>A Flickr API key looks something like this : 5aa7aax73kljlkffkf2348904582b9cc and you can find your Flickr API Key by logging in to Flickr
-and then visiting <a target="_blank" href="http://www.flickr.com/services/api/keys/">Flickr API Keys</a></p>
+and then visiting <a href="http://www.flickr.com/services/api/keys/" rel="external">Flickr API Keys</a></p>
 <label for="flickr_api_key">Flickr API Key: </label><input name="flickr_api_key" type="text" id="flickr_api_key" style="width:320px" value="{$options['api_key']}" />		
 ID_PANEL;
 	}
 
 	function general_panel($post, $metabox) {		
 		$options = slickr_flickr_get_options($this->use_cache());		
-		$is_slideshow = $options['type']=="slideshow"?"selected":"";
-		$is_galleria = $options['type']=="galleria"?"selected":"";
-		$is_gallery = $options['type']=="gallery"?"selected":"";
-		$captions_on = $options['captions']!="off"?"selected":"";
-		$captions_off = $options['captions']=="off"?"selected":"";
-		$autoplay_on = $options['autoplay']!="off"?"selected":"";
-		$autoplay_off = $options['autoplay']=="off"?"selected":"";
+		$is_slideshow = $options['type']=="slideshow"?'selected="selected"':'';
+		$is_galleria = $options['type']=="galleria"?'selected="selected"':'';
+		$is_gallery = $options['type']=="gallery"?'selected="selected"':'';
+		$captions_on = $options['captions']!="off"?'selected="selected"':'';
+		$captions_off = $options['captions']=="off"?'selected="selected"':'';
+		$autoplay_on = $options['autoplay']!="off"?'selected="selected"':'';
+		$autoplay_off = $options['autoplay']=="off"?'selected="selected"':'';
+		$upgrade = SLICKR_FLICKR_HOME . '/upgrade';
 		print <<< GENERAL_PANEL
 <h4>Number Of Photos To Display</h4>
-<i>Maximum is 20 for fetching photos when using your Flickr ID, 50 for your Flickr API Key and unlimited numbers of photos when using <a href="http://www.slickrflickr.com/upgrade/">Slickr Flickr Pro</a>)</i>
+<i>Maximum is 20 for fetching photos when using your Flickr ID, 50 for your Flickr API Key and unlimited numbers of photos when using <a href="{$upgrade}">Slickr Flickr Pro</a></i>
 <p>If you leave this blank then the plugin will display up to a maximum of 20 photos in each gallery or slideshow.</p>
 <p>If you supply a number it here, the plugin will remember it so you do not need to supply it for every gallery and every slideshow.</p>
 <p>You are still able to supply the number of photos to display for individual slideshow by specifying it in the post</p>
@@ -215,9 +223,9 @@ ID_PANEL;
 <p>You are still able to supply the type of display by specifying it in the post</p>
 <p>For example [slickr-flickr tag="bahamas" type="gallery"] displays a gallery even if you have set the default display type as slideshow</p>
 <label for="flickr_type">Display as: </label><select name="flickr_type" id="flickr_type">
-<option value="gallery" {$is_gallery}>a gallery of thumbnail images</option>
-<option value="galleria" {$is_galleria}>a galleria slideshow with thumbnail images below</option>
-<option value="slideshow" {$is_slideshow}>a slideshow of medium size images</option>
+<option {$is_gallery} value="gallery">a gallery of thumbnail images</option>
+<option {$is_galleria} value="galleria">a galleria slideshow with thumbnail images below</option>
+<option {$is_slideshow} value="slideshow">a slideshow of medium size images</option>
 </select>
 <h4>Captions</h4>
 <p>If you leave this blank then the plugin will display captions either beneath or above photos in a slideshow, lightbox or galleria</p>
@@ -225,8 +233,8 @@ ID_PANEL;
 <p>You are still able to control captions on individual slideshows by specifying it in the post</p>
 <p>For example [slickr-flickr tag="bahamas" captions="off"] switches off captions for that slideshow even if you have set the default captioning here to be on</p>
 <label for="flickr_captions">Captions: </label><select name="flickr_captions" id="flickr_captions">
-<option value="on" {$captions_on}>on</option>
-<option value="off" {$captions_off}>off</option>
+<option {$captions_on} value="on">on</option>
+<option {$captions_off} value="off">off</option>
 </select>
 <h4>Autoplay</h4>
 <p>If you leave this blank then the plugin will automatically play the images in the slideshow, galleria or lightbox(if you are using the slideshow lightbox that comes with Slickr Flickr)</p>
@@ -234,8 +242,8 @@ ID_PANEL;
 <p>You are still able to control autoplay on individual displays by specifying it in the post</p>
 <p>For example [slickr-flickr tag="bahamas" autoplay="off"] switches off autoplay for that slideshow even if you have set the default autoplay here to be on</p>
 <label for="flickr_autoplay">Autoplay: </label><select name="flickr_autoplay" id="flickr_autoplay">
-<option value="on" {$autoplay_on}>on</option>
-<option value="off" {$autoplay_off}>off</option>
+<option {$autoplay_on} value="on">on</option>
+<option {$autoplay_off} value="off">off</option>
 </select>
 <h4>Delay Between Images</h4>
 <p>If you leave this blank then the plugin will move to the next image every 5 seconds.</p>
@@ -248,72 +256,75 @@ GENERAL_PANEL;
 
 	function advanced_panel($post, $metabox) {		
 		$options = slickr_flickr_get_options($this->use_cache());		
-		$scripts_in_footer = $options['scripts_in_footer']=="1"?"checked":"";
+		$scripts_in_footer = $options['scripts_in_footer']=="1"?'checked="checked"':'';
+		$home = SLICKR_FLICKR_HOME;
 		print <<< ADVANCED_PANEL
 <h4>Load JavaScript In Footer</h4>
 <p>This option allows you to load Javascript in the footer instead of the header.</p>
 <p>This option can be useful as it may reduce potential jQuery conflicts with other plugins.</p>
 <p>However, it will not work for all WordPress themes, specifically those that do not support loading of scripts in the footer using standard WordPress hooks and filters.</p>
-<p>Click for more on <a href="http://www.slickrflickr.com/2328/load-javascript-in-footer-for-earlier-page-display/">loading Slickr Flickr scripts in the footer</a>.</p>
-<label for="flickr_scripts_in_footer">Load scripts in Footer: </label><input type="checkbox" name="flickr_scripts_in_footer" id="flickr_scripts_in_footer" value="1" {$scripts_in_footer} />
+<p>Click for more on <a href="{$home}/2328/load-javascript-in-footer-for-earlier-page-display/">loading Slickr Flickr scripts in the footer</a>.</p>
+<label for="flickr_scripts_in_footer">Load scripts in Footer: </label><input type="checkbox" name="flickr_scripts_in_footer" id="flickr_scripts_in_footer" {$scripts_in_footer} value="1" />
 ADVANCED_PANEL;
 	}
 
 	function lightbox_panel($post, $metabox) {		
 		$options = slickr_flickr_get_options($this->use_cache());		
-		$lightbox_auto = $options['lightbox']=="sf-lbox-auto"?"selected":"";
-		$lightbox_manual = $options['lightbox']=="sf-lbox-manual"?"selected":"";
-		$thickbox = $options['lightbox']=="thickbox"?"selected":"";
-		$colorbox = $options['lightbox']=="colorbox"?"selected":"";
-		$evolution = $options['lightbox']=="evolution"?"selected":"";
-		$fancybox = $options['lightbox']=="fancybox"?"selected":"";
-		$highslide = $options['lightbox']=="highslide"?"selected":"";
-		$prettyphoto = $options['lightbox']=="prettyphoto"?"selected":"";
-		$prettyphotos = $options['lightbox']=="prettyphotos"?"selected":"";
-		$shadowbox = $options['lightbox']=="shadowbox"?"selected":"";
-		$slimbox = $options['lightbox']=="slimbox"?"selected":"";
-		$shutter = $options['lightbox']=="shutter"?"selected":"";
-		$norel = $options['lightbox']=="norel"?"selected":"";
+		$lightbox_auto = $options['lightbox']=="sf-lbox-auto"?'selected="selected"':'';
+		$lightbox_manual = $options['lightbox']=="sf-lbox-manual"?'selected="selected"':'';
+		$thickbox = $options['lightbox']=="thickbox"?'selected="selected"':'';
+		$colorbox = $options['lightbox']=="colorbox"?'selected="selected"':'';
+		$evolution = $options['lightbox']=="evolution"?'selected="selected"':'';
+		$fancybox = $options['lightbox']=="fancybox"?'selected="selected"':'';
+		$highslide = $options['lightbox']=="highslide"?'selected="selected"':'';
+		$prettyphoto = $options['lightbox']=="prettyphoto"?'selected="selected"':'';
+		$prettyphotos = $options['lightbox']=="prettyphotos"?'selected="selected"':'';
+		$shadowbox = $options['lightbox']=="shadowbox"?'selected="selected"':'';
+		$slimbox = $options['lightbox']=="slimbox"?'selected="selected"':'';
+		$shutter = $options['lightbox']=="shutter"?'selected="selected"':'';
+		$norel = $options['lightbox']=="norel"?'selected="selected"':'';
+		$home = SLICKR_FLICKR_HOME;
 		print <<< LIGHTBOX_PANEL
 <p>By default the plugin will use the standard LightBox.</p>
 <p>If you select LightBox slideshow then when a photo is clicked the overlaid lightbox will automatically play the slideshow.</p>
 <p>If you select ThickBox then it will use the standard WordPress lightbox plugin which is pre-installed with Wordpress.</p>
 <p><b>If you select one of the other lightboxes then you need to install that lightbox plugin independently from Slickr Flickr.</b></p>
-<p><b>Please read this post about <a href="http://www.slickrflickr.com/1717/using-slickr-flickr-with-other-lightboxes">using Slickr Flickr with other lightboxes</a> before choosing, as not all the third party lightbox plugins support photo descriptions and links to Flickr in the photo title.</b></p> 
+<p><b>Please read this post about <a href="{$home}/1717/using-slickr-flickr-with-other-lightboxes">using Slickr Flickr with other lightboxes</a> before choosing, as not all the third party lightbox plugins support photo descriptions and links to Flickr in the photo title.</b></p> 
 <label for="flickr_lightbox">Lightbox</label><select name="flickr_lightbox" id="flickr_lightbox">
-<option value="sf-lbox-manual" {$lightbox_manual}>LightBox with manual slideshow (pre-installed)</option>
-<option value="sf-lbox-auto" {$lightbox_auto}>LightBox with autoplay slideshow option (pre-installed)</option>
-<option value="thickbox" {$thickbox}>Thickbox (pre-installed with Wordpress)</option>
-<option value="evolution" {$evolution}>Evolution LightBox for Wordpress (requires separate installation)</option>
-<option value="fancybox" {$fancybox}>FancyBox for Wordpress (requires separate installation)</option>
-<option value="highslide" {$highslide}>Highslide for Wordpress Reloaded (requires separate installation)</option>
-<option value="colorbox" {$colorbox}>LightBox Plus for Wordpress (requires separate installation)</option>
-<option value="shadowbox" {$shadowbox}>Shadowbox (requires separate installation)</option>
-<option value="shutter" {$shutter}>Shutter Reloaded for Wordpress (requires separate installation)</option>
-<option value="slimbox" {$slimbox}>SlimBox for Wordpress (requires separate installation)</option>
-<option value="prettyphoto" {$prettyphoto}>WP Pretty Photo - single photos only(requires separate installation)</option>
-<option value="prettyphotos" {$prettyphotos}>WP Pretty Photo - with gallery (as above and requires setting to use bundled jQuery)</option>
-<option value="norel" {$norel}>Some Other LightBox(requires separate installation)</option>
+<option {$lightbox_manual} value="sf-lbox-manual">LightBox with manual slideshow (pre-installed)</option>
+<option {$lightbox_auto} value="sf-lbox-auto">LightBox with autoplay slideshow option (pre-installed)</option>
+<option {$thickbox} value="thickbox">Thickbox (pre-installed with Wordpress)</option>
+<option {$evolution} value="evolution">Evolution LightBox for Wordpress (requires separate installation)</option>
+<option {$fancybox} value="fancybox">FancyBox for Wordpress (requires separate installation)</option>
+<option {$highslide} value="highslide">Highslide for Wordpress Reloaded (requires separate installation)</option>
+<option {$colorbox} value="colorbox">LightBox Plus for Wordpress (requires separate installation)</option>
+<option {$shadowbox} value="shadowbox">Shadowbox (requires separate installation)</option>
+<option {$shutter} value="shutter">Shutter Reloaded for Wordpress (requires separate installation)</option>
+<option {$slimbox} value="slimbox">SlimBox for Wordpress (requires separate installation)</option>
+<option {$prettyphoto} value="prettyphoto">WP Pretty Photo - single photos only(requires separate installation)</option>
+<option {$prettyphotos} value="prettyphotos">WP Pretty Photo - with gallery (as above and requires setting to use bundled jQuery)</option>
+<option {$norel} value="norel">Some Other LightBox(requires separate installation)</option>
 </select>
 LIGHTBOX_PANEL;
 	}
 
 	function galleria_panel($post, $metabox) {		
 		$options = slickr_flickr_get_options($this->use_cache());
-		$galleria_10 = $options['galleria']=="galleria-1.0"?"selected":"";
-		$galleria_12 = $options['galleria']=="galleria-1.2"?"selected":"";
-		$galleria_123 = $options['galleria']=="galleria-1.2.3"?"selected":"";
-		$galleria_125 = $options['galleria']=="galleria-1.2.5"?"selected":"";
-		$galleria_none = $options['galleria']=="galleria-none"?"selected":"";
+		$galleria_10 = $options['galleria']=="galleria-1.0"?'selected="selected"':'';
+		$galleria_12 = $options['galleria']=="galleria-1.2"?'selected="selected"':'';
+		$galleria_123 = $options['galleria']=="galleria-1.2.3"?'selected="selected"':'';
+		$galleria_125 = $options['galleria']=="galleria-1.2.5"?'selected="selected"':'';
+		$galleria_none = $options['galleria']=="galleria-none"?'selected="selected"':'';
+		$home = SLICKR_FLICKR_HOME;
 		print <<< GALLERIA_PANEL
 <h4>Galleria Version</h4>
 <p>Choose which version of the galleria you want to use:</p>
 <label for="flickr_galleria">Galleria</label><select name="flickr_galleria" id="flickr_galleria">
-<option value="galleria-1.0" {$galleria_10}>Galleria 1.0 - original version</option>
-<option value="galleria-1.2" {$galleria_12}>Galleria 1.2 - with carousel and skins</option>
-<option value="galleria-1.2.3" {$galleria_123}>Galleria 1.2.3 </option>
-<option value="galleria-1.2.5" {$galleria_125}>Galleria 1.2.5 - latest version</option>
-<option value="galleria-none" {$galleria_none}>Galleria not required so do not load the script</option>
+<option {$galleria_10} value="galleria-1.0">Galleria 1.0 - original version</option>
+<option {$galleria_12} value="galleria-1.2">Galleria 1.2 - with carousel and skins</option>
+<option {$galleria_123} value="galleria-1.2.3">Galleria 1.2.3 </option>
+<option {$galleria_125} value="galleria-1.2.5">Galleria 1.2.5 - latest version</option>
+<option {$galleria_none} value="galleria-none">Galleria not required so do not load the script</option>
 </select>
 <h4>Galleria Theme</h4>
 <p>Change this value is you have purchased a <a href="http://galleria.aino.se/themes/">premium Galleria theme</a> or written one and placed the theme folder in the ./wp-content/plugins/slickr-flickr/galleria-x.y.z/themes folder for the version of the galleria you have selected above</p>
@@ -322,23 +333,25 @@ LIGHTBOX_PANEL;
 <h4>Galleria Options</h4>
 <p>Here you can set default options for the galleria 1.2 and later versions.</p>
 <p>The correct format is like CSS with colons to separate the parameter name from the value and semi-colons to separate each pair: param1:value1;param2:value2;</p>
-<p>For example, transition:fadeslide;transitionSpeed:1000; sets a one second fade and slide transition. See an example of using <a href="http://www.slickrflickr.com/2270/flickr-galleria-slide-transitions-now-supported-by-slickr-flickr/">Galleria Options</a></p>
-<label for="flickr_options">Galleria Options: </label><br/><textarea name="flickr_options"  id="flickr_options" cols="80" rows="4" wrap="virtual">{$options['options']}</textarea/>
+<p>For example, transition:fadeslide;transitionSpeed:1000; sets a one second fade and slide transition. See an example of using <a href="{$home}/2270/flickr-galleria-slide-transitions-now-supported-by-slickr-flickr/">Galleria Options</a></p>
+<label for="flickr_options">Galleria Options: </label><br/><textarea name="flickr_options"  id="flickr_options" cols="80" rows="4">{$options['options']}</textarea>
 GALLERIA_PANEL;
 	}
 	
 	function help_panel($post, $metabox) {
+		$home = SLICKR_FLICKR_HOME;
 		print <<< HELP_PANEL
 <ul>
-<li><a target="_blank" href="http://www.slickrflickr.com/">Plugin Home Page</a></li>
-<li><a target="_blank" href="http://www.slickrflickr.com/40/how-to-use-slickr-flickr-admin-settings/">How To Use Admin Settings</a></li>
-<li><a target="_blank" href="http://www.slickrflickr.com/56/how-to-use-slickr-flickr-to-create-a-slideshow-or-gallery/">How To Use The Plugin</a></li>
-<li><a target="_blank" href="http://www.slickrflickr.com/slickr-flickr-help/">Get Help</a></li>
-<li><a target="_blank" href="http://www.slickrflickr.com/slickr-flickr-videos/">Get FREE Video Tutorials</a></li>
+<li><a href="{$home}" rel="external">Plugin Home Page</a></li>
+<li><a href="{$home}/40/how-to-use-slickr-flickr-admin-settings/" rel="external">How To Use Admin Settings</a></li>
+<li><a href="{$home}/56/how-to-use-slickr-flickr-to-create-a-slideshow-or-gallery/" rel="external">How To Use The Plugin</a></li>
+<li><a href="{$home}/slickr-flickr-help/" rel="external">Get Help</a></li>
+<li><a href="{$home}/slickr-flickr-videos/" rel="external">Get FREE Video Tutorials</a></li>
 </ul>
 <p><img src="http://images.slickrflickr.com/pages/slickr-flickr-tutorials.png" alt="Slickr Flickr Tutorials Signup" /></p>
-<form id="slickr_flickr_signup" name="slickr_flickr_signup" method="post" action="http://www.slickrflickr.com/"
-onSubmit="return slickr_flickr_validate_form(this)">
+<form id="slickr_flickr_signup" method="post" action="{$home}"
+onsubmit="return slickr_flickr_validate_form(this)">
+<fieldset>
 <input type="hidden" name="form_storm" value="submit"/>
 <input type="hidden" name="destination" value="slickr-flickr"/>
 <label for="firstname">First Name
@@ -348,6 +361,7 @@ onSubmit="return slickr_flickr_validate_form(this)">
 <label id="lsubject" for="subject">Subject
 <input id="subject" name="subject" type="text" /></label>
 <input type="submit" value="" />
+</fieldset>
 </form>
 HELP_PANEL;
 	}	
@@ -355,24 +369,28 @@ HELP_PANEL;
 	function lightboxes_panel($post, $metabox) {	
 		print <<< COMPAT_LIGHTBOX_PANEL
 <ul>
-<li><a target="_blank" href="http://wordpress.org/extend/plugins/fancybox-for-wordpress/">FancyBox Lightbox for WordPress</a></li>
-<li><a target="_blank" href="http://wordpress.org/extend/plugins/highslide-4-wordpress-reloaded/">Highslide for WordPress Reloaded</a></li>
-<li><a target="_blank" href="http://wordpress.org/extend/plugins/lightbox-plus/">Lightbox Plus (ColorBox) for WordPress</a></li>
-<li><a target="_blank" href="http://wordpress.org/extend/plugins/shadowbox-js/">ShadowBox JS</a></li>
-<li><a target="_blank" href="http://wordpress.org/extend/plugins/shutter-reloaded/">Shutter Lightbox for WordPress</a></li>
-<li><a target="_blank" href="http://wordpress.org/extend/plugins/slimbox-plugin/">SlimBox for WordPress</a></li>
-<li><a target="_blank" href="http://wordpress.org/extend/plugins/wp-prettyphoto/">WP Pretty Photo</a></li>
+<li><a href="http://wordpress.org/extend/plugins/fancybox-for-wordpress/" rel="external">FancyBox Lightbox for WordPress</a></li>
+<li><a href="http://wordpress.org/extend/plugins/highslide-4-wordpress-reloaded/" rel="external">Highslide for WordPress Reloaded</a></li>
+<li><a href="http://s3.envato.com/files/1099520/index.html" rel="external">Lightbox Evolution</a></li>
+<li><a href="http://wordpress.org/extend/plugins/lightbox-plus/" rel="external">Lightbox Plus (ColorBox) for WordPress</a></li>
+<li><a href="http://wordpress.org/extend/plugins/shadowbox-js/" rel="external">ShadowBox JS</a></li>
+<li><a href="http://wordpress.org/extend/plugins/shutter-reloaded/" rel="external">Shutter Lightbox for WordPress</a></li>
+<li><a href="http://wordpress.org/extend/plugins/slimbox-plugin/" rel="external">SlimBox for WordPress</a></li>
+<li><a href="http://wordpress.org/extend/plugins/wp-prettyphoto/" rel="external">WP Pretty Photo</a></li>
 </ul>
 COMPAT_LIGHTBOX_PANEL;
 	}
 
 	function cache_panel($post, $metabox) {
+ 		$this_url = $_SERVER['REQUEST_URI'];	
 		print <<< CACHE_PANEL
 <h4>Clear RSS Cache</h4>
 <p>If you have a RSS caching issue where your Flickr updates have not yet appeared on Wordpress then click the button below to clear the RSS cache</p>
-<form method="post" id="slickr_flickr_cache">
-<input type="hidden" name="cache" value="clear"/>
-<input type="submit"  class="button-primary" name="clear" value="Clear Cache"/>
+<form id="slickr_flickr_cache" method="post" action="{$this_url}" >
+<fieldset>
+<input type="hidden" name="cache" value="clear" />
+<input type="submit"  class="button-primary" name="clear" value="Clear Cache" />
+</fieldset>
 </form>
 CACHE_PANEL;
 	}
@@ -396,24 +414,25 @@ CACHE_PANEL;
  		global $screen_layout_columns;
 		if (isset($_POST['cache'])) echo $this->clear_cache();  		
  		if (isset($_POST['options_update'])) echo $this->save();
+ 		$this_url = $_SERVER['REQUEST_URI'];
 ?>
     <div id="poststuff" class="metabox-holder has-right-sidebar">
         <h2>Slickr Flickr Options</h2>
-		<p>For help on gettting the best from Slickr Flickr visit the <a href="http://www.slickrflickr.com/">Slickr Flickr Plugin Home Page</a></p>
+		<p>For help on gettting the best from Slickr Flickr visit the <a href="<?php echo SLICKR_FLICKR_HOME; ?>">Slickr Flickr Plugin Home Page</a></p>
 		<p><b>We recommend you fill in your Flickr ID in the Flickr Identity section. All the other fields are optional.</b></p>
         <div id="side-info-column" class="inner-sidebar">
 		<?php do_meta_boxes($this->pagehook, 'side', null); ?>
         </div>
         <div id="post-body" class="has-sidebar">
             <div id="post-body-content" class="has-sidebar-content">
-			<form method="post" id="slickr_flickr_options">
-			<?php wp_nonce_field(SLICKR_FLICKR_ADMIN); ?>
-			<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
-			<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
+			<form id="slickr_flickr_options" method="post" action="<?php echo $this_url; ?>">
 			<?php do_meta_boxes($this->pagehook, 'normal', null); ?>
 			<p class="submit">
 			<input type="submit"  class="button-primary" name="options_update" value="Save Changes" />
 			<input type="hidden" name="page_options" value="flickr_id,flickr_group,flickr_api_key,slickr_licence,slickr_consumer_secret,slickr_token,slickr_token_secret,flickr_items,flickr_type,flickr_captions,flickr_autoplay,flickr_delay,flickr_scripts_in_footer,flickr_transition,flickr_thumbnail_border,flickr_lightbox,flickr_galleria,flickr_galleria_theme,flickr_options" />
+			<?php wp_nonce_field(SLICKR_FLICKR_ADMIN); ?>
+			<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
+			<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
 			</p>
 			</form>
  			</div>

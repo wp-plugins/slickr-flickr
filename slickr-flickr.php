@@ -3,7 +3,7 @@
 Plugin Name: Slickr Flickr
 Plugin URI: http://www.slickrflickr.com
 Description: Displays photos from Flickr in slideshows and galleries
-Version: 1.34
+Version: 1.35
 Author: Russell Jamieson
 Author URI: http://www.russelljamieson.com
 
@@ -22,13 +22,14 @@ Copyright 2011 Russell Jamieson (russell.jamieson@gmail.com)
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-if (!defined('SLICKR_FLICKR_VERSION')) define('SLICKR_FLICKR_VERSION','1.34');
-if (!defined('SLICKR_FLICKR')) define('SLICKR_FLICKR', 'slickr-flickr');
-if (!defined('SLICKR_FLICKR_FOLDER')) define('SLICKR_FLICKR_FOLDER', SLICKR_FLICKR);
-if (!defined('SLICKR_FLICKR_HOME')) define('SLICKR_FLICKR_HOME', 'http://wordpress.org/extend/plugins/'.SLICKR_FLICKR_FOLDER.'/');
-if (!defined('SLICKR_FLICKR_PATH')) define('SLICKR_FLICKR_PATH', SLICKR_FLICKR_FOLDER.'/slickr-flickr.php');
-if (!defined('SLICKR_FLICKR_PLUGIN_URL')) define ('SLICKR_FLICKR_PLUGIN_URL',slickr_flickr_fix_protocol(WP_PLUGIN_URL) . '/' . SLICKR_FLICKR_FOLDER);
-if (!defined('SLICKR_FLICKR_UPGRADER')) define('SLICKR_FLICKR_UPGRADER', 'http://www.diywebmastery.com/slickrflickrpro/slickr-flickr-version.php');
+define('SLICKR_FLICKR_VERSION','1.35');
+define('SLICKR_FLICKR', 'slickr-flickr');
+define('SLICKR_FLICKR_FOLDER', SLICKR_FLICKR);
+define('SLICKR_FLICKR_PATH', SLICKR_FLICKR_FOLDER.'/slickr-flickr.php');
+define('SLICKR_FLICKR_PLUGIN_URL', plugins_url(SLICKR_FLICKR_FOLDER));
+define('SLICKR_FLICKR_HOME', 'http://www.slickrflickr.com');
+define('SLICKR_FLICKR_PRO', 'http://www.diywebmastery.com/slickrflickrpro');
+define('SLICKR_FLICKR_UPGRADER', SLICKR_FLICKR_PRO . '/slickr-flickr-version.php');
 
 $slickr_flickr_options = array();
 $slickr_flickr_pro_options = array();
