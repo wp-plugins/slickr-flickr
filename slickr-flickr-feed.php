@@ -63,7 +63,6 @@ class slickr_flickr_feed{
     return $this->photos;
 }
  
-
   function call_flickr_api() {
 		$photos = array();
 		$resp = $this->flickr->call($this->method, $this->args);
@@ -152,7 +151,7 @@ class slickr_flickr_feed{
    $this->args['per_page']= min($params['items'],50);
 }
 
-	function get_dates($params) {
+  function get_dates($params) {
 	    $args= array();
 	    $date_type = $params['date_type']=='upload'?"upload":"taken";
 	    $sort_type = $params['date_type']=='upload'?"posted":"taken";
@@ -186,18 +185,16 @@ class slickr_flickr_feed{
 		return $args;
  	 }
 
-
-	function convert_date_to_timestamp($date, $start=true) {
+  function convert_date_to_timestamp($date, $start=true) {
 		if (empty($date)) return false;
 		if (strpos($date,':') === FALSE) {
 			return strtotime($date. ($start?' 00:00:00':' 23:59:59'));
 		} else {
 			return strtotime($date);
 		}
-  	}
+  }
 
-
-	function implode_args($args) {
+  function implode_args($args) {
         $return = '';
         foreach ($args as $k => $v) {
             $return .= '&' . $k . '=' . $v;
@@ -205,7 +202,7 @@ class slickr_flickr_feed{
         return $return;
     }
     
-    function validate_gallery($gallery) { //replace short gallery id by full gallery_id
+  function validate_gallery($gallery) { //replace short gallery id by full gallery_id
 		if (strpos($gallery,'-') === false) {
 			if ($this->set_php_flickr()) {
 				$resp = $this->flickr->urls_lookupGallery ('/photos/'.$this->user_id.'/galleries/'.$gallery);
@@ -220,4 +217,5 @@ class slickr_flickr_feed{
     	}
     	return $gallery;
     }
+
 }    

@@ -3,7 +3,7 @@
 Plugin Name: Slickr Flickr
 Plugin URI: http://www.slickrflickr.com
 Description: Displays photos from Flickr in slideshows and galleries
-Version: 1.35
+Version: 1.36
 Author: Russell Jamieson
 Author URI: http://www.russelljamieson.com
 
@@ -22,18 +22,18 @@ Copyright 2011 Russell Jamieson (russell.jamieson@gmail.com)
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-define('SLICKR_FLICKR_VERSION','1.35');
+define('SLICKR_FLICKR_VERSION','1.36');
 define('SLICKR_FLICKR', 'slickr-flickr');
 define('SLICKR_FLICKR_FOLDER', SLICKR_FLICKR);
 define('SLICKR_FLICKR_PATH', SLICKR_FLICKR_FOLDER.'/slickr-flickr.php');
 define('SLICKR_FLICKR_PLUGIN_URL', plugins_url(SLICKR_FLICKR_FOLDER));
 define('SLICKR_FLICKR_HOME', 'http://www.slickrflickr.com');
 define('SLICKR_FLICKR_PRO', 'http://www.diywebmastery.com/slickrflickrpro');
-define('SLICKR_FLICKR_UPGRADER', SLICKR_FLICKR_PRO . '/slickr-flickr-version.php');
+define('SLICKR_FLICKR_LICENCE', 'slickr_flickr_licence'); 
 
 $slickr_flickr_options = array();
 $slickr_flickr_pro_options = array();
-$slickr_flickr_pro_defaults = array('licence' => '', 'consumer_secret' =>'', 'token' => '', 'token_secret' => '');
+$slickr_flickr_pro_defaults = array('consumer_secret' =>'', 'token' => '', 'token_secret' => '');
 $slickr_flickr_defaults = array(
     'id' => '',
     'group' => 'n',
@@ -56,6 +56,7 @@ $slickr_flickr_defaults = array(
     'lightbox' => 'sf-lbox-manual',
     'galleria'=> 'galleria-1.0',
     'galleria_theme'=> 'classic',
+    'galleria_options' => '',
     'options' => '',
     'delay' => '5',
     'transition' => '0.5',
@@ -141,6 +142,8 @@ function slickr_flickr_pro_get_options ($cache = true) {
      foreach ($options as $key => $option) {
        if (isset($options[$key]) && strpos($key,"slickr_")==0)  $slickr_options[substr($key,7)] = $option;
      }
+     if (array_key_exists('licence',$slickr_options)) SlickrFlickrUpdater::save_licence($slickr_options['licence'], false);
+
      $slickr_flickr_pro_options = shortcode_atts( $slickr_flickr_pro_defaults, $slickr_options);
    }
    return $slickr_flickr_pro_options;
@@ -151,80 +154,11 @@ function slickr_flickr_scripts_in_footer() {
     return $options['scripts_in_footer'];
 }
 
-function slickr_flickr_get_licence(){
-    $options = slickr_flickr_pro_get_options();
-    return $options['licence'];
-}
-
 function slickr_flickr_append_secrets(&$params, $keys = array('consumer_secret','token','token_secret')) {
     $pro_options = slickr_flickr_pro_get_options();
     foreach ($keys as $key) 
     	if (array_key_exists($key,$pro_options)) 
     		$params[$key] = $pro_options[$key];
-}
-
-function slickr_flickr_get_upgrader($cache = true){
-        global $wpdb;
-        global $slickr_flickr_pro_options;
-        $slickr_flickr_pro_options = slickr_flickr_pro_get_options();
-        if (empty($slickr_flickr_pro_options['upgrader']) || ($cache == false))
-            $slickr_flickr_pro_options['upgrader'] = SLICKR_FLICKR_UPGRADER. sprintf("?of=SlickrFlickr&key=%s&v=%s&wp=%s&php=%s&mysql=%s",
-                urlencode(slickr_flickr_get_licence()), urlencode(SLICKR_FLICKR_VERSION), urlencode(get_bloginfo("version")),
-                urlencode(phpversion()), urlencode($wpdb->db_version()));
-
-        return  $slickr_flickr_pro_options['upgrader'];
-}
-
-function slickr_flickr_remote_call($action){
-        $options = array('method' => 'POST', 'timeout' => 3);
-        $options['headers'] = array(
-            'Content-Type' => 'application/x-www-form-urlencoded; charset=' . get_option('blog_charset'),
-            'User-Agent' => 'WordPress/' . get_bloginfo("version"),
-            'Referer' => get_bloginfo("url")
-        );
-        $raw_response = wp_remote_request(slickr_flickr_get_upgrader(). '&act='.$action  , $options);
-        if ( is_wp_error( $raw_response ) || 200 != $raw_response['response']['code']){
-            return false;
-        } else {
-            return $raw_response;
-        }
-}
-
-function slickr_flickr_get_version_info($cache=true){
-    $slickr_flickr_version_info = $cache ? get_transient("slickr_flickr_version_info") : false;
-    if (!$slickr_flickr_version_info) {
-        $raw_response = slickr_flickr_remote_call('version');
-        $slickr_flickr_version = (is_array($raw_response) && array_key_exists('body',$raw_response)) ? explode("||", $raw_response['body']) : array();
-        if (count($slickr_flickr_version) >= 3) {
-            $valid_key = $slickr_flickr_version[0];
-            $version = $slickr_flickr_version[1];            
-            $package = $slickr_flickr_version[2];  
-            $notice = $slickr_flickr_version[3];              
-    		$current= version_compare(SLICKR_FLICKR_VERSION, $version, '<') ? -1 : 1; 
-			}
-		else {
-			$valid_key = false; $version = ""; $package =  "Unknown";  $notice = "Unable to check for new version. Please try again."; $current = 0;
-		}
-		$slickr_flickr_version_info = compact("valid_key", "version", "package", "notice", "current");
-        set_transient("slickr_flickr_version_info", $slickr_flickr_version_info, 86400); //cache for 24 hours
-	}
-	return $slickr_flickr_version_info;
-}
-
-
-function slickr_flickr_check_validity(){
-    if (slickr_flickr_get_licence()) {
-    	$version_info = slickr_flickr_get_version_info();
-    	if (array_key_exists('valid_key',$version_info))
-    		return $version_info['valid_key'];
-		else { //previous version cache
-			delete_transient("slickr_flickr_version_info"); //clear cache entry
-		    $version_info = slickr_flickr_get_version_info(false); //rebuild cache
-    		return $version_info['valid_key'];
-			}
-    	}
-    else 
-    	return false;
 }
 
 function slickr_flickr_clear_rss_cache() {
@@ -246,9 +180,11 @@ function slickr_flickr_clear_cache() {
     slickr_flickr_clear_rss_cache_transient();
 }
 
-function slickr_flickr_fix_protocol($url) {
-   return is_ssl() ? str_replace('http://', 'https://', $url) : $url;
+function slickr_flickr_check_validity(){
+    return SlickrFlickrUpdater::check_validity();
 }
+register_activation_hook(SLICKR_FLICKR_PATH,'slickr_flickr_pro_get_options');
 
+require_once(dirname(__FILE__).'/slickr-flickr-updater.php');
 require_once(dirname(__FILE__).'/slickr-flickr-'.(is_admin()?'admin':'public').'.php');
 ?>
