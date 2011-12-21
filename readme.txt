@@ -2,7 +2,7 @@
 Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, highslide, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
-Requires at least: 2.8
+Requires at least: 3.3
 Tested up to: 3.3
 Stable tag: 1.36
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
@@ -49,6 +49,7 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 == Changelog ==
 
 = 1.36 =
+* ONLY UPGRADE to Slickr Flickr 1.36 if you have are using WordPress 3.3 or later
 * Includes Galleria 1.2.6
 * Added admin option to set default photo size 
 * Minified javascript for faster loading
