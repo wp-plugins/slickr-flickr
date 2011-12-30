@@ -2,9 +2,9 @@
 Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, highslide, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
-Requires at least: 3.3
+Requires at least: 2.8
 Tested up to: 3.3
-Stable tag: 1.36
+Stable tag: 1.37
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
 
 == Description ==
@@ -17,7 +17,7 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 * Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
-* Latest version 1.36 includes Galleria 1.26 and also has a few minor enhancements and bug fixes. 
+* Latest version 1.37 is compatible with earlier versions of WordPress. 
 
 == Installation ==
 1. Use the standard WordPress plugin automatic updates system for installing and updating to the latest version or use the manual steps below. 
@@ -48,8 +48,11 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 1.37 =
+* Does NOT require version 3.3 of WordPress
+* Fix bug with setting default galleria options
+
 = 1.36 =
-* ONLY UPGRADE to Slickr Flickr 1.36 if you have are using WordPress 3.3 or later
 * Includes Galleria 1.2.6
 * Added admin option to set default photo size 
 * Minified javascript for faster loading
@@ -61,17 +64,12 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 * Bug fix to Galleria 1.2.5 image loading
 * Fix HTML errors on Slickr Flickr Admin page
 
-= 1.34 =
-* Bundled with Galleria 1.2.5
-* Galleria now uses thumbnails from Flickr which improves loading time
-* Galleria theme is added as a class on the galleria container which makes it easier to make CSS modifications if you want to. (e.g class="slickr-flickr-galleria landscape small miniml" would appear as the class of the div elements that contains a galleria of small landscape photos that are styled with the miniml galleria theme)
-
 See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 1.36 = 
-* Recommended - Galleria 1.2.6, minified Javascript and various bug fixes
+= 1.37 = 
+* Optional - useful if you not running WordPress 3.3
 
 == How to Use The Plugin ==
 

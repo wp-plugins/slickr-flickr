@@ -66,11 +66,13 @@ class slickr_flickr_admin {
 		add_meta_box('slickr-flickr-cache', __('Caching',SLICKR_FLICKR), array(&$this, 'cache_panel'), $this->pagehook, 'side', 'core');
 		add_meta_box('slickr-flickr-lightboxes', __('Compatible LightBoxes',SLICKR_FLICKR), array(&$this, 'lightboxes_panel'), $this->pagehook, 'side', 'core');
 		$current_screen = get_current_screen();
-		$current_screen->add_help_tab( array( 'id' => 'slickr_flickr_overview', 'title' => 'Overview', 		
-			'content' => '<p>This admin screen is used to configure your Flickr settings, set display defaults, and choose which LightBox and version of the Galleria /theme you wish to use with Slickr Flickr.</p>'));	
-		$current_screen->add_help_tab( array( 'id' => 'slickr_flickr_troubleshooting', 'title' => 'Troubleshooting', 		
-			'content' => '<p>Make sure you only have one version of jQuery installed, and have a single LightBox activated otherwise you may have conflicts. For best operation your page should not have any JavaScript errors. Some Javascript conflicts are removed by loading Slickr Flickr in the footer (see Advanced Options)</p>
-			<p>For help go to <a href="http://www.slickrflickr.com/slickr-flickr-help/">Slickr Flickr Help</a> or for priority support upgrade to <a href="http://www.slickrflickr.com/upgrade/">Slickr Flickr Pro</a></p>'));	
+		if (method_exists($current_screen,'add_help_tab')) {
+			$current_screen->add_help_tab( array( 'id' => 'slickr_flickr_overview', 'title' => 'Overview', 		
+				'content' => '<p>This admin screen is used to configure your Flickr settings, set display defaults, and choose which LightBox and version of the Galleria /theme you wish to use with Slickr Flickr.</p>'));	
+			$current_screen->add_help_tab( array( 'id' => 'slickr_flickr_troubleshooting', 'title' => 'Troubleshooting', 		
+				'content' => '<p>Make sure you only have one version of jQuery installed, and have a single LightBox activated otherwise you may have conflicts. For best operation your page should not have any JavaScript errors. Some Javascript conflicts are removed by loading Slickr Flickr in the footer (see Advanced Options)</p>
+				<p>For help go to <a href="http://www.slickrflickr.com/slickr-flickr-help/">Slickr Flickr Help</a> or for priority support upgrade to <a href="http://www.slickrflickr.com/upgrade/">Slickr Flickr Pro</a></p>'));	
+		}
 	}
 
    	function clear_cache() {
@@ -414,10 +416,11 @@ CACHE_PANEL;
  		if (isset($_POST['options_update'])) echo $this->save();
  		$this_url = $_SERVER['REQUEST_URI'];
 ?>
+<div class="wrap">
+    <?php screen_icon(); ?><h2>Slickr Flickr Options</h2>
+	<p>For help on gettting the best from Slickr Flickr visit the <a href="<?php echo SLICKR_FLICKR_HOME; ?>">Slickr Flickr Plugin Home Page</a></p>
+	<p><b>We recommend you fill in your Flickr ID in the Flickr Identity section. All the other fields are optional.</b></p>
     <div id="poststuff" class="metabox-holder has-right-sidebar">
-        <h2>Slickr Flickr Options</h2>
-		<p>For help on gettting the best from Slickr Flickr visit the <a href="<?php echo SLICKR_FLICKR_HOME; ?>">Slickr Flickr Plugin Home Page</a></p>
-		<p><b>We recommend you fill in your Flickr ID in the Flickr Identity section. All the other fields are optional.</b></p>
         <div id="side-info-column" class="inner-sidebar">
 		<?php do_meta_boxes($this->pagehook, 'side', null); ?>
         </div>
@@ -437,6 +440,7 @@ CACHE_PANEL;
         </div>
         <br class="clear"/>
     </div>
+</div>
 <?php
 	}    
     
