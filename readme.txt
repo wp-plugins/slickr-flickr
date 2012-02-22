@@ -2,9 +2,9 @@
 Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, highslide, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
-Requires at least: 2.8
+Requires at least: 3.0
 Tested up to: 3.3
-Stable tag: 1.37
+Stable tag: 1.38
 A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
 
 == Description ==
@@ -17,7 +17,7 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 * Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
-* Latest version 1.37 is compatible with earlier versions of WordPress. 
+* Latest version 1.38 is bundled with Warren Krewenki's jQuery LightBox. 
 
 == Installation ==
 1. Use the standard WordPress plugin automatic updates system for installing and updating to the latest version or use the manual steps below. 
@@ -48,6 +48,11 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 1.38 =
+* Replaced non-compliant LightBox with BSD licensed LightBox by Warren Krevenski 
+* Removed non-compliant minified JS files
+* Added secondary license server (PRO)
+
 = 1.37 =
 * Does NOT require version 3.3 of WordPress
 * Fix bug with setting default galleria options
@@ -68,8 +73,8 @@ See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 1.37 = 
-* Optional - useful if you not running WordPress 3.3
+= 1.38 = 
+* Required - uses GPL compliant LightBox
 
 == How to Use The Plugin ==
 

@@ -1,41 +1,64 @@
 <?php
-define('SLICKR_FLICKR_UPGRADER', SLICKR_FLICKR_PRO.'/updates.php'); 
 
 class SlickrFlickrUpdater {
-
+	private static $plugin=SLICKR_FLICKR;
+	private static $local_version=SLICKR_FLICKR_VERSION;
+	private static $remote_updater='http://www.diywebmastery.com/slickrflickrpro/updates.php';
+	private static $remote_updater_backup='http://updates.slickrflickr.com/updates.php';
+	private static $default_action='updates';	
 	private static $initialized=false;
-	private static $licence = "-";
+	private static $licence='-';
 	private static $upgrader;
 	private static $version;
 	private static $package;
 	private static $expiry;
 	private static $notice;
-	private static $summary ;
-	private static $valid ;
+	private static $updates;
+	private static $valid;
 
-	public static function get_licence($cache=true) {
-    	if (!$cache || ('-'== self::$licence)) self::$licence = get_option(SLICKR_FLICKR_LICENCE);
-    	return self::$licence;
+	private static function init() {
+    	if (!self::$initialized) self::update(); 
 	}
-	
+
+	public static function update($cache = true, $action = '') {
+		if (empty($action)) $action = self::$default_action;
+		return ($cache && self::$initialized && ($action==self::$default_action)) ? self::$updates : self::get_updates($action,$cache); 
+	}
+
 	public static function set_licence($new_licence, $md5) {
 		self::$licence = empty($new_licence) ? '' : ($md5 ? md5($new_licence) : $new_licence);
     }
 
+	public static function get_licence($cache=true) {
+    	if (!$cache || ('-'== self::$licence)) self::$licence = get_option(self::add_plugin_prefix('licence'));
+    	return self::$licence;
+	}
+	
+	public static function has_licence($cache=true) {
+		$licence = self::get_licence($cache);
+    	return !empty($licence) && (strlen($licence) == 32); //has a licence worth checking
+	}
+
+	public static function empty_licence($cache=true) {
+		$licence = self::get_licence($cache);
+    	return empty($licence);
+	}
+
 	public static function save_licence($new_licence,$md5 = true) {
+		$updated = false;
   		$old_licence = self::get_licence(false); //fetch old licence from database
 		if ($new_licence != $old_licence) {
 		    self::$initialized = false;
 			self::set_licence($new_licence,$md5);
-   			if (update_option(SLICKR_FLICKR_LICENCE,self::$licence)) self::get_updates(false);
-   			}
-   		else
-   			return false;
+   			$updated = update_option(self::add_plugin_prefix('licence'),self::$licence) ;
+   			if ($updated) self::update(false); //get updates for new licence
+   		}
+   		return $updated;
 	}		
 
 	public static function check_validity(){
     	if (self::get_licence()) {
-    		if (!self::$initialized) self::get_updates(); 
+    		self::init(); 
     		return self::$valid;
     		}
     	else 
@@ -43,34 +66,37 @@ class SlickrFlickrUpdater {
 	}
 
   	public static function get_version(){
-    	if (!self::$initialized) self::get_updates(); 
+    	self::init(); 
     	return self::$version;
    	}
    
  	public static function get_package(){
-    	if (!self::$initialized) self::get_updates(); 
+    	self::init(); 
     	return self::$package;
    	}   
 
 	public static function get_notice(){
-    	if (!self::$initialized) self::get_updates(); 
+    	self::init(); 
     	return self::$notice;
    	}
 
- 	public static function get_summary(){
-    	if (!self::$initialized) self::get_updates(); 
-    	return self::$summary;
-   	}  
-
  	public static function get_expiry(){
-    	if (!self::$initialized) self::get_updates(); 
+    	self::init(); 
     	return self::$expiry;
    	}
+   	
+    private static function add_plugin_prefix($action) {
+		return str_replace('-','_', self::$plugin).'_'.strtolower($action);
+    }  	
 	
-	public static function get_updates($cache=true,$item='updates'){
-	    return self::parse_updates(self::fetch_remote_or_cache($item,$cache));
+	private static function get_updates($action,$cache) {
+	    $result = self::has_licence($cache)  ? 
+	    	self::parse_updates(self::fetch_remote_or_cache($action,$cache)) :
+	    	self::set_defaults(self::empty_licence($cache) ? '' : 'Invalid License Key' );
+		if ($action==self::$default_action) self::$updates = $result;
+		return $result;
 	}
-	
+
     private static function parse_updates($response) {
         	self::$initialized = true; 
  			if (is_array($response) && (count($response) >= 6)) {
@@ -79,53 +105,60 @@ class SlickrFlickrUpdater {
     	        self::$package = $response['package'];  
     	        self::$notice = $response['notice']; 
     	        self::$expiry = $response['expiry']; 
-    	        self::$summary = $response['updates'];
     			return $response['updates'];
-				}
-			else {
-    	        self::$valid = false; 
-    	        self::$version = SLICKR_FLICKR_VERSION; 
-    	        self::$package = 'http://wordpress.org/extend/plugins/'.SLICKR_FLICKR.SLICKR_FLICKR_VERSION.'.zip';  
-    	        self::$notice = '<div class="message">'.__("Unable to check for updates right now. Please try again later.").'</div>'; 
-    	        self::$expiry = ''; 			
-				return array(); //return nothing
+			} else {
+				return self::set_defaults('Unable to check for updates. Please try again.'); 
 			}
     }
 
-	private static function fetch_remote_or_cache($item,$cache=true){
-		$transient = str_replace("-","_",SLICKR_FLICKR).'_'.$item;
+    private static function set_defaults($notice = '') {
+ 		self::$valid = false; 
+    	self::$version = self::$local_version; 
+    	self::$package = '';  
+    	self::$notice = empty($notice) ? '' : ('<div class="message">'.__($notice).'</div>'); 
+    	self::$expiry = ''; 
+    	self::$updates = '';
+    	return self::$updates;
+    }
+    
+    private static function fetch_remote_or_cache($action,$cache=true){
+		$transient = self::add_plugin_prefix($action);
     	$values = $cache ? get_transient($transient) : false;
     	if ((false === $values)  || is_array($values) || empty($values)) {
-     	    $raw_response = self::remote_call($item, $cache);
+     	    $raw_response = self::remote_call($action, $cache);
     	    $values = (is_array($raw_response) && array_key_exists('body',$raw_response)) ? $raw_response['body'] : false;
     	    set_transient($transient, $values, 86400); //cache for 24 hours
 		}
 		return false === $values ? false : unserialize(gzinflate(base64_decode($values)));
 	}
 
-	private static function remote_call($action, $cache=true){
+	private static function remote_call($action, $cache=true, $backup = false){
         $options = array('method' => 'POST', 'timeout' => 3);
         $options['headers'] = array(
             'Content-Type' => 'application/x-www-form-urlencoded; charset=' . get_option('blog_charset'),
             'User-Agent' => 'WordPress/' . get_bloginfo("version"),
             'Referer' => get_bloginfo("url")
         );
-        $raw_response = wp_remote_request(self::get_upgrader($cache). '&act='.$action  , $options);
-        if ( is_wp_error( $raw_response ) || 200 != $raw_response['response']['code']){
-            return false;
+        $raw_response = wp_remote_request(self::get_upgrader($cache, $backup). '&act='.$action  , $options);
+        if ( is_wp_error( $raw_response ) || (200 != $raw_response['response']['code']) || empty($raw_response)){
+			return $backup ? false : self::remote_call($action, $cache, true);
         } else {
             return $raw_response;
         }
 	}
 
-	private static function get_upgrader($cache = true){
+	private static function get_upgrader($cache = true, $backup=false){
         global $wpdb;
-        if (empty(self::$upgrader) || ($cache == false))
-            self::$upgrader = SLICKR_FLICKR_UPGRADER. sprintf("?of=SlickrFlickr&key=%s&v=%s&wp=%s&php=%s&mysql=%s",
-                urlencode(self::get_licence()), urlencode(SLICKR_FLICKR_VERSION), urlencode(get_bloginfo("version")),
+        if (empty(self::$upgrader) || ($cache == false) || $backup)
+            self::$upgrader = self::get_remote_updater($backup). sprintf("?of=%s&key=%s&v=%s&wp=%s&php=%s&mysql=%s",
+                urlencode(self::$plugin), urlencode(self::get_licence()), urlencode(self::$local_version), urlencode(get_bloginfo("version")),
                 urlencode(phpversion()), urlencode($wpdb->db_version()));
 
         return self::$upgrader;
 	}
+	
+	private static function get_remote_updater($backup = false) {
+    	return $backup ? self::$remote_updater_backup : self::$remote_updater ;
+	}	
 }
 ?>

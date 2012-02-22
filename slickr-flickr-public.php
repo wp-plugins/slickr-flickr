@@ -315,7 +315,7 @@ function slickr_flickr_image($photo, $params) {
     $oriented = $photo->get_orientation();
     $full_url = $params['size']=="original" ? $photo->get_original() : $photo->resize($params['size']);
     $thumb_url = $photo->resize($params['thumbnail_size']);
-    $captiontitle = $params["flickr_link"]=="on"?("<a title='Click to see photo on Flickr' href='". $link . "'>".$title."</a>"):$title;
+    $captiontitle = $params["flickr_link"]=="on"?("<p><a title='Click to see photo on Flickr' href='". $link . "'>".$title."</a></p>"):('<p>'.$title.'</p>');
     $alt = $params["descriptions"]=="on"? $description : "";
     $border = $params['border']=='on'?' class="border"':'';
     switch ($params['type']) {
@@ -543,16 +543,11 @@ function slickr_flickr_init() {
 
     $deps = array('jquery');
     switch ($options['lightbox']) {
-     case 'sf-lbox-manual': {
-        wp_enqueue_style('lightbox', $path."/lightbox/css/jquery.lightbox-0.5.css","0.5");
-        wp_enqueue_script('lightbox', $path."/lightbox/js/jquery.lightbox-0.5.min.js", array('jquery'),SLICKR_FLICKR_VERSION,$footer_scripts);
+     case 'sf-lbox-manual':
+     case 'sf-lbox-auto':  {
+        wp_enqueue_style('lightbox', $path."/lightbox/lightbox.css","0.5");
+        wp_enqueue_script('lightbox', $path."/lightbox/jquery.lightbox.js", array('jquery'),"0.5",$footer_scripts);
         $deps[] = 'lightbox';
-        }
-     case 'sf-lbox-auto': {
-        wp_enqueue_style('lightbox', $path."/lightbox-slideshow/lightbox.css");
-        wp_enqueue_script('lightbox', $path."/lightbox-slideshow/lightbox-slideshow.min.js", array('jquery'), SLICKR_FLICKR_VERSION, $footer_scripts);
-        $deps[] = 'lightbox';
-        break;
         }
     case 'thickbox': { //preinstalled by wordpress but needs to be activated
        wp_enqueue_style('thickbox');
