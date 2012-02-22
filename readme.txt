@@ -4,8 +4,8 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, highslide, lightbox, fancybox, shadowbox, slimbox, prettyPhoto, thickbox, wp-prettyphoto, shutterbox, slideshow lightbox
 Requires at least: 3.0
 Tested up to: 3.3
-Stable tag: 1.38
-A Flickr WordPress plugin that displays your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
+Stable tag: 1.39
+A Flickr WordPress plugin to display your photos either as a gallery, a galleria or a unbranded slideshow in posts, pages, and sidebar widgets.  
 
 == Description ==
 * Displays Flickr photos as a gallery, a galleria, or an unbranded slideshow (i.e. not Flickr's own slideshow widget)
@@ -17,7 +17,7 @@ A Flickr WordPress plugin that displays your photos either as a gallery, a galle
 * Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
-* Latest version 1.38 is bundled with Warren Krewenki's jQuery LightBox. 
+* Latest version 1.39 replaces 1.38 release which had a missing file
 
 == Installation ==
 1. Use the standard WordPress plugin automatic updates system for installing and updating to the latest version or use the manual steps below. 
@@ -48,6 +48,11 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 1.39 =
+* Corrected reference to non-minified JS file
+* Add banner on WordPress Plugin page
+* Set galleria 1.2.6 debug to false to suppress reported warning message: Could not extract width/height from image
+
 = 1.38 =
 * Replaced non-compliant LightBox with BSD licensed LightBox by Warren Krevenski 
 * Removed non-compliant minified JS files
@@ -57,24 +62,14 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 * Does NOT require version 3.3 of WordPress
 * Fix bug with setting default galleria options
 
-= 1.36 =
-* Includes Galleria 1.2.6
-* Added admin option to set default photo size 
-* Minified javascript for faster loading
-* Allow selection of specific page (e.g page 2 where items = 20 will be photos 21 through 40) 
-* No longer strips blank lines from photo descriptions
-* Uses capabilities rather than user levels to control access to admin page
-
-= 1.35 =
-* Bug fix to Galleria 1.2.5 image loading
-* Fix HTML errors on Slickr Flickr Admin page
-
 See full version history at http://www.slickrflickr.com/about/
+
 
 == Upgrade Notice ==
 
-= 1.38 = 
-* Required - uses GPL compliant LightBox
+= 1.39 = 
+* Required - Version 1.38 was a bit of a pig's ear due to a missing file - apologies - please upgrade
+
 
 == How to Use The Plugin ==
 

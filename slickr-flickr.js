@@ -112,7 +112,7 @@ function slickr_flickr_start() {
     if (jQuery('a[rel="sf-lightbox"]').size() > 0) {
         jQuery(".slickr-flickr-gallery,.slickr-flickr-slideshow").each( function (index) {
  	        var $options = jQuery(this).data("options");
- 			jQuery(this).find('a[rel="sf-lightbox"]').lightBox($options);
+ 			jQuery(this).find('a[rel="sf-lightbox"]').lightbox($options);
         });
     }   
     slickr_flickr_start_slideshows();

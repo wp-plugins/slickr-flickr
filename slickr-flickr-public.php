@@ -471,6 +471,7 @@ function slickr_flickr_galleria_options($params) {
     	if (!array_key_exists('show_info',$options)) $options['show_info'] = $params['captions']=='on' ? true: false;
     	if (!array_key_exists('image_crop',$options)) $options['image_crop'] = true;
     	if (!array_key_exists('carousel',$options)) $options['carousel'] = true;    	
+    	if (!array_key_exists('debug',$options)) $options['debug'] = false;  
         $gtheme = slickr_flickr_get_option('galleria_theme');
         if (('folio'!= $gtheme) && ('fullscreen' != $gtheme)) {	
             $p = $params['orientation']=="portrait";
@@ -584,7 +585,7 @@ function slickr_flickr_init() {
     	}
 	}
     wp_enqueue_style('slickr-flickr', $path."/slickr-flickr.css", SLICKR_FLICKR_VERSION);
-    wp_enqueue_script('slickr-flickr', $path."/slickr-flickr.min.js", $deps, SLICKR_FLICKR_VERSION, $footer_scripts);
+    wp_enqueue_script('slickr-flickr', $path."/slickr-flickr.js", $deps, SLICKR_FLICKR_VERSION, $footer_scripts);
     add_filter($footer_scripts ? 'print_footer_scripts' : 'print_head_scripts' , 'slickr_flickr_start',100); //start slickr flickr last
 }
 
