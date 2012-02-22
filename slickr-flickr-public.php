@@ -471,6 +471,7 @@ function slickr_flickr_galleria_options($params) {
     	if (!array_key_exists('show_info',$options)) $options['show_info'] = $params['captions']=='on' ? true: false;
     	if (!array_key_exists('image_crop',$options)) $options['image_crop'] = true;
     	if (!array_key_exists('carousel',$options)) $options['carousel'] = true;    	
+    	if (!array_key_exists('debug',$options)) $options['debug'] = false;  
         $gtheme = slickr_flickr_get_option('galleria_theme');
         if (('folio'!= $gtheme) && ('fullscreen' != $gtheme)) {	
             $p = $params['orientation']=="portrait";
