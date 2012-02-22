@@ -584,7 +584,7 @@ function slickr_flickr_init() {
     	}
 	}
     wp_enqueue_style('slickr-flickr', $path."/slickr-flickr.css", SLICKR_FLICKR_VERSION);
-    wp_enqueue_script('slickr-flickr', $path."/slickr-flickr.min.js", $deps, SLICKR_FLICKR_VERSION, $footer_scripts);
+    wp_enqueue_script('slickr-flickr', $path."/slickr-flickr.js", $deps, SLICKR_FLICKR_VERSION, $footer_scripts);
     add_filter($footer_scripts ? 'print_footer_scripts' : 'print_head_scripts' , 'slickr_flickr_start',100); //start slickr flickr last
 }
 
