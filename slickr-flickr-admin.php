@@ -312,6 +312,7 @@ LIGHTBOX_PANEL;
 		$galleria_123 = $options['galleria']=="galleria-1.2.3"?'selected="selected"':'';
 		$galleria_125 = $options['galleria']=="galleria-1.2.5"?'selected="selected"':'';
 		$galleria_126 = $options['galleria']=="galleria-1.2.6"?'selected="selected"':'';
+		$galleria_127 = $options['galleria']=="galleria-1.2.7"?'selected="selected"':'';
 		$galleria_none = $options['galleria']=="galleria-none"?'selected="selected"':'';
 		$home = SLICKR_FLICKR_HOME;
 		print <<< GALLERIA_PANEL
@@ -320,7 +321,8 @@ LIGHTBOX_PANEL;
 <option {$galleria_12} value="galleria-1.2">Galleria 1.2 - with carousel and skins</option>
 <option {$galleria_123} value="galleria-1.2.3">Galleria 1.2.3</option>
 <option {$galleria_125} value="galleria-1.2.5">Galleria 1.2.5</option>
-<option {$galleria_126} value="galleria-1.2.6">Galleria 1.2.6 - latest version</option>
+<option {$galleria_126} value="galleria-1.2.6">Galleria 1.2.6</option>
+<option {$galleria_127} value="galleria-1.2.7">Galleria 1.2.7 - latest version</option>
 <option {$galleria_none} value="galleria-none">Galleria not required so do not load the script</option>
 </select></h4>
 <p>Choose which version of the galleria you want to use. We recommend you use the latest version of the galleria as this has the most features.</p>

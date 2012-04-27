@@ -362,7 +362,7 @@ function slickr_flickr_get_lightbox_html ($params, $full_url, $link_url, $thumb_
       		}
       default: { $add_description_to_title = $params["descriptions"]=="on"; break; };
     }
-    $lightbox_title= ($params["captions"]=="on" ? $a_title :"") . ($add_description_to_title ? $img_alt : "");
+    $lightbox_title= htmlentities(($params["captions"]=="on" ? $a_title :"") . ($add_description_to_title ? $img_alt : ""));
     $title = empty($lightbox_title) ? '' : ($title= ' title="'.$lightbox_title.'"');
     if (($params['lightbox']=='thickbox') && (!empty($lightbox_title))) 
     	$title = " title='". str_replace("'",'"',$lightbox_title)."'";
