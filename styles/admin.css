@@ -1,0 +1,17 @@
+form#slickr_flickr_signup { width:180px; }
+form#slickr_flickr_signup label { font-weight: bold}
+form#slickr_flickr_signup label#lsubject { display: none;}
+form#slickr_flickr_signup input[type="text"] { width:180px; background-color:#E4F7FC;}
+form#slickr_flickr_signup input[type="submit"] { width:180px; height:50px; border:0;
+  background-repeat: no-repeat; background-color:transparent;
+  background-image: url(../images/free-video-tutorials-button.png); cursor:pointer;
+}
+form#slickr_flickr_options fieldset { display: inline; padding: 5px; }
+h2.title:before {
+    content: '\f128';
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    font: normal 29px/1 'Dashicons';
+    vertical-align: middle;
+    margin-right: 0.3em;
+}
