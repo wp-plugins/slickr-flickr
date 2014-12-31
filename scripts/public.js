@@ -3,7 +3,7 @@ var slickr_flickr_slideshow_timer_on = false;
 
 jQuery.noConflict();
 
-function  slickr_flickr_next_slide(obj) {
+function slickr_flickr_next_slide(obj) {
     var j = jQuery(obj);
     if (j.children('div').length == 1)  return ;
     options = j.parent().data("options");    
@@ -22,7 +22,8 @@ function  slickr_flickr_next_slide(obj) {
 
 function slickr_flickr_next_slides() {
    jQuery('.slickr-flickr-slideshow').each(function(index){
-        slickr_flickr_next_slide(jQuery(this)) ;
+   		s=jQuery(this);
+        if (! s.hasClass('responsive')) slickr_flickr_next_slide(s) ;
    });
 }
 
@@ -64,11 +65,18 @@ function slickr_flickr_stop_slideshows() {
 }
 
 function slickr_flickr_start_slideshows() {
-   var mindelay = 0;
-   jQuery('.slickr-flickr-slideshow').each(function(index){
-        var s =jQuery(this);
-   		options = s.parent().data('options');
-   		if (options) {
+    var mindelay = 0;
+    var mintimeout = 0;
+    jQuery('.slickr-flickr-slideshow').each(function(index){
+     var s =jQuery(this);
+   	 options = s.parent().data('options');
+   	 if (options) {
+ 	    if (s.hasClass('responsive')) {
+    		if (('timeout' in options) && (options['timeout'] != '')) {
+    			timeout = options['timeout'];
+    		    if ((!(timeout == undefined)) && ((mintimeout == 0) || (timeout < mintimeout))) mintimeout = timeout;
+    		} 		
+    	} else {
     		if (('link' in options) && (options['link'] != ''))  slickr_flickr_set_slideshow_click(s,options['link'],options['target']);
     		if (('width' in options) && (options['width'] != ''))  slickr_flickr_set_slideshow_width(s,options['width']);
      		if (('height' in options) && (options['height'] != ''))  {
@@ -80,14 +88,26 @@ function slickr_flickr_start_slideshows() {
     		if (('delay' in options) && (options['delay'] != '')) {
     			delay = options['delay'];
     		    if ((!(delay == undefined)) && ((mindelay == 0) || (delay < mindelay))) mindelay = delay;
-    		} 		
+    		} 		 
 		}
+	  }
     });
 	if (mindelay > 0) {
 		slickr_flickr_stop_slideshows();
 	    slickr_flickr_slideshow_timer = setInterval("slickr_flickr_next_slides()",mindelay);
 	    slickr_flickr_slideshow_timer_on = true;
     }
+	if (mintimeout > 0) {
+	  jQuery('.slickr-flickr-slideshow.responsive').each(function(index){
+    	var s =jQuery(this);
+   		options = s.parent().data('options');
+   		if (options) {
+    		options['timeout'] = mintimeout;
+			s.find('ul').responsiveSlides(options);
+		}
+	  });
+    }
+
 }
 
 function slickr_flickr_start() {    
@@ -99,7 +119,7 @@ function slickr_flickr_start() {
 			if (lazy) Galleria.ready( function(options) { this.lazyLoadChunks( 10, 200); } );
     	});
     } 
-
+    
     jQuery(".slickr-flickr-gallery").find('img').hover( 
 		function(){ jQuery(this).addClass('hover');},
 		function(){ jQuery(this).removeClass('hover');}); 	
@@ -109,7 +129,7 @@ function slickr_flickr_start() {
   		if ($options && ('border' in $options) && ($options['border'] != '')) {
   			$id = jQuery(this).parent().attr('id');
 	 		jQuery('<style type="text/css">#'+$id+' img.hover{ background-color:'+$options['border']+'; }</style>').appendTo('head');
- 			}
+ 		}
  		if (jQuery(this).hasClass('sf-lightbox')) {
   			jQuery(this).find('a').each( function (ind) { 
   				jQuery(this).click( function(e) { 
@@ -123,6 +143,7 @@ function slickr_flickr_start() {
   			});
  		}
  	});
-  
+ 	 
     slickr_flickr_start_slideshows();
+
 }

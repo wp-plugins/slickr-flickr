@@ -6,12 +6,6 @@ form#slickr_flickr_signup input[type="submit"] { width:180px; height:50px; borde
   background-repeat: no-repeat; background-color:transparent;
   background-image: url(../images/free-video-tutorials-button.png); cursor:pointer;
 }
-form#slickr_flickr_options fieldset { display: inline; padding: 5px; }
-h2.title:before {
-    content: '\f128';
-    display: inline-block;
-    -webkit-font-smoothing: antialiased;
-    font: normal 29px/1 'Dashicons';
-    vertical-align: middle;
-    margin-right: 0.3em;
-}
+h2.title { margin-left: 20px; }
+h2.title i:before { font-size: 32px;margin-left:-20px; }
+.inner-sidebar .diy-image-feed-widget-item { display:block;}

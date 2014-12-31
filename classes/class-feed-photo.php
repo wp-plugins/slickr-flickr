@@ -32,7 +32,9 @@ class Slickr_Flickr_Photo {
 
     $this->orientation = $this->height > $this->width ? "portrait" : "landscape" ;
 
+
     if ($enclosure = $item->get_enclosure()) {
+  		$this->original = $enclosure->get_link();
     	$this->description = html_entity_decode($enclosure->get_description());    
     	if ($thumbs = $enclosure->get_thumbnails()) {
 			$last = count($thumbs)-1;
@@ -58,7 +60,7 @@ class Slickr_Flickr_Photo {
 
   /* Function that removes all quotes */
   function cleanup($s = null) {
-    return $s?str_replace("\n", "<br/>",$s):false;
+    return $s?str_replace("\n", "<br/>",$s):'';
   }
   
   /* Function that returns the correctly sized photo URL. */
