@@ -3,7 +3,7 @@ class Slickr_Flickr_Public {
 
 	static private $jquery_data; //write jQuery in one chunk	
 	static private $galleria_themes; //galleria themes
-	static private $is_present = false; //is there a galleria, gallery or slideshow on this page? 		
+	static private $is_present = false; //is there a galleria, gallery or slideshow on this page? 	
 
 	static function init() {
 		self::$galleria_themes=array(); //initialize galleria themes
@@ -14,18 +14,16 @@ class Slickr_Flickr_Public {
 	}
 
 	static function display($attr) {
-		$dir = dirname(__FILE__) . '/';
-		require_once($dir . 'class-fetcher.php');
-		require_once($dir . 'class-display.php');
 		$disp = new Slickr_Flickr_Display();
 		return $disp->show($attr);
 	}
 
 	static function enqueue_scripts() {
 	    $path = SLICKR_FLICKR_PLUGIN_URL;
-	    $options = Slickr_Flickr_Utils::get_options();
-	    $footer_scripts = Slickr_Flickr_Utils::scripts_in_footer() ;
+	    $options = Slickr_Flickr_Options::get_options();
+	    $footer_scripts =  $options['scripts_in_footer'] ;
 
+    	wp_enqueue_style('slickr-flickr', $path.'/styles/public.css', array(), SLICKR_FLICKR_VERSION);
     	$deps = array('jquery');
     	switch ($options['lightbox']) {
     		 case 'sf-lightbox':  {
@@ -55,10 +53,10 @@ class Slickr_Flickr_Public {
         		break;
 			}
 		    default: {
-				$gversion = '1.3.5';
+				$gversion = '1.4.2';
 				$gscript = $gfolder . 'galleria-'.$gversion.'.min.js';
-				$gtheme = Slickr_Flickr_Utils::get_option('galleria_theme');
-				$gloading = Slickr_Flickr_Utils::get_option('galleria_theme_loading');
+				$gtheme = $options['galleria_theme'];
+				$gloading = $options['galleria_theme_loading'];
 		    	wp_enqueue_script($gname, $gscript, array('jquery'), $gversion, $footer_scripts); //enqueue loading of core galleria script
 				if ('static' == $gloading) {
 			    	wp_enqueue_script($gname.'-'.$gtheme, self::get_galleria_theme_path($gtheme), array('jquery',$gname), $gversion, $footer_scripts); //enqueue loading of core galleria script
@@ -67,7 +65,7 @@ class Slickr_Flickr_Public {
     		    break;
     		}
 		}
-    	wp_enqueue_style('slickr-flickr', $path.'/styles/public.css', array(), SLICKR_FLICKR_VERSION);
+    	wp_enqueue_script('rslides', $path.'/scripts/responsiveslides.min.js', 'jquery', '1.54', $footer_scripts);
     	wp_enqueue_script('slickr-flickr', $path.'/scripts/public.js', $deps, SLICKR_FLICKR_VERSION, $footer_scripts);
     	add_filter('print_footer_scripts', array(__CLASS__,'print_scripts'),100); //start slickr flickr last
 		if ($footer_scripts) add_action('wp_footer', array(__CLASS__,'dequeue_redundant_scripts'),1);
@@ -94,7 +92,7 @@ class Slickr_Flickr_Public {
 	}
 		
 	static function add_galleria_theme($theme) {
-		self::$galleria_themes[]= $theme;
+		if (! in_array($theme, self::$galleria_themes)) self::$galleria_themes[] = $theme;
 	}
 
 	static function get_galleria_theme_path($theme, $css = false) {
@@ -102,24 +100,29 @@ class Slickr_Flickr_Public {
 		if ('classic'==$theme) 
     	    $themepath = SLICKR_FLICKR_PLUGIN_URL. '/galleria/themes/classic/galleria.classic';
 		else  //premium themes are located outside the plugin folder
-    	    $themepath = site_url( Slickr_Flickr_Utils::get_option('galleria_themes_folder'). '/' . $theme .'/galleria.'. $theme);
+    	    $themepath = site_url( Slickr_Flickr_Options::get_option('galleria_themes_folder'). '/' . $theme .'/galleria.'. $theme);
 		return $themepath . ($css ? '.css' : '.min.js');
 	}	
 
 	static function load_galleria_theme() {
-
-		if (('galleria-latest' != Slickr_Flickr_Utils::get_option('galleria')) 
-		|| ('dynamic' != Slickr_Flickr_Utils::get_option('galleria_theme_loading'))
+	    $options = Slickr_Flickr_Options::get_options();
+		if (('galleria-latest' != $options['galleria']) 
+		|| ('dynamic' != $options['galleria_theme_loading'])
 		|| (count(self::$galleria_themes) == 0)) return;
 
-		$themepath = self::get_galleria_theme_path(self::$galleria_themes[0]);
-		print <<< LOAD_THEME
+		print <<< LOAD_THEME_START
 <script type="text/javascript">
 //<![CDATA[
-jQuery(document).ready(function() { Galleria.loadTheme("{$themepath}"); });
+jQuery(document).ready(function() { 
+LOAD_THEME_START;
+		foreach (self::$galleria_themes as $theme) 
+			printf( 'Galleria.loadTheme("%1$s");', self::get_galleria_theme_path($theme)) ;
+		print <<< LOAD_THEME_END
+})
 //]]>
 </script>
-LOAD_THEME;
+
+LOAD_THEME_END;
 	}
 
 	static function add_jquery($line) {

@@ -17,17 +17,27 @@ class Slickr_Flickr_Api_Photo {
     $id = $item['id'];
     $secret = $item['secret'];
     $owner = array_key_exists('owner',$item) ? $item['owner'] : $user_id;
-    $this->url = "http://farm{$farmid}.static.flickr.com/{$serverid}/{$id}_{$secret}.jpg";
-    $this->link = "http://www.flickr.com/photos/{$owner}/{$id}";
+    $this->url = "https://farm{$farmid}.static.flickr.com/{$serverid}/{$id}_{$secret}.jpg";
+    $this->link = "https://www.flickr.com/photos/{$owner}/{$id}";
     $this->original= array_key_exists('url_o',$item) ? $item['url_o'] : '' ;
-    $this->date = array_key_exists('date_taken',$item) ? $item['date_taken'] : '' ;
+    $this->date = array_key_exists('date_taken',$item) ? $item['date_taken'] : (array_key_exists('date_upload',$item) ? $item['date_upload'] :'') ;
     $this->title = $this->cleanup($item['title']);
-    $this->description = array_key_exists('description',$item) ? $this->cleanup($item['description']) : '' ;
+    $this->description = $this->set_description($item['description']);
     $this->height = array_key_exists('o_height',$item) ? $item['o_height'] : 0 ;
     $this->width = array_key_exists('o_width',$item) ? $item['o_width'] : 0 ;
     if ($must_get_dims && (($this->height==0) || ($this->width==0))) $this->get_dims();
     $this->orientation = $this->height > $this->width ? "portrait" : "landscape" ;
   }
+
+   function set_description($desc) {
+   		if (is_array($desc)) 
+   			if (array_key_exists('_content', $desc))
+   				$desc = $desc['_content'];
+   			else
+   				$desc = $desc[0];
+    	$this->description = $this->cleanup($desc);
+   }
+
 
   function get_url() { return $this->url; }
   function get_width() { return $this->width; }
@@ -41,7 +51,7 @@ class Slickr_Flickr_Api_Photo {
 
   /* Function that removes all quotes */
   function cleanup($s = null) {
-    return $s?str_replace("\n", "<br/>",$s):false;
+    return $s?str_replace("\n", "<br/>",$s):'';
   }
 
   /* Function that returns the correctly sized photo URL. */

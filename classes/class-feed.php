@@ -2,13 +2,13 @@
 class Slickr_Flickr_Feed{
 
 	const FLICKR_REST_URL = 'https://api.flickr.com/services/rest/?method=%1$s&lang=en-us&format=feed-rss_200&api_key=%2$s%3$s';
-	const FLICKR_FEED_URL = 'https://api.flickr.com/services/feeds/%1$s?lang=en-us&format=feed-rss_200%2$s';
+	const FLICKR_FEED_URL = 'http://api.flickr.com/services/feeds/%1$s?lang=en-us&format=feed-rss_200%2$s';
 
 	var $args = array(); //arguments
 	var $method = ''; //access method
 	var $use_rss = true;  //use RSS feed
 	var $use_rest = false; //use REST access
-	var $extras = 'description,date_taken,url_o,dims_o'; //extra params to fetch when using API
+	var $extras = 'description,url_o,dims_o'; //extra params to fetch when using API
 	var $container = 'photos'; //XML container of photo elements
 	var $api_key = ''; //Flickr API Key
 	var $user_id = ''; //Flickr NS ID 
@@ -29,6 +29,7 @@ class Slickr_Flickr_Feed{
 	function get_message() { return $this->message; }
  
 	function __construct($params) {
+		$this->extras .= 'upload'==$params['date_type'] ? ',date_upload' : ',date_taken'; 
     	$this->build_command($params);  //set up method and args
 		if (!$this->use_rss) $this->set_php_flickr();
   	}
@@ -97,11 +98,24 @@ class Slickr_Flickr_Feed{
 		$this->args['per_page']= min($params['items'],(int) $params['per_page']);
 	}
 	
+	function get_custom_cache($args) {
+		$reqhash = $args[0];
+		return get_transient('flickr_'.$reqhash);
+	}
+	
+	function set_custom_cache($args) {
+		$reqhash = $args[0];
+		$response = $args[1];
+		$timeout = $args[2];
+		return set_transient('flickr_'.$reqhash, $response, $timeout);
+	}	
+	
 	function set_cache($cache, $cache_expiry) {
 		switch ($cache) {
+			case 'db': $this->cache = 'db'; break;
 			case 'fs': $this->cache = 'fs'; break;
 			case 'off': $cache_expiry = 0; 
-			default: $this->cache = 'db';
+			default: $this->cache = 'on';
 		}
 		$this->cache_expiry = max($cache_expiry,60); //max refresh rate is 60 seconds
 	}
@@ -112,18 +126,24 @@ class Slickr_Flickr_Feed{
 		require_once(dirname(__FILE__).'/class-phpFlickr.php');				
 		$this->flickr = new phpFlickr ($this->api_key); 	
 		switch ($this->cache) {
-			case 'db': { 
+			case 'db': 
 				global $table_prefix;
  	   			$prefix = $table_prefix ? $table_prefix : 'wp_';				
 				$this->flickr->enableCache ('db', 'mysql://'.DB_USER.':'.DB_PASSWORD.'@'.DB_HOST.'/'.DB_NAME, 
-					$this->cache_expiry, $prefix . Slickr_Flickr_Utils::FLICKR_CACHE_TABLE); 
-			} 
-			case 'fs': {
+					$this->cache_expiry, $prefix . Slickr_Flickr_Cache::FLICKR_CACHE_TABLE); 
+				break;
+			
+			case 'fs': 
 				$uploads = wp_upload_dir();
-				$cache_dir = $uploads['basedir'].'/flickr-cache';
+				$cache_dir = $uploads['basedir'].'/'.Slickr_Flickr_Cache::FLICKR_CACHE_FOLDER;
 				if (!file_exists($cache_dir)) @mkdir($cache_dir);
-				if (file_exists($cache_dir)) $this->flickr->enableCache('fs', $cache_dir, $this->cache_expiry); 
-			}
+				if (file_exists($cache_dir)) $this->flickr->enableCache('fs', 
+					$cache_dir, $this->cache_expiry); 
+				break;
+				
+			default: 
+				$this->flickr->enableCache ('custom', 
+					array(array($this,'get_custom_cache'),array($this,'set_custom_cache')),  $this->cache_expiry); 			
 		}
 		return true; 
   	}
@@ -207,8 +227,7 @@ class Slickr_Flickr_Feed{
   	}
 
 	function fetch_feed() {
-		require_once(dirname(__FILE__) . '/class-feed-photo.php');	
- 	 	if ($this->cache_expiry != Slickr_Flickr_Utils::get_default('cache_expiry')) 
+		if ($this->cache_expiry != Slickr_Flickr_Options::get_default('cache_expiry')) 
  	 		add_filter('wp_feed_cache_transient_lifetime', array(&$this,'feed_cache_expiry'),10,2);
  		$rss = fetch_feed($this->get_feed_url());  //use WordPress simple pie feed handler 
         if ( is_wp_error($rss) ) {
@@ -229,20 +248,25 @@ class Slickr_Flickr_Feed{
 	}
   
 	function call_flickr_api() {
-		require_once(dirname(__FILE__) . '/class-api-photo.php');
 		$this->photos = array();
-		if ($resp = $this->flickr->call($this->method, $this->args)) {
-			$results = $resp[$this->container];
-			$this->available = $results['total'];
-			$this->pages = $results['pages'];
-    		foreach ($results['photo'] as $photo) { 
-    			$this->photos[] = new Slickr_Flickr_Api_Photo($this->user_id,$photo,$this->get_dims); 
-    		}
+    	if (($resp = $this->flickr->call($this->method, $this->args)) 
+    	&& ($results = $resp[$this->container])
+    	&& is_array($results)) {
+    		$this->available = array_key_exists('total', $results) ? $results['total'] : 0;
+			$this->pages = array_key_exists('pages', $results) ? $results['pages'] : 0;
+			if (array_key_exists('photo', $results) && is_array($results['photo'])) {
+				foreach ($results['photo'] as $photo) 
+					$this->photos[] = new Slickr_Flickr_Api_Photo($this->user_id,$photo,$this->get_dims);
+			} else {
+				$this->message = 'No photos found.';
+				$this->error = true;
+			}
     	} else {
-			$this->message = $this->flickr->error_msg ;
+    		$this->message = $this->flickr->error_msg ;
     		$this->error = true;
- 		}		
+ 		}
 	}
+	
 
 	function fetch_photos($page=0) {
 		$this->photos = array();
@@ -256,4 +280,4 @@ class Slickr_Flickr_Feed{
     	return $this->photos;
 	}
 
-}    
+}

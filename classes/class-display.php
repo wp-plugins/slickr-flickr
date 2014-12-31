@@ -4,193 +4,207 @@ class Slickr_Flickr_Display {
 
 	private $pages = 1;
 	private $id;
+	private $params;
 
 	function __construct() {}
 
 	function show($attr) {
-		Slickr_Flickr_Public::note_active();	
-  		$params = shortcode_atts( Slickr_Flickr_Utils::get_options(), $attr ); //apply plugin defaults    
-  		foreach ( $params as $k => $v ) if (($k != 'id') && ($k != 'options') && ($k != 'galleria_options') && ($k != 'attribution') && ($k != 'flickr_link_title')) $params[$k] = strtolower($v); //set all params as lower case
-  		$params['tag'] = str_replace(' ','',$params['tag']);
-		if (strpos($params['tag'],',-') !==FALSE) $params['tagmode'] = 'bool';
-  		if (empty($params['id'])) return "<p>Please specify a Flickr ID for this ".$params['type']."</p>";
-  		if ( (!empty($params['tagmode'])) && empty($params['tag']) && ($params['search']=="photos")) return "<p>Please set up a Flickr tag for this ".$params['type']."</p>";
-  		if (empty($params['api_key']) && ($params['use_key'] == "y")) return "<p>Please add your Flickr API Key in Slickr Flickr Admin settings to fetch more than 20 photos.</p>";
-		$this->set_api_required($params);
-  		if (empty($params['use_key'])) $this->force_api_key($params); //set api_key if required by other parameters
+		Slickr_Flickr_Public::note_active();
+  		$this->params = shortcode_atts( Slickr_Flickr_Options::get_options(), $attr ); //apply plugin defaults    
+  		foreach ( $this->params as $k => $v ) if (($k != 'id') && ($k != 'options') && ($k != 'galleria_options') && ($k != 'attribution') && ($k != 'flickr_link_title')) $this->params[$k] = strtolower($v); //set all params as lower case
+  		$this->params['tag'] = str_replace(' ','',$this->params['tag']);
+		if (strpos($this->params['tag'],',-') !==FALSE) $this->params['tagmode'] = 'bool';
+  		if (empty($this->params['id'])) return "<p>Please specify a Flickr ID for this ".$this->params['type']."</p>";
+  		if ( (!empty($this->params['tagmode'])) && empty($this->params['tag']) && ($this->params['search']=="photos")) return "<p>Please set up a Flickr tag for this ".$this->params['type']."</p>";
+  		if (empty($this->params['api_key']) && ($this->params['use_key'] == "y")) return "<p>Please add your Flickr API Key in Slickr Flickr Admin settings to fetch more than 20 photos.</p>";
+		$this->set_api_required();
+  		if (empty($this->params['use_key'])) $this->force_api_key(); //set api_key if required by other parameters
   		$rand_id = rand(1,10000);
-  		$this->id = empty($params['element_id']) ? $this->get_unique_id($params,$rand_id) : $params['element_id'];
+  		$this->id = empty($this->params['element_id']) ? $this->get_unique_id($attr,$rand_id) : $this->params['element_id'];
 
-      	$photos = $this->fetch_photos($params);
+      	$photos = $this->fetch_photos();
       	if (! is_array($photos)) return $photos; //return error message if an array of photos is not returned
 
   		$divclear = '<div style="clear:both"></div>';
-  		$attribution = empty($params['attribution'])?"":('<p class="slickr-flickr-attribution align'.$params['align'].'">'.$params['attribution'].'</p>');
-  		$bottom = empty($params['bottom'])?"":(' style="margin-bottom:'.$params['bottom'].'px;"');
+  		$attribution = empty($this->params['attribution'])?"":('<p class="slickr-flickr-attribution align'.$this->params['align'].'">'.$this->params['attribution'].'</p>');
+  		$bottom = empty($this->params['bottom'])?"":(' style="margin-bottom:'.$this->params['bottom'].'px;"');
   		$lightboxrel = $thumb_scale = $pagination = $s = '';
-  		switch ($params['type']) {
+  		switch ($this->params['type']) {
     		case "slightbox": {
-	    		if (empty($params['ptags'])) $params['ptags'] = "on"; //paragraph tags arounds titles	
-        		if (empty($params['thumbnail_size'])) $params['thumbnail_size'] = 'medium'; //set default slideshow size as Medium
-        		$this->set_lightboxrel($params,$rand_id);
+	    		if (empty($this->params['ptags'])) $this->params['ptags'] = "on"; //paragraph tags arounds titles	
+        		if (empty($this->params['thumbnail_size'])) $this->params['thumbnail_size'] = 'medium'; //set default slideshow size as Medium
+        		$this->set_lightboxrel($rand_id);
         		$divstart = sprintf('%1$s<div class="slickr-flickr-slideshow%2$s %3$s %4$s %5$s%6$%7$s" %8$s>',
         			$attribution, 
-					$params['lightbox'] == 'sf-lightbox' ? ' sf-lightbox' : '',
-        			$params['orientation'], $params['thumbnail_size'],
-        			$params['descriptions']=='on' ? 'descriptions ' : '',
-        			$params['captions']=='off' ? 'nocaptions ' : '',
-        			$params['align'], $bottom);
+					$this->params['lightbox'] == 'sf-lightbox' ? ' sf-lightbox' : '',
+        			$this->params['orientation'], $this->params['thumbnail_size'],
+        			$this->params['descriptions']=='on' ? 'descriptions ' : '',
+        			$this->params['captions']=='off' ? 'nocaptions ' : '',
+        			$this->params['align'], $bottom);
 
         		$divend = '</div>'.$this->set_options( array_merge (
-        			$this->slideshow_options($params), 
-        			$this->lightbox_options($params,$this->prepare_lightbox_data($photos, $params))));
+        			$this->slideshow_options(), 
+        			$this->lightbox_options($this->prepare_lightbox_data($photos))));
         		break;
        	 	}
    		case "slideshow": {
-	    	if (empty($params['ptags'])) $params['ptags'] = "on"; //paragraph tags arounds titles	
-    		$divstart = $attribution.'<div class="slickr-flickr-slideshow '.$params['orientation'].' '.$params['size'].($params['descriptions']=="on" ? " descriptions" : "").($params['captions']=="off" ? " nocaptions " : " ").$params['align'].'"'.$bottom.'>';
- 			$divend = '</div>'.$this->set_options($this->slideshow_options($params));
+	    	if (empty($this->params['ptags'])) $this->params['ptags'] = "on"; //paragraph tags arounds titles	
+    		$divstart = $attribution.'<div class="slickr-flickr-slideshow '.$this->params['orientation'].' '.$this->params['size'].($this->params['responsive']=="on" ? " responsive" : "").($this->params['descriptions']=="on" ? " descriptions" : "").($this->params['captions']=="off" ? " nocaptions " : " ").$this->params['align'].'"'.$bottom.'>';
+ 			$divend = '</div>'.$this->set_options($this->slideshow_options());
         	break;
         }
    		case "galleria": {
-    		if (empty($params['thumbnail_size'])) $params['thumbnail_size'] = 'square'; //set default thumbnail size as Square
-    		if ($params['galleria'] == 'galleria-original') {
-				$params['galleria_theme'] = 'original'; //set a default value
+    		if (empty($this->params['thumbnail_size'])) $this->params['thumbnail_size'] = 'square'; //set default thumbnail size as Square
+    		if ($this->params['galleria'] == 'galleria-original') {
+				$this->params['galleria_theme'] = 'original'; //set a default value
 				if (empty($bottom))
 					$style = ' style="visibility:hidden;"';
         	    else
         	    	$style = substr($bottom,0,strlen($bottom-2)).'visibility:hidden;"';
-        	    $startstop = $params['pause']== 'off' ? '' : ('| <a href="#" class="startSlide">start</a> | <a href="#" class="stopSlide">stop</a>');
+        	    $startstop = $this->params['pause']== 'off' ? '' : ('| <a href="#" class="startSlide">start</a> | <a href="#" class="stopSlide">stop</a>');
  			    $nav = <<<NAV
-<p class="nav {$params['size']}"><a href="#" class="prevSlide">&laquo; previous</a> {$startstop} | <a href="#" class="nextSlide">next &raquo;</a></p>
+<p class="nav {$this->params['size']}"><a href="#" class="prevSlide">&laquo; previous</a> {$startstop} | <a href="#" class="nextSlide">next &raquo;</a></p>
 NAV;
 				$data = false;
 			} else {		
 				$style = $bottom;
 				$nav= '';
-				$data = $this->prepare_galleria_data($photos, $params);
+				$data = $this->prepare_galleria_data($photos);
 			}
-			switch ($params['nav']) {
+			switch ($this->params['nav']) {
 				case "above": { $nav_below = ''; $nav_above = $nav; break; }
 				case "below": { $nav_below = $nav; $nav_above = ''; break; }
 				case "none": { $nav_below = ''; $nav_above = ''; break; } 	
 				default: { $nav_below = $nav; $nav_above = $nav; break; }
 			}
-    	    $divstart = '<div class="slickr-flickr-galleria '.$params['orientation'].' '.$params['size'].' '.$params['align'].' '.$params['galleria_theme'].'"'.$style.'>'.$attribution.$nav_above;
-    	    $divend = $divclear.$attribution.$nav_below.'</div>'.$this->set_options($this->galleria_options($params,$data));
-			Slickr_Flickr_Public::add_galleria_theme($params['galleria_theme']); //add count of gallerias on page		
+    	    $divstart = '<div class="slickr-flickr-galleria '.$this->params['orientation'].' '.$this->params['size'].' '.$this->params['align'].' '.$this->params['galleria_theme'].'"'.$style.'>'.$attribution.$nav_above;
+    	    $divend = $divclear.$attribution.$nav_below.'</div>'.$this->set_options($this->galleria_options($data));
+			Slickr_Flickr_Public::add_galleria_theme($this->params['galleria_theme']); //add count of gallerias on page		
     	    break;
     	    }
    		default: {
-    	    $this->set_thumbnail_params($params);
-    	    $this->set_lightboxrel($params,$rand_id);
+    	    $this->set_thumbnail_params();
+    	    $this->set_lightboxrel($rand_id);
     	    $divstart = sprintf('<div class="slickr-flickr-gallery%1$s"%2$s>%3$s', 
-    	    	$params['lightbox']=='sf-lightbox' ? ' sf-lightbox' : '', $bottom, $attribution);
-    	    $divend = '</div>'.$this->set_options($this->lightbox_options($params,$this->prepare_lightbox_data($photos, $params)));
+    	    	$this->params['lightbox']=='sf-lightbox' ? ' sf-lightbox' : '', $bottom, $attribution);
+    	    $divend = '</div>'.$this->set_options($this->lightbox_options($this->prepare_lightbox_data($photos)));
     	    }
   		}
 
-   		if (($params['type']=='galleria') && ($params['galleria'] == 'galleria-latest')) 
+   		if (($this->params['type']=='galleria') && ($this->params['galleria'] == 'galleria-latest')) 
    			$content = '';
    		else 
-   			$content = $this->wrap_photos ($photos, $params);
-		return '<div id="'.$this->id.'">'.$divstart.$content.$divend.$pagination.$divclear.'</div>';
+   			$content = $this->wrap_photos($photos);
+		$class= $this->params['class'] ? sprintf(' class="%1$s"',$this->params['class']) : ''; 
+		return sprintf('<div id="%1$s"%2$s>%3$s%4$s%5$s%6$s%7$s</div>', 
+			$this->id, $class, $divstart, $content, $divend, $pagination, $divclear);
 	}
-	
-	function wrap_photos ($photos, $params) {
+
+	function wrap_photos ($photos) {
 		$s = $format = $element = $element_style = $gallery_style = $gallery_class = '';
-  		switch ($params['type']) {
-			case "slideshow":
+  		switch ($this->params['type']) {
+			case "slideshow":		
 			case "slightbox":
-				$element = 'div'; break;
+				if ($this->params['responsive'] == 'on') {	
+	 				$format= '<ul class="rslides">%1$s</ul>';
+					$element = 'li'; 				
+				} else {
+					$element = 'div'; 
+				}
+				break;
 			case "gallery":
-				$element_style = $params['thumbnail_style'];
-				$gallery_style = $params['gallery_style'];
-				$gallery_class = $params['gallery_class'];
+				$element_style = $this->params['thumbnail_style'];
+				$gallery_style = $this->params['gallery_style'];
+				$gallery_class = $this->params['gallery_class'];
  			default: 
 	 			$format= '<ul%2$s%3$s>%1$s</ul>';
 				$element = 'li'; 
   		}
-		$start = $this->get_start($params, count($photos));
+		$start = $this->get_start(count($photos));
 	  	$i = 0;
 		foreach ( $photos as $photo ) {
 			$i++;
-			$s .= sprintf('<%2$s%3$s%4$s>%1$s</%2$s>', $this->get_image($photo, $params), 
+			$s .= sprintf('<%2$s%3$s%4$s>%1$s</%2$s>', $this->get_image($photo), 
 				$element, $element_style, $start==$i?' class="active"': '');
 		}
 	  	return empty($format) ? $s : sprintf($format,  $s, $gallery_class, $gallery_style);
 	}
 
-	function prepare_lightbox_data($photos, $params) {
-		if ($params['lightbox'] != 'sf-lightbox') return false;
+	function prepare_lightbox_data($photos) {
+		if ($this->params['lightbox'] != 'sf-lightbox') return false;
 		$data = array();		
 		foreach ( $photos as $photo ) {
-			$image = $this->prepare_image($photo, $params);
+			$image = $this->prepare_image($photo);
 			$item = array();
 		    $item['thumb'] = $image['thumb_url'];
     		$item['src'] = $image['full_url'];
-    		$item['caption'] = $params['flickr_link']=='on' ?
+    		$item['caption'] = $this->params['flickr_link']=='on' ?
 	    		sprintf('<a %1$s title="%2$s" href="%3$s">%4$s</a>', 
-	    			empty($params["flickr_link_target"]) ? '' : sprintf('target="%1$s"',$params["flickr_link_target"]),
-	    			$params["flickr_link_title"], $image['link'], $image['title']) : $image['title'];
-    		if (in_array($params["descriptions"], array('on','lightbox'))) $item['desc'] = $image['description'];    			    
+	    			empty($this->params["flickr_link_target"]) ? '' : sprintf('target="%1$s"',$this->params["flickr_link_target"]),
+	    			$this->params["flickr_link_title"], $image['link'], $image['title']) : $image['title'];
+    		if (in_array($this->params["descriptions"], array('on','lightbox'))) $item['desc'] = strip_tags($image['description'],'<a><br>');    			    
 			$data[] = $item;
 		}	
 		return $data;	
 	}
 
-	function prepare_galleria_data($photos, $params) {
+	function prepare_galleria_data($photos) {
 		$data = array();
 		foreach ( $photos as $photo ) {
-			$image = $this->prepare_image($photo, $params);
+			$image = $this->prepare_image($photo);
 			$item = array();
 		    $item['thumb'] = $image['thumb_url'];
     		$item['image'] = $image['full_url'];
     		$item['title'] = $image['captiontitle'];
-    		if ($params["descriptions"] =='on') $item['description'] = $image['description'];
-     		if ($params["flickr_link"]=="on") $item['link'] = $image['link'];    			    
+    		if ($this->params["descriptions"] =='on') $item['description'] = $image['description'];
+     		if ($this->params["flickr_link"]=="on") $item['link'] = $image['link'];    			    
 			$data[] = $item;
 		}	
 		return $data;	
 	}
 
-	function get_unique_id($params,$rand_id) {
-	  $unique_id = array_key_exists('tag',$params) ? $params['tag'] : (
-               array_key_exists('set',$params) ? $params['set'] : (
-               array_key_exists('gallery',$params) ? $params['gallery'] : 'recent'));
-	  return 'flickr_'.strtolower(preg_replace("{[^A-Za-z0-9_]}",'',$unique_id)).'_'.$rand_id; //strip spaces, backticks, dashes and commas
+	function get_unique_id($attr, $rand_id) {
+		if (is_array($attr) && array_key_exists('random',$attr)) {
+	  		$unique_id = md5(serialize($attr));
+		} else  {
+			$unique_id = !empty( $this->params['tag'] ) ? $this->params['tag'] : (
+	               	!empty( $this->params['set'] ) ? $this->params['set'] : (
+              		!empty( $this->params['gallery'] ) ? $this->params['gallery'] : 'recent'));
+            $unique_id = strtolower(preg_replace("{[^A-Za-z0-9_]}",'',$unique_id)).'_'.$rand_id; //strip spaces, backticks, dashes and commas
+		}
+		return 'flickr_'.$unique_id; 
 	}
 
-	function force_api_key(&$params) {
-	  if (empty($params['use_key']) 
-	  && ! empty($params['api_key']) 
-	  && (($params['items'] > 20 ) || ($params['api_required'] == 'y'))) 
-	   	$params['use_key'] = 'y'; // set use_key if API key is available and is either required or request is for over 20 photos
+	function force_api_key() {
+	  if (empty($this->params['use_key']) 
+	  && ! empty($this->params['api_key']) 
+	  && (($this->params['items'] > 20 ) || ($this->params['api_required'] == 'y'))) 
+	   	$this->params['use_key'] = 'y'; // set use_key if API key is available and is either required or request is for over 20 photos
 	}
 
-	function set_api_required(&$params) {
-		$params['api_required'] = (($params['use_rss'] == 'n')
-			|| (! empty($params['license'])) || (! empty($params['text']))
-			|| (! empty($params['date'])) || (! empty($params['before'])) || (! empty($params['after']))
-			|| (! empty($params['private'])) || ($params['page'] > 1) || ($params['search'] == 'galleries') 
-			|| ( !empty($params['tag']) && ($params["search"]=="groups"))) ? 'y' : 'n'; 
+	function set_api_required() {
+		$this->params['api_required'] = (($this->params['use_rss'] == 'n')
+			|| (! empty($this->params['license'])) || (! empty($this->params['text']))
+			|| (! empty($this->params['date'])) || (! empty($this->params['before'])) || (! empty($this->params['after']))
+			|| (! empty($this->params['private'])) || ($this->params['page'] > 1) || ($this->params['search'] == 'galleries') 
+			|| ( !empty($this->params['tag']) && ($this->params["search"]=="groups"))) ? 'y' : 'n'; 
 	}
 
-	function set_slideshow_onclick($params) {
+	function set_slideshow_onclick() {
 	  $link='';
-	  if (empty($params['link']))
-	    if ($params['pause'] == "on")
+	  if (empty($this->params['link']))
+	    if ($this->params['pause'] == "on")
 	        $link = "toggle" ;
 	     else
-	        $link = $params['type'] == "slightbox" ? "" : "next";
+	        $link = $this->params['type'] == "slightbox" ? "" : "next";
 	  else
-	    $link = $params['link'];
+	    $link = $this->params['link'];
 	  return $link;
 	}
 
-	function set_thumbnail_params(&$params) {
+	function set_thumbnail_params() {
 	    $thumb_rescale= false;
-	    switch ($params["thumbnail_size"]) {
+	    switch ($this->params["thumbnail_size"]) {
 	      case "thumbnail": $thumb_width = 100; $thumb_height = 75; $thumb_rescale = true; break;
 	      case "s150": $thumb_width = 150; $thumb_height = 150; $thumb_rescale = true; break;
 	      case "small": $thumb_width = 240; $thumb_height = 180; $thumb_rescale = true; break;
@@ -199,94 +213,94 @@ NAV;
 	      case "m640": $thumb_width = 640; $thumb_height = 480; $thumb_rescale = true; break;
 	      case "m800": $thumb_width = 800; $thumb_height = 640; $thumb_rescale = true; break;
 	      case "large": $thumb_width = 1024; $thumb_height = 768; $thumb_rescale = true; break;	      
-	      default: $thumb_width = 75; $thumb_height = 75; $params["thumbnail_size"] = 'square';
+	      default: $thumb_width = 75; $thumb_height = 75; $this->params["thumbnail_size"] = 'square';
 	    }
-	    if ($params["orientation"]=="portrait" ) { $swp = $thumb_width; $thumb_width = $thumb_height; $thumb_height = $swp; }
+	    if ($this->params["orientation"]=="portrait" ) { $swp = $thumb_width; $thumb_width = $thumb_height; $thumb_height = $swp; }
 
-	    if ($params["thumbnail_scale"] > 0) {
+	    if ($this->params["thumbnail_scale"] > 0) {
 	        $thumb_rescale = true;
-	        $thumb_width = round($thumb_width * $params["thumbnail_scale"] / 100);
-	        $thumb_height = round($thumb_height * $params["thumbnail_scale"] / 100);
+	        $thumb_width = round($thumb_width * $this->params["thumbnail_scale"] / 100);
+	        $thumb_height = round($thumb_height * $this->params["thumbnail_scale"] / 100);
 	    }
-    	$params['image_style'] = $thumb_rescale ? (' style="height:'.$thumb_height.'px; max-width:'.$thumb_width.'px;"') : '';
+    	$this->params['image_style'] = $thumb_rescale ? (' style="height:'.$thumb_height.'px; max-width:'.$thumb_width.'px;"') : '';
 
-    	if (($params['type'] == "gallery") && ($params['photos_per_row'] > 0)) {
+    	if (($this->params['type'] == "gallery") && ($this->params['photos_per_row'] > 0)) {
     	    $li_width = ($thumb_width + 10);
     	    $li_height = ($thumb_height + 10);
-    	    $gallery_width = 1 + (($li_width + 4) *  $params['photos_per_row']);
-    	    $params['gallery_style'] = ' style=" width:'.$gallery_width.'px"';
-    	    $params['thumbnail_style'] = ' style="width:'.$li_width.'px; height:'.$li_height.'px;"';
+    	    $gallery_width = 1 + (($li_width + 4) *  $this->params['photos_per_row']);
+    	    $this->params['gallery_style'] = ' style=" width:'.$gallery_width.'px"';
+    	    $this->params['thumbnail_style'] = ' style="width:'.$li_width.'px; height:'.$li_height.'px;"';
     	} else {
-    	    $params['gallery_style'] = '';
-    	    $params['thumbnail_style'] = '';
+    	    $this->params['gallery_style'] = '';
+    	    $this->params['thumbnail_style'] = '';
     	}
-    	$params['gallery_class'] = $params['align'] ? (' class="'.$params['align'].'"'):'';
+    	$this->params['gallery_class'] = $this->params['align'] ? (' class="'.$this->params['align'].'"'):'';
 	}
 
-	function prepare_image($photo, $params) {
+	function prepare_image($photo) {
 	    $image = array();
 	    $image['link'] = $photo->get_link();
 	    $oriented = $photo->get_orientation();
 	    $title = $photo->get_title();
 	    $description = $photo->get_description(); 
 	    if ($description == '<p></p>') $description = '';
-	    $image['border'] = $params['border']=='on'?' class="border"':'';
-		$ptags = ('on'==$params['ptags']); //paragraph tags around title?
+	    $image['border'] = $this->params['border']=='on'?' class="border"':'';
+		$ptags = ('on'==$this->params['ptags']); //paragraph tags around title?
 		//separator is required if title and description end up together on the same line
-	    $sep = (($params["descriptions"] =='on') && ($params["type"] !='galleria') && ! $ptags) ? '.&nbsp;' : ''; 
+	    $sep = (($this->params["descriptions"] =='on') && ($this->params["type"] !='galleria') && ! $ptags) ? '.&nbsp;' : ''; 
 	    $ptitle = empty($title) ? '' : sprintf(($ptags ? '<p%2$s>%1$s</p>' : '<span%2$s>%1$s</span>').$sep ,$title, $image['border']);
-		$link_target = empty($params["flickr_link_target"]) ? '' : sprintf('target="%1$s"',$params["flickr_link_target"]);
+		$link_target = empty($this->params["flickr_link_target"]) ? '' : sprintf('target="%1$s"',$this->params["flickr_link_target"]);
 	    $plink = sprintf($ptags ? '<p>%1$s</p>' : '%1$s' , 
-	    	sprintf('<a title="%1$s" %2$s href="%3$s">%4$s</a>%5$s', $params["flickr_link_title"], $link_target, $image['link'], $title, $sep));
-	    $image['captiontitle'] = $params["flickr_link"]=="on" ? ($params["lightbox"]=="none" ? $title : $plink) :$ptitle;
-	    $image['alt'] = $params["descriptions"]=="on"? ($ptags ? $description : strip_tags($description,'<a>')) : "";
-		$image['full_url'] = $params['size']=="original" ? $photo->get_original() : $photo->resize($params['size']);
-	    $image['thumb_url'] = $photo->resize($params['thumbnail_size']);
+	    	sprintf('<a title="%1$s" %2$s href="%3$s">%4$s</a>%5$s', $this->params["flickr_link_title"], $link_target, $image['link'], $title, $sep));
+	    $image['captiontitle'] = $this->params["flickr_link"]=="on" ? ($this->params["lightbox"]=="none" ? $title : $plink) :$ptitle;
+	    $image['alt'] = $this->params["descriptions"]=="on"? ($ptags ? $description : strip_tags($description,'<a>')) : "";
+		$image['full_url'] = $this->params['size']=="original" ? $photo->get_original() : $photo->resize($this->params['size']);
+	    $image['thumb_url'] = $photo->resize($this->params['thumbnail_size']);
 	    $image['title'] = $title;
 	    $image['description'] = $description;
 		return $image;
 	}
 
-	function get_image($photo, $params) {
-		$image = $this->prepare_image($photo, $params);
-
-	    switch ($params['type']) {
-	       case "slideshow": {
-	            $caption = $params['captions']=="off"?"":($image['captiontitle'].$image['alt']);
+	function get_image($photo) {
+		$image = $this->prepare_image($photo);
+	    switch ($this->params['type']) {
+	       case "slideshow": {	
+	       		$format = $this->params['responsive'] == 'on' ? '<span class="caption">%1$s%2$s</span>' : '%1$s%2$s';
+	            $caption = $this->params['captions']=='off' ? '' : sprintf($format,$image['captiontitle'],$image['alt']);
 	            return  sprintf('<img src="%1$s" title="%2$s" alt="%3$s" %4$s />%5$s',
 	            $image['full_url'], htmlspecialchars($image['title']), htmlspecialchars($image['alt']), $image['border'], $caption);
 	        }
 	       case "slightbox": {
-	            $desc = $params["descriptions"]=="on" || $params["descriptions"]=="slideshow" ? $image['description'] : "";
-	            $alt = $params["descriptions"]=="on" || $params["descriptions"]=="lightbox" ? $image['description'] : "";
-	            $caption = $params['captions']=="off"?"":($image['captiontitle'].$desc);
+	            $desc = $this->params["descriptions"]=="on" || $this->params["descriptions"]=="slideshow" ? $image['description'] : "";
+	            $alt = $this->params["descriptions"]=="on" || $this->params["descriptions"]=="lightbox" ? $image['description'] : "";
+	            $caption = $this->params['captions']=="off"?"":($image['captiontitle'].$desc);
 	            $lightbox_title = $image['captiontitle'] . $alt;
 	            return sprintf('<a %1$s href="%2$s" title="%3$s"><img src="%4$s" title="%5$s" alt="%6$s" %7$s /></a>%8$s',
-	            	$params['lightboxrel'], $image['full_url'], htmlspecialchars($lightbox_title), 
+	            	$this->params['lightboxrel'], $image['full_url'], htmlspecialchars($lightbox_title), 
 	            	$image['thumb_url'], htmlspecialchars($image['title']), htmlspecialchars($alt), 
 	            	$image['border'], $caption);
     	    }
     	   case "galleria": {
-    	   		$caption = $params['captions']=="off"?"":$image['captiontitle'];
+    	   		$caption = $this->params['captions']=="off"?"":$image['captiontitle'];
     	   		return sprintf('<a href="%1$s"><img src="%2$s" title="%3$s" alt="%4$s" /></a>',
     	   				$image['full_url'], $image['thumb_url'], htmlspecialchars($caption), htmlspecialchars($image['alt']));
     	    }
     	    default: {
-				return $this->get_lightbox_html ($image,$params );
+				return $this->get_lightbox_html ($image);
     	    }
     	}
 	}
 
-	function get_lightbox_html ($image, $params) {
-    	if ($params['lightbox']=="none") { //if no lightbox then maybe link directly to Flickr
-    		$image['full_url'] = !empty($params['link']) ?  $params['link'] : ('on'==$params['flickr_link'] ? $image['link'] : '') ; 
+	function get_lightbox_html ($image) {
+    	if ($this->params['lightbox']=="none") { //if no lightbox then maybe link directly to Flickr
+    		$image['full_url'] = !empty($this->params['link']) ?  $this->params['link'] : ('on'==$this->params['flickr_link'] ? $image['link'] : '') ; 
 		}
-    	$thumbcaption = $params['thumbnail_captions']=="on"?('<br/><span class="slickr-flickr-caption">'.$image['title'].'</span>'):"";
-    	$full_caption= ($params["captions"]=="off" ? '' : $image['captiontitle']) . ($params["descriptions"]=="on" ? $image['alt'] : "");
+    	$thumbcaption = $this->params['thumbnail_captions']=="on"?('<br/><span class="slickr-flickr-caption">'.$image['title'].'</span>'):"";
+    	$full_caption= ($this->params["captions"]=="off" ? '' : $image['captiontitle']) . ($this->params["descriptions"]=="on" ? $image['alt'] : "");
 		$img_title = empty($image['title']) ? '' : sprintf('title="%1$s"',htmlspecialchars($image['title']));
 		$img_alt = empty($image['alt']) ? '' : sprintf('alt="%1$s"',htmlspecialchars($image['alt']));
 		$title = ''; 
-		if (! empty($full_caption)) switch ($params['lightbox']) {
+		if (! empty($full_caption)) switch ($this->params['lightbox']) {
 	      case "sf-lightbox":  break; //no title 
 	      case "fancybox":  $title = sprintf('title="%1$s"', htmlspecialchars($full_caption)); break; //use title
 	      case "thickbox": $title = sprintf('title=\'%1$s\'', str_replace("'","&acute;",$full_caption)); break; //avoid thickbox issue with apostrophes
@@ -294,16 +308,16 @@ NAV;
 		}
 		if (empty($image['full_url']))
     		return sprintf('<img src="%1$s" %2$s %3$s %4$s />%5$s',
-				$image['thumb_url'], $params['image_style'], $img_alt, $img_title, $thumbcaption);
+				$image['thumb_url'], $this->params['image_style'], $img_alt, $img_title, $thumbcaption);
     	else	
     		return sprintf('<a href="%1$s" %2$s %3$s><img src="%4$s" %5$s %6$s %7$s />%8$s</a>',
-				$image['full_url'], $params['lightboxrel'], $title, 
-				$image['thumb_url'], $params['image_style'], $img_alt, $img_title, $thumbcaption);
+				$image['full_url'], $this->params['lightboxrel'], $title, 
+				$image['thumb_url'], $this->params['image_style'], $img_alt, $img_title, $thumbcaption);
 	}
 
-	function set_lightboxrel(&$params, $rand_id) {
+	function set_lightboxrel($rand_id) {
 		$ptags = "off";
-	    switch ($params['lightbox']) {
+	    switch ($this->params['lightbox']) {
 	      case "sf-lightbox": 	$lightboxrel = ''; break;
 	      case "evolution": 	$lightboxrel = sprintf('rel="group%1%s" class="lightbox"',$rand_id);  break;
 	      case "fancybox": 		$lightboxrel = sprintf('rel="fancybox_%1$s" class="fancybox"',$rand_id);  break;
@@ -314,31 +328,20 @@ NAV;
 	      case "norel": $lightboxrel = '' ; break;      
 	      default:	$lightboxrel = 'rel="lightbox['.$rand_id.']"';  break;
 	    }
-		$params['lightboxrel'] = $lightboxrel;
- 		$params['lightbox_id'] = $rand_id;
-		if (empty($params['ptags'])) $params['ptags'] = $ptags; //paragraph tags arounds titles?
+		$this->params['lightboxrel'] = $lightboxrel;
+ 		$this->params['lightbox_id'] = $rand_id;
+		if (empty($this->params['ptags'])) $this->params['ptags'] = $ptags; //paragraph tags arounds titles?
 	}
 
-	function get_start($params,$numitems) {
+	function get_start($numitems) {
 	  $r = 1;
 	  if ($numitems > 1) {
-	     if ($params['start'] == "random")
+	     if ($this->params['start'] == "random")
 	        $r = rand(1,$numitems);
 	     else
-	        $r = is_numeric($params['start']) && ($params['start'] < $numitems) ? $params['start'] : $numitems;
+	        $r = is_numeric($this->params['start']) && ($this->params['start'] < $numitems) ? $this->params['start'] : $numitems;
 	     }
 	   return $r;
-	}
-
-	function restrict_photos ($items, $params) {
-	    $filtered_items = array();
-	    if ($params['restrict']=='orientation') { 
-	    	$orientation = $params['orientation'];    
-	    	foreach ($items as $item)  if ($item->get_orientation()==$orientation) $filtered_items[] = $item;
-	    	return $filtered_items;
-		} else {
-		    return $items;
-		}
 	}
 
 	function sort_photos ($items, $sort, $direction) {
@@ -347,7 +350,7 @@ NAV;
 	    if ($sort=="date") { foreach ($items as $item) { if (!$item->get_date()) { $do_sort = false; break; } } }
 	    if ($sort=="description") { foreach ($items as $item) { if (!$item->get_description()) { $do_sort = false; break; } } }
 	    $ordered_items = $items;
-	    if ($do_sort) usort($ordered_items, array(&$this,'sort_by_'.$sort.'_'.$direction));
+	    if ($do_sort) usort($ordered_items, array($this,'sort_by_'.$sort.'_'.$direction));
 	    return $ordered_items;
 	}
 
@@ -361,7 +364,7 @@ NAV;
 	function set_options($options) {
 	    if (count($options) > 0) {
 	    	$s = sprintf('jQuery("#%1$s").data("options",%2$s);', $this->id, json_encode($options) ); 
-	        if (Slickr_Flickr_Utils::scripts_in_footer()) {
+			if ( Slickr_Flickr_Options::get_option('scripts_in_footer')) {
 	    		Slickr_Flickr_Public::add_jquery($s); //save for later
 			} else {
 				return sprintf('<script type="text/javascript">%1$s</script>', $s); //output it now
@@ -370,7 +373,8 @@ NAV;
 		return '';
 	}
 	
-	function parse_json_options($json, &$options ) {
+	function parse_json_options($json) {
+		$options = array();
 		$options_list = str_replace(';;',';',trim($json).';');
     	$more_options = array();
 		if ((preg_match_all("/([^:\s]+):([^;]+);/i", $options_list, $pairs)) && (count($pairs)>2)) $more_options = array_combine($pairs[1], $pairs[2]);
@@ -386,69 +390,85 @@ NAV;
         	    }
 			}
 		}
+		return $options; 
 	}
 
-	function galleria_options($params, $data=false) {
+	function galleria_options($data=false) {
 	    $options = array();
-		if ($params['galleria'] == 'galleria-original') {
-			$options['delay'] = $params['delay'] * 1000;
-			$options['autoPlay'] = $params['autoplay']=='on'?true:false;
-			$options['captions'] = $params['captions']=='off'?false:true;
-			$options['descriptions'] = $params['descriptions']=='on'?true:false;
+		if ($this->params['galleria'] == 'galleria-original') {
+			$options['delay'] = $this->params['delay'] * 1000;
+			$options['autoPlay'] = $this->params['autoplay']=='on'?true:false;
+			$options['captions'] = $this->params['captions']=='off'?false:true;
+			$options['descriptions'] = $this->params['descriptions']=='on'?true:false;
 	    } else {
-			if (!empty($params['galleria_options'])) $this->parse_json_options($params['galleria_options'], $options);
-			if (!empty($params['options'])) $this->parse_json_options($params['options'], $options);
-    		if (!array_key_exists('autoplay',$options)) $options['autoplay'] = $params['delay']*1000; 
+			if (!empty($this->params['options'])) $options = $this->parse_json_options($this->params['options']);
+			if (!empty($this->params['galleria_options'])) $options = array_merge($options,$this->parse_json_options($this->params['galleria_options']));
+			if ($this->params['flickr_link_target']=='_blank') $options['popupLinks'] = true;
+			if ($this->params['flickr_link_target']=='_self') $options['popupLinks'] = false;
+    		if (!array_key_exists('autoplay',$options)) $options['autoplay'] = $this->params['delay']*1000; 
   		  	if (!array_key_exists('transition',$options)) $options['transition'] = 'fade';
-  		  	if (!array_key_exists('transitionSpeed',$options)) $options['transitionSpeed'] = $params['transition']*1000;
-  		  	if (!array_key_exists('showInfo',$options)) $options['showInfo'] = $params['captions']=='off' ? false: true;
+  		  	if (!array_key_exists('transitionSpeed',$options)) $options['transitionSpeed'] = $this->params['transition']*1000;
+  		  	if (!array_key_exists('showInfo',$options)) $options['showInfo'] = $this->params['captions']=='off' ? false: true;
   		  	if (!array_key_exists('imageCrop',$options)) $options['imageCrop'] = true;
   		  	if (!array_key_exists('carousel',$options)) $options['carousel'] = true;    	
   		  	if (!array_key_exists('responsive',$options)) $options['responsive'] = true;  
 			if (!array_key_exists('debug',$options)) $options['debug'] = false;  
-			if (!array_key_exists('height',$options)) $options['height'] = $params['orientation']=="portrait" ? 1.333 : 0.75;	    
+			if (!array_key_exists('height',$options)) $options['height'] = $this->params['orientation']=="portrait" ? 1.333 : 0.75;	    
+			$options['theme'] = $this->params['galleria_theme'];
 			if ($data && is_array($data) && (count($data)>0)) $options['dataSource']=$data;
     	}
 		return $options;
 	}
 
-	function slideshow_options($params) {
-    	$options['delay'] = $params['delay'] * 1000;
-    	$options['autoplay'] = $params['autoplay']=="off"?false:true;
-    	$options['transition'] = 500;
-    	$options['link'] = $this->set_slideshow_onclick($params);
-    	$options['target'] = $params['target'];    
-    	if (isset($params['width'])) $options['width'] = $params['width'];
-    	if (isset($params['height'])) $options['height'] = $params['height'];
-    	if (isset($params['transition'])) $options['transition'] = $params['transition'] * 1000; 
+	function slideshow_options() {
+		$options = array();
+		if ($this->params['responsive'] == 'on') {
+	    	$options['timeout'] = $this->params['delay'] * 1000;
+	    	$options['auto'] = $this->params['autoplay']=="off"?false:true;
+	    	$options['pause'] = $this->params['pause'] == "on";
+	    	$options['maxwidth'] =  isset($this->params['width']) ? $this->params['width'] : '';
+	    	$options['speed'] = isset($this->params['transition']) ? ($this->params['transition'] * 1000) : 500; 
+		} else {		
+    		$options['delay'] = $this->params['delay'] * 1000;
+    		$options['autoplay'] = $this->params['autoplay']=="off"?false:true;
+    		$options['transition'] = 500;
+    		$options['link'] = $this->set_slideshow_onclick();
+    		$options['target'] = $this->params['target'];    
+    		if (isset($this->params['width'])) $options['width'] = $this->params['width'];
+    		if (isset($this->params['height'])) $options['height'] = $this->params['height'];
+    		if (isset($this->params['transition'])) $options['transition'] = $this->params['transition'] * 1000; 
+   		}
     	return $options;
 	}
 
-	function lightbox_options($params, $data = false) {
+	function lightbox_options($data = false) {
     	$options = array();
-    	if (($params['lightbox'] == "sf-lightbox")) {
-			if (!empty($params['options'])) $this->parse_json_options($params['options'], $options);
-    		if (!array_key_exists('caption',$options)) $options['caption'] = $params['captions'] == 'off' ? false:true;
-     		if (!array_key_exists('desc',$options)) $options['desc'] = (in_array($params['descriptions'], array('on', 'lightbox'))) ? true:false;
-    		if (!array_key_exists('pause',$options)) $options['pause'] = $params['delay'] * 1000;
-    		if (!array_key_exists('auto',$options)) $options['auto'] = $params['autoplay']=='on'?true:false;
+    	if (($this->params['lightbox'] == "sf-lightbox")) {
+			if (!empty($this->params['options'])) $options = $this->parse_json_options($this->params['options']);
+    		if (!array_key_exists('caption',$options)) $options['caption'] = $this->params['captions'] == 'off' ? false:true;
+     		if (!array_key_exists('desc',$options)) $options['desc'] = (in_array($this->params['descriptions'], array('on', 'lightbox'))) ? true:false;
+    		if (!array_key_exists('pause',$options)) $options['pause'] = $this->params['delay'] * 1000;
+    		if (!array_key_exists('auto',$options)) $options['auto'] = $this->params['autoplay']=='on'?true:false;
 			if ($data && is_array($data) && (count($data)>0)) {
 				$options['dynamic'] = true;
 				$options['dynamicEl'] = $data;
 			}
 		}
-    	if (array_key_exists('thumbnail_border',$params) && !empty($params['thumbnail_border'])) 
-    		$options['border'] = $params['thumbnail_border']; 
+    	if (array_key_exists('thumbnail_border',$this->params) && !empty($this->params['thumbnail_border'])) 
+    		$options['border'] = $this->params['thumbnail_border']; 
 		return $options;
 	}
 
-	function fetch_photos($params) {
-      	$fetcher = new Slickr_Flickr_Fetcher($this->id) ;
-      	$photos = $fetcher->fetch_photos($params) ;
+	function fetch_photos() {
+      	$fetcher = new Slickr_Flickr_Fetcher($this->id, $this->params) ;
+      	$photos = $fetcher->fetch_photos() ;
       	if (!is_array($photos)) return $fetcher->get_message(); //return error
-	  	if (!empty($params['restrict'])) $photos = $this->restrict_photos($photos, $params);
-	  	if (!empty($params['sort'])) $photos = $this->sort_photos ($photos, $params['sort'], $params['direction']);
+	  	if (!empty($this->params['sort'])) $photos = $this->sort_photos ($photos, $this->params['sort'], $this->params['direction']);
 	  	return $photos; //return array of photos
 	}
+
+
+
+
 
 }

@@ -3,55 +3,44 @@ class Slickr_Flickr_Plugin {
 
     const ACTIVATE_KEY = 'slickr_flickr_activation';
 
- 	private static $path = SLICKR_FLICKR_PATH;
- 	private static $slug = SLICKR_FLICKR_SLUG;
- 	private static $version = SLICKR_FLICKR_VERSION;
-
-    public static function get_path() {
-		return self::$path;
-	}
-
-    public static function get_slug() {
-		return self::$slug;
-	}
-	
-	public static function get_version() {
-		return self::$version;
-	}
-
-	public static function plugin_action_links ( $links, $file ) {
-		if ( is_array($links) && (self::get_path() == $file )) {
-			$settings_link = '<a href="' . admin_url( 'admin.php?page='.self::get_slug()) . '">Settings</a>';
-			array_unshift( $links, $settings_link );
-		}
-		return $links;
-	}
-
-	public static function activate() { //called on plugin activation
-    	update_option(self::ACTIVATE_KEY, true);
-	}	
-
-	public static function public_init() {
+	static function init() {
 		$dir = dirname(__FILE__) . '/';
+		require_once($dir . 'class-diy-options.php');		
+		require_once($dir . 'class-options.php');
 		require_once($dir . 'class-utils.php');
-		require_once($dir . 'class-public.php');	
-		Slickr_Flickr_Public::init();		
+		require_once($dir . 'class-cache.php');
+		Slickr_Flickr_Options::init();
 	}
 
-	public static function admin_init() {
+	static function public_init() {
+		$dir = dirname(__FILE__) . '/';
+		require_once($dir . 'class-feed-photo.php');
+		require_once($dir . 'class-api-photo.php');
+		require_once($dir . 'class-feed.php');
+		require_once($dir . 'class-fetcher.php');
+		require_once($dir . 'class-display.php');
+		require_once($dir . 'class-public.php');		
+		Slickr_Flickr_Public::init();
+	}
+
+	static function admin_init() {
 		$dir = dirname(__FILE__) . '/';	
-		require_once($dir . 'class-utils.php');
 		require_once($dir . 'class-tooltip.php');
 		require_once($dir . 'class-admin.php');
-		Slickr_Flickr_Admin::init();
-		add_filter('plugin_action_links',array(__CLASS__, 'plugin_action_links'), 10, 2 );
+		require_once (dirname(__FILE__) . '/class-feed-widget.php');		
+		require_once($dir . 'class-dashboard.php');
+		new Slickr_Flickr_Dashboard(SLICKR_FLICKR_VERSION, SLICKR_FLICKR_PATH, SLICKR_FLICKR_SLUG);
  		if (get_option(self::ACTIVATE_KEY)) add_action('admin_init',array(__CLASS__, 'upgrade'));   		
 	}
 	
-	public static function upgrade() { 
-		Slickr_Flickr_Utils::upgrade_options(); //save any new options on plugin update
+	static function upgrade() { 
+		Slickr_Flickr_Options::upgrade_options(); //save any new options on plugin update
 		delete_option(self::ACTIVATE_KEY); //delete key so upgrade runs only on activation		
-		Slickr_Flickr_Utils::clear_cache(); //clear out the cache
+		Slickr_Flickr_Cache::clear_cache(); //clear out the cache
 	}		
-	
+
+	static function activate() { //called on plugin activation
+    	update_option(self::ACTIVATE_KEY, true);
+	}	
+
 }
