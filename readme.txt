@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, slideshow lightbox, flickr widget, flickr rss, flickr api
 Requires at least: 3.0
 Tested up to: 4.1
-Stable tag: 2.3
+Stable tag: 2.3.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -49,6 +49,9 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 
 == Changelog ==
+
+= 2.3.2 = 
+* Fixed phpFlickr error by setting CURLOPT_SSL_VERIFYPEER to false - this affected the display of photosets 
 
 = 2.3 = 
 * Updated for WordPress 4.1
