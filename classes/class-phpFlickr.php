@@ -58,7 +58,7 @@ if ( !class_exists('phpFlickr') ) {
 		 */
 		var $max_cache_rows = 1000;
 
-		function phpFlickr ($api_key, $secret = NULL, $die_on_error = false) {
+		function __construct($api_key, $secret = NULL, $die_on_error = false) {
 			//The API Key must be set before any calls can be made.  You can
 			//get your own at https://www.flickr.com/services/api/misc.api_keys.html
 			$this->api_key = $api_key;
@@ -226,8 +226,11 @@ if ( !class_exists('phpFlickr') ) {
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 				curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 				curl_setopt($curl, CURLOPT_CONNECTTIMEOUT ,0); 
+				curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 				curl_setopt($curl, CURLOPT_TIMEOUT, 400); //timeout in seconds
 				$response = curl_exec($curl);
+				if ($errno = curl_errno($curl))
+					$response = json_encode( array('stat' => 'fail', 'code' => $errno, 'message' => curl_error($curl)));
 				curl_close($curl);
 			} else {
 				// Use sockets.
@@ -314,8 +317,9 @@ if ( !class_exists('phpFlickr') ) {
 			$this->parsed_response = json_decode($this->response, TRUE);
 /* 			$this->parsed_response = $this->clean_text_nodes(json_decode($this->response, TRUE)); */
 			if ($this->parsed_response['stat'] == 'fail') {
-				if ($this->die_on_error) die("The Flickr API returned the following error: #{$this->parsed_response['code']} - {$this->parsed_response['message']}");
-				else {
+				if ($this->die_on_error) { 
+					die("The Flickr API returned the following error: #{$this->parsed_response['code']} - {$this->parsed_response['message']}");
+				} else {
 					$this->error_code = $this->parsed_response['code'];
 					$this->error_msg = $this->parsed_response['message'];
 					$this->parsed_response = false;

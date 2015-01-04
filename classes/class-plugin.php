@@ -27,7 +27,7 @@ class Slickr_Flickr_Plugin {
 		$dir = dirname(__FILE__) . '/';	
 		require_once($dir . 'class-tooltip.php');
 		require_once($dir . 'class-admin.php');
-		require_once (dirname(__FILE__) . '/class-feed-widget.php');		
+		require_once($dir . 'class-feed-widget.php');
 		require_once($dir . 'class-dashboard.php');
 		new Slickr_Flickr_Dashboard(SLICKR_FLICKR_VERSION, SLICKR_FLICKR_PATH, SLICKR_FLICKR_SLUG);
  		if (get_option(self::ACTIVATE_KEY)) add_action('admin_init',array(__CLASS__, 'upgrade'));   		
