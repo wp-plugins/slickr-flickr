@@ -3,10 +3,13 @@ class Slickr_Flickr_Cache {
 
 	const FLICKR_CACHE_TABLE = 'flickr_cache'; 
 	const FLICKR_CACHE_FOLDER = 'flickr-cache';
+	const FLICKR_CACHE_CUSTOM = 'sflickr';
 
-	static function get_cache($id) { return @unserialize(get_transient($id)); }
+	static function get_cache($id) { return @unserialize(base64_decode(get_transient(self::FLICKR_CACHE_CUSTOM.$id))); }
 	
-	static function set_cache($id, $photos, $expiry) { return set_transient($id, $photos, $expiry); }
+	static function set_cache($id, $photos, $expiry) { 
+	  return set_transient(self::FLICKR_CACHE_CUSTOM.$id, serialize(base64_encode($photos)), $expiry); 
+	}
 
 	static function clear_cache() {
     	self::clear_rss_cache();
@@ -33,6 +36,8 @@ class Slickr_Flickr_Cache {
 	private static function clear_transient_flickr_cache() {
     	global $wpdb;
     	$table = self::get_options_table();
+    	$wpdb->query("DELETE FROM ".$table." WHERE option_name LIKE '_transient_".self::FLICKR_CACHE_CUSTOM."%' ");
+    	$wpdb->query("DELETE FROM ".$table." WHERE option_name LIKE '_transient_timeout_".self::FLICKR_CACHE_CUSTOM."%' ");
     	$wpdb->query("DELETE FROM ".$table." WHERE option_name LIKE '_transient_flickr_%' ");
     	$wpdb->query("DELETE FROM ".$table." WHERE option_name LIKE '_transient_timeout_flickr_%' ");
 	}
