@@ -97,19 +97,7 @@ class Slickr_Flickr_Feed{
    		}
 		$this->args['per_page']= min($params['items'],(int) $params['per_page']);
 	}
-	
-	function get_custom_cache($args) {
-		$reqhash = $args[0];
-		return get_transient('flickr_'.$reqhash);
-	}
-	
-	function set_custom_cache($args) {
-		$reqhash = $args[0];
-		$response = $args[1];
-		$timeout = $args[2];
-		return set_transient('flickr_'.$reqhash, $response, $timeout);
-	}	
-	
+		
 	function set_cache($cache, $cache_expiry) {
 		switch ($cache) {
 			case 'db': $this->cache = 'db'; break;
@@ -143,7 +131,7 @@ class Slickr_Flickr_Feed{
 				
 			default: 
 				$this->flickr->enableCache ('custom', 
-					array(array($this,'get_custom_cache'),array($this,'set_custom_cache')),  $this->cache_expiry); 			
+					array( 'Slickr_Flickr_Cache::get_cache','Slickr_Flickr_Cache::set_cache'),  $this->cache_expiry); 			
 		}
 		return true; 
   	}
@@ -202,7 +190,7 @@ class Slickr_Flickr_Feed{
   	function verify_gallery_id($gallery) { //replace short gallery id by full gallery_id
 		if (strpos($gallery,'-') === false) {
 			if ($this->set_php_flickr()) {
-				$resp = $this->flickr->urls_lookupGallery ('/photos/'.$this->user_id.'/galleries/'.$gallery);
+				$resp = $this->flickr->urls_lookupGallery('https://www.flickr.com/photos/'.$this->user_id.'/galleries/'.$gallery);
 				if ($resp) {
 					$result = $resp['gallery'];
 	    			$gallery = $result['id'];

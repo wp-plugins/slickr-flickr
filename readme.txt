@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, slideshow lightbox, flickr widget, flickr rss, flickr api
 Requires at least: 3.0
 Tested up to: 4.1
-Stable tag: 2.3.2
+Stable tag: 2.3.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -50,8 +50,9 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
-= 2.3.2 = 
-* Fixed phpFlickr error by setting CURLOPT_SSL_VERIFYPEER to false - this affected the display of photosets 
+= 2.3.3 = Fixed phpFlickr custom caching bug
+
+= 2.3.2 = Fixed phpFlickr error by setting CURLOPT_SSL_VERIFYPEER to false - this affected the display of photosets 
 
 = 2.3 = 
 * Updated for WordPress 4.1
@@ -62,22 +63,18 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 * Added Slickr Flickr Newsfeed to the plugin admin panel
 
 = 2.0 =
-* Added Responsive LightBox Gallery to replace prior non-responsive lightbox, includes Galleria 1.3.5 with improved performance and error handling, uses https for Flickr API, significant refactoring of coding to adhere more closely to WordPress coding standards. Now licensed as GPLv3 since Lightbox Gallery is under Apache 2.0 licence 
-
-= 1.44 =
-* Includes Galleria 1.2.9, and the ability to include links within photo descriptions
-
-= 1.43 =
-* links and descriptions now supported in captions for all third party lightboxes
+* Added Responsive LightBox Gallery to replace prior non-responsive lightbox,
+* includes Galleria 1.3.5 with improved performance and error handling
+* uses https for Flickr API
+* significant refactoring of coding to adhere more closely to WordPress coding standards
+* Now licensed as GPLv3 since Lightbox Gallery is under Apache 2.0 licence 
 
 
 See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 2.3 = 
-* Recommended - new mobile responsive slideshow, includes Galleria 1.4.2 
-
+= 2.3.3 = Mandatory: Fixed phpFlickr custom caching bug
 
 == How to Use The Plugin ==
 
