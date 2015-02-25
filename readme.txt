@@ -3,8 +3,8 @@ Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, slideshow lightbox, flickr widget, flickr rss, flickr api
 Requires at least: 3.0
-Tested up to: 4.1
-Stable tag: 2.3.3
+Tested up to: 4.1.1
+Stable tag: 2.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -20,7 +20,8 @@ A Flickr WordPress plugin to display your photos either as a gallery, a galleria
 * Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
-* New release 2.3 has includes a mobile responsive slider Galleria 1.4.2 
+* New release 2.4 has support for single photos
+
 == Installation ==
 1. Use the standard WordPress plugin automatic updates system for installing and updating to the latest version or use the manual steps below. 
 1. Uncompress the downloaded zip archive in [WordPress install root]/wp-content/plugins
@@ -50,6 +51,7 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 2.4 = Added support for single photos using search=single photo_id=yourphotoid
 = 2.3.3 = Fixed phpFlickr custom caching bug
 
 = 2.3.2 = Fixed phpFlickr error by setting CURLOPT_SSL_VERIFYPEER to false - this affected the display of photosets 
@@ -74,7 +76,8 @@ See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 2.3.3 = Mandatory: Fixed phpFlickr custom caching bug
+= 2.4 =  Optional: new feature - display a single photo
+
 
 == How to Use The Plugin ==
 

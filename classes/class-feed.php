@@ -44,11 +44,18 @@ class Slickr_Flickr_Feed{
   		  	$this->use_rest = true;
  			$this->use_rss = $params['use_rss'] != 'n'; 
  			$this->api_key = $params['api_key'];		
-    	    switch($params['search']) {
-    	    	case "favorites": {
-    	            $this->method = "flickr.favorites.getPublicList";
-    	            $this->args = array("user_id" => $params['id']);
-    	            break;
+			switch($params['search']) {
+				case "single": {
+					$this->method = "flickr.photos.getInfo";
+					$this->args = array("photo_id" => $params['photo_id']);
+					$this->container = 'photo';    	         
+					$this->use_rss = false;    	         
+					break;
+    	    	}
+            	case "favorites": {
+               		$this->method = "flickr.favorites.getPublicList";
+    	         	$this->args = array("user_id" => $params['id']);
+    	         	break;
     	    	}
     	    	case "groups": {
     	            $this->method = "flickr.groups.pools.getPhotos";
@@ -95,9 +102,10 @@ class Slickr_Flickr_Feed{
            		}
         	}
    		}
-		$this->args['per_page']= min($params['items'],(int) $params['per_page']);
+      if ('single' != $params['search'])
+         $this->args['per_page']= min($params['items'],(int) $params['per_page']);
 	}
-		
+	
 	function set_cache($cache, $cache_expiry) {
 		switch ($cache) {
 			case 'db': $this->cache = 'db'; break;
@@ -240,15 +248,21 @@ class Slickr_Flickr_Feed{
     	if (($resp = $this->flickr->call($this->method, $this->args)) 
     	&& ($results = $resp[$this->container])
     	&& is_array($results)) {
-    		$this->available = array_key_exists('total', $results) ? $results['total'] : 0;
-			$this->pages = array_key_exists('pages', $results) ? $results['pages'] : 0;
-			if (array_key_exists('photo', $results) && is_array($results['photo'])) {
-				foreach ($results['photo'] as $photo) 
-					$this->photos[] = new Slickr_Flickr_Api_Photo($this->user_id,$photo,$this->get_dims);
-			} else {
-				$this->message = 'No photos found.';
-				$this->error = true;
-			}
+         if ($this->container == 'photo') {
+    		   $this->available = 1;
+    		   $this->pages = 1;         
+				$this->photos[] = new Slickr_Flickr_Api_Photo($this->user_id,$results,$this->get_dims);            
+         } else {
+    		   $this->available = array_key_exists('total', $results) ? $results['total'] : 0;
+			   $this->pages = array_key_exists('pages', $results) ? $results['pages'] : 0;
+			   if (array_key_exists('photo', $results) && is_array($results['photo'])) {
+				  foreach ($results['photo'] as $photo) 
+				     $this->photos[] = new Slickr_Flickr_Api_Photo($this->user_id,$photo,$this->get_dims);
+			   } else {
+				  $this->message = 'No photos found.';
+				  $this->error = true;
+			   }
+         }
     	} else {
     		$this->message = $this->flickr->error_msg ;
     		$this->error = true;

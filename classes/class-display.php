@@ -15,6 +15,7 @@ class Slickr_Flickr_Display {
   		$this->params['tag'] = str_replace(' ','',$this->params['tag']);
 		if (strpos($this->params['tag'],',-') !==FALSE) $this->params['tagmode'] = 'bool';
   		if (empty($this->params['id'])) return "<p>Please specify a Flickr ID for this ".$this->params['type']."</p>";
+ 		if ( ('single'==$this->params['search']) && empty($this->params['photo_id'])) return "<p>Please specify the photo id of the single photo you want to display.</p>";
   		if ( (!empty($this->params['tagmode'])) && empty($this->params['tag']) && ($this->params['search']=="photos")) return "<p>Please set up a Flickr tag for this ".$this->params['type']."</p>";
   		if (empty($this->params['api_key']) && ($this->params['use_key'] == "y")) return "<p>Please add your Flickr API Key in Slickr Flickr Admin settings to fetch more than 20 photos.</p>";
 		$this->set_api_required();
@@ -184,7 +185,7 @@ NAV;
 
 	function set_api_required() {
 		$this->params['api_required'] = (($this->params['use_rss'] == 'n')
-			|| (! empty($this->params['license'])) || (! empty($this->params['text']))
+			|| (! empty($this->params['license'])) || (! empty($this->params['text'])) || ($this->params['search'] == 'single')
 			|| (! empty($this->params['date'])) || (! empty($this->params['before'])) || (! empty($this->params['after']))
 			|| (! empty($this->params['private'])) || ($this->params['page'] > 1) || ($this->params['search'] == 'galleries') 
 			|| ( !empty($this->params['tag']) && ($this->params["search"]=="groups"))) ? 'y' : 'n'; 
@@ -447,15 +448,18 @@ NAV;
 			if (!empty($this->params['options'])) $options = $this->parse_json_options($this->params['options']);
     		if (!array_key_exists('caption',$options)) $options['caption'] = $this->params['captions'] == 'off' ? false:true;
      		if (!array_key_exists('desc',$options)) $options['desc'] = (in_array($this->params['descriptions'], array('on', 'lightbox'))) ? true:false;
-    		if (!array_key_exists('pause',$options)) $options['pause'] = $this->params['delay'] * 1000;
     		if (!array_key_exists('auto',$options)) $options['auto'] = $this->params['autoplay']=='on'?true:false;
+   			if (!array_key_exists('pause',$options)) $options['pause'] = $this->params['delay'] * 1000;
+   			if (!array_key_exists('speed',$options)) $options['speed'] = $this->params['transition']*1000;
+  			if (!array_key_exists('mode',$options)) $options['mode'] = 'fade';
 			if ($data && is_array($data) && (count($data)>0)) {
 				$options['dynamic'] = true;
 				$options['dynamicEl'] = $data;
 			}
 		}
-    	if (array_key_exists('thumbnail_border',$this->params) && !empty($this->params['thumbnail_border'])) 
-    		$options['border'] = $this->params['thumbnail_border']; 
+    	if (array_key_exists('thumbnail_border',$this->params) 
+		&& !empty($this->params['thumbnail_border'])) 
+			$options['border'] = $this->params['thumbnail_border']; 
 		return $options;
 	}
 
@@ -466,9 +470,5 @@ NAV;
 	  	if (!empty($this->params['sort'])) $photos = $this->sort_photos ($photos, $this->params['sort'], $this->params['direction']);
 	  	return $photos; //return array of photos
 	}
-
-
-
-
 
 }
