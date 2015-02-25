@@ -8,6 +8,7 @@ class Slickr_Flickr_Options {
 	    'api_key' => '',
 	    'use_rss' => '',  
 	    'search' => 'photos',
+ 		'photo_id' => '',
 	    'tag' => '',
 	    'tagmode' => '',
 	    'set' => '',
