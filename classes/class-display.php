@@ -14,7 +14,7 @@ class Slickr_Flickr_Display {
   		foreach ( $this->params as $k => $v ) if (($k != 'id') && ($k != 'options') && ($k != 'galleria_options') && ($k != 'attribution') && ($k != 'flickr_link_title')) $this->params[$k] = strtolower($v); //set all params as lower case
   		$this->params['tag'] = str_replace(' ','',$this->params['tag']);
 		if (strpos($this->params['tag'],',-') !==FALSE) $this->params['tagmode'] = 'bool';
-  		if (empty($this->params['id'])) return "<p>Please specify a Flickr ID for this ".$this->params['type']."</p>";
+  		if (empty($this->params['id']) && empty($this->params['text']) ) return "<p>Please specify a Flickr ID for this ".$this->params['type']."</p>";
  		if ( ('single'==$this->params['search']) && empty($this->params['photo_id'])) return "<p>Please specify the photo id of the single photo you want to display.</p>";
   		if ( (!empty($this->params['tagmode'])) && empty($this->params['tag']) && ($this->params['search']=="photos")) return "<p>Please set up a Flickr tag for this ".$this->params['type']."</p>";
   		if (empty($this->params['api_key']) && ($this->params['use_key'] == "y")) return "<p>Please add your Flickr API Key in Slickr Flickr Admin settings to fetch more than 20 photos.</p>";
