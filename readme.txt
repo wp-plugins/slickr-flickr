@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, slideshow lightbox, flickr widget, flickr rss, flickr api
 Requires at least: 3.0
 Tested up to: 4.1.1
-Stable tag: 2.4
+Stable tag: 2.4.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -51,6 +51,8 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 2.4.1 = Added fix for searching by text across Flickr
+
 = 2.4 = Added support for single photos using search=single photo_id=yourphotoid
 = 2.3.3 = Fixed phpFlickr custom caching bug
 
@@ -76,8 +78,7 @@ See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 2.4 =  Optional: new feature - display a single photo
-
+= 2.4.1 =  Optional:  Added fix for searching by text across Flickr
 
 == How to Use The Plugin ==
 
