@@ -2,7 +2,7 @@
 Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, slideshow lightbox, flickr widget, flickr rss, flickr api
-Requires at least: 3.0
+Requires at least: 3.5
 Tested up to: 4.2.2
 Stable tag: 2.5.2
 License: GPLv3
