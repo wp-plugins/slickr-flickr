@@ -3,8 +3,8 @@ Contributors: powerblogservice
 Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, slideshow lightbox, flickr widget, flickr rss, flickr api
 Requires at least: 3.0
-Tested up to: 4.1.1
-Stable tag: 2.4.1
+Tested up to: 4.2.2
+Stable tag: 2.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -20,7 +20,7 @@ A Flickr WordPress plugin to display your photos either as a gallery, a galleria
 * Works with various LightBoxes such as Evolution LightBox, FancyBox, Highslide, LightBox Plus, Pretty Photo, Slimbox, ShadowBox, Shutterbox and ThickBox.
 * See http://www.slickrflickr.com/ for tutorials on using the plugin
 * See http://www.slickrflickr.com/pro/ for Pro Edition Priority Support and Bonus Features
-* New release 2.4 has support for single photos
+* New release 2.5 has option to hide error message when no photos are found
 
 == Installation ==
 1. Use the standard WordPress plugin automatic updates system for installing and updating to the latest version or use the manual steps below. 
@@ -51,6 +51,11 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 2.5 =  
+* Added option to hide error message when no photos are found
+* Added option to have your own error message when no photos are found
+* New admin settings page with tabs
+
 = 2.4.1 = Added fix for searching by text across Flickr
 
 = 2.4 = Added support for single photos using search=single photo_id=yourphotoid
@@ -66,19 +71,12 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 * Added class parameter to make it easy to wrap text around a slideshow using standard WordPress classes alignleft or alignright
 * Added Slickr Flickr Newsfeed to the plugin admin panel
 
-= 2.0 =
-* Added Responsive LightBox Gallery to replace prior non-responsive lightbox,
-* includes Galleria 1.3.5 with improved performance and error handling
-* uses https for Flickr API
-* significant refactoring of coding to adhere more closely to WordPress coding standards
-* Now licensed as GPLv3 since Lightbox Gallery is under Apache 2.0 licence 
-
 
 See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 2.4.1 =  Optional:  Added fix for searching by text across Flickr
+= 2.5 =  Optional:  inludes option to hide error message when no photos are found
 
 == How to Use The Plugin ==
 

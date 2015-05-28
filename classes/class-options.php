@@ -62,9 +62,11 @@ class Slickr_Flickr_Options {
     	'per_page' => 50,
     	'page' => 1,
     	'pagination'=> '',
-	    'element_id' => '',
+	   'element_id' => '',
     	'restrict' => '',
-    	'scripts_in_footer' => false
+    	'scripts_in_footer' => false,
+    	'silent' => false,
+      'message' => '' 	
 	); 
 
     protected static $options = null;	
@@ -90,12 +92,16 @@ class Slickr_Flickr_Options {
 		return self::$options->save_options($options);
 	}
 
-	public static function validate_options ($options) {
-		return self::$options->validate_options($options);
+	public static function validate_options ($defaults, $options) {
+		return self::$options->validate_options((array)$defaults, (array)$options);
 	}
 
 	public static function upgrade_options() {
 		return self::$options->upgrade_options();
 	}
+
+   public static function get_feeds() {
+      return apply_filters('slickr_flickr_feeds', array(SLICKR_FLICKR_NEWS, DIYWEBMASTERY_NEWS));
+   }
 
 }
