@@ -3,7 +3,7 @@ class Slickr_Flickr_Dashboard extends Slickr_Flickr_Admin {
 	private $tips = array(
 			'flickr_id' => array('heading' => 'Flickr ID', 'tip' => 'The Flickr ID is required for you to be able to access your photos.<br/>You can find your Flickr ID by entering the URL of your Flickr photostream at http://idgettr.com'),
 			'flickr_group' => array('heading' => 'Flickr User or Group', 'tip' => 'Typically your default account will be a User account unless your site is supporting a Flickr Group.'),
-			'flickr_api_key' => array('heading' => 'Flickr API Key', 'tip' => 'The Flickr API Key is used if you want to be able to get more than 20 photos at a time.<br/>A Flickr API key looks something like this : 5aa7aax73kljlkffkf2348904582b9cc.<br/>You can find your Flickr API Key by logging in to Flickr and clicking the Get Your Flickr API Keys ilink on the right'),
+			'flickr_api_key' => array('heading' => 'Flickr API Key', 'tip' => 'The Flickr API Key is used if you want to be able to get more than 20 photos at a time.<br/>A Flickr API key looks something like this : 5aa7aax73kljlkffkf2348904582b9cc.<br/>You can find your Flickr API Key by logging in to Flickr and clicking the Get Your Flickr API Keys link in the Getting Started section'),
 			'flickr_items' => array('heading' => 'Number Of Photos', 'tip' => 'Flickr recommend a maximum of 30 photos per page.'),
 			'flickr_type' => array('heading' => 'Type of Display', 'tip' => 'Choose the most common type of display for your photos.'),
 			'flickr_size' => array('heading' => 'Photo Size', 'tip' => 'Choose the default display size for your photos.'),
@@ -20,6 +20,9 @@ class Slickr_Flickr_Dashboard extends Slickr_Flickr_Admin {
 			'flickr_galleria_themes_folder' => array('heading' => 'Galleria Themes Folder', 'tip' => 'The recommended location is "galleria/themes". Prior to WordPress 3.3 you could put the themes under wp-content/plugins/slickr-flickr/galleria but this is no longer possible since WordPress now wipes the plugin folder of any extra files that are not part of the plugin.'),
 			'flickr_galleria_options' => array('heading' => 'Galleria Options', 'tip' => 'Here you can set default options for the Galleria.<br/>The correct format is like CSS with colons to separate the parameter name from the value and semi-colons to separate each pair: param1:value1;param2:value2;<br/>For example, transition:slide;transitionSpeed:1000; sets a one second slide transition.'),
 			'flickr_scripts_in_footer' => array('heading' => 'Load JavaScript In Footer', 'tip' => 'This option allows you to load Javascript in the footer instead of the header. This can be useful as it may reduce potential jQuery conflicts with other plugins.<br/>However, it will not work for all WordPress themes, specifically those that do not support loading of scripts in the footer using standard WordPress hooks and filters.'),
+			'flickr_message' => array('heading' => 'Error Message', 'tip' => 'Any message you enter here will replace the default message that is displayed when no photos are available for whatever reason.'),
+			'flickr_silent' => array('heading' => 'Silent Mode', 'tip' => 'Click the checkbox to suppress any response at all when no photos are found.'),
+
 			);
 
 	private $galleria_versions = array(
@@ -64,32 +67,28 @@ class Slickr_Flickr_Dashboard extends Slickr_Flickr_Admin {
  
 	function page_content() {
  		$title = $this->admin_heading('',SLICKR_FLICKR_ICON);				
-		$this->print_admin_form_with_sidebar_start($title); 
-		do_meta_boxes($this->get_screen_id(), 'side', null); 
-		$this->print_admin_form_with_sidebar_middle();
+		$this->print_admin_form_start($title, __CLASS__, $this->get_keys(), false, true); 
 		do_meta_boxes($this->get_screen_id(), 'normal', null); 
-		$this->print_admin_form_end(__CLASS__, $this->get_keys());
+		print $this->submit_button();		
+		do_meta_boxes($this->get_screen_id(), 'advanced', null); 
+		$this->print_admin_form_with_sidebar_middle();
+		do_meta_boxes($this->get_screen_id(), 'side', null); 
+		$this->print_admin_form_end();		
 	} 
 
 	function load_page() {
 		$this->set_tooltips($this->tips);
  		$message = isset($_POST['options_update']) ? $this->save() : '';
 		if (isset($_POST['cache'])) $message = $this->clear_cache();  		
-		add_action ('admin_enqueue_scripts',array($this, 'enqueue_admin_styles'));
-		add_action ('admin_enqueue_scripts',array($this, 'enqueue_postbox_scripts'));
-		add_filter('screen_layout_columns', array($this, 'screen_layout_columns'), 10, 2);
+		add_action('admin_enqueue_scripts',array($this, 'enqueue_admin_styles'));
+		add_action('admin_enqueue_scripts',array($this, 'enqueue_metabox_scripts'));
+		add_action('admin_enqueue_scripts',array($this, 'enqueue_postbox_scripts'));
 		$callback_params = array ('options' => Slickr_Flickr_Options::get_options(), 'message' => $message);
-		$this->add_meta_box('intro', 'Intro', 'intro_panel',$callback_params);
-		$this->add_meta_box('identity','Flickr Identity',  'id_panel', $callback_params);
-		$this->add_meta_box('general', 'Display Options', 'general_panel',  $callback_params);
-		$this->add_meta_box('lightbox', 'LightBox Options', 'lightbox_panel', $callback_params);
-		$this->add_meta_box('galleria', 'Galleria Options', 'galleria_panel', $callback_params);
-		$this->add_meta_box('advanced', 'Advanced Options',  'advanced_panel', $callback_params);
-		$this->add_meta_box('links', 'Useful Links', 'links_panel', $callback_params, 'side');
+		$this->add_meta_box('intro', 'Intro', 'intro_panel',  $callback_params);
+		$this->add_meta_box('settings', 'Settings', 'settings_panel',$callback_params, 'normal');
+		$this->add_meta_box('extras', 'Extra Info', 'extras_panel',$callback_params,'advanced');
+		$this->add_meta_box('help', 'Free Tutorials', 'tutorials_panel', null, 'side');
 		$this->add_meta_box('news', 'Slickr Flickr News', 'news_panel', null, 'side');
-		$this->add_meta_box('help', 'Help', 'help_panel', $callback_params, 'side');
-		$this->add_meta_box('cache', 'Caching', 'cache_panel', $callback_params, 'side');
-		$this->add_meta_box('lightboxes', 'Compatible LightBoxes',  'lightboxes_panel', $callback_params, 'side');
 
 		$current_screen = get_current_screen();
 		if (method_exists($current_screen,'add_help_tab')) {
@@ -101,66 +100,91 @@ class Slickr_Flickr_Dashboard extends Slickr_Flickr_Admin {
 		}
 
 	}
+
+ 	function extras_panel($post, $metabox) {
+      $this->display_metabox( array(
+         'Getting Started' => $this->starting_panel(),
+         'Useful Links' => $this->links_panel(),
+         'LightBoxes' => $this->lightboxes_panel(),
+         'Clear RSS Cache' => $this->cache_panel()
+		));
+   }	
+
+	function settings_panel($post,$metabox) {
+      $options = $metabox['args']['options'];
+      $this->display_metabox( array(
+         'Identity' => $this->id_panel($options),
+         'Display' => $this->general_panel($options),
+         'LightBox' => $this->lightbox_panel($options),
+         'Galleria' => $this->galleria_panel($options),
+         'No Photos' => $this->no_photos_panel($options),
+         'Advanced' => $this->advanced_panel($options)
+		));
+   }	
+
 	
-	function id_panel($post, $metabox) {		
-		$options = $metabox['args']['options'];	 	
-		$this->print_form_field ('flickr_id', $options['id'], 'text', array(), array('maxlength' => 15, 'size' =>15));
-		$this->print_form_field ('flickr_group', $options['group'], 'select', array('n' => 'user', 'y' => 'group'));
-		$this->print_form_field ('flickr_api_key', $options['api_key'], 'text', array(), array('maxlength' => 32,'size' =>32));
+	function id_panel($options) {		
+      return 
+		$this->fetch_form_field ('flickr_id', $options['id'], 'text', array(), array('maxlength' => 15, 'size' =>15)).
+		$this->fetch_form_field ('flickr_group', $options['group'], 'select', array('n' => 'user', 'y' => 'group')).
+		$this->fetch_form_field ('flickr_api_key', $options['api_key'], 'text', array(), array('maxlength' => 32,'size' =>32));
 	}
 
-	function general_panel($post, $metabox) {		
-		$options = $metabox['args']['options'];	 	
-		$this->print_form_field ('flickr_items', $options['items'], 'text', array(), array('maxlength' => 4, 'size' => 4));
-		$this->print_form_field ('flickr_type', $options['type'], 'select', $this->types);
-		$this->print_form_field ('flickr_size', $options['size'], 'select', $this->sizes);
-		$this->print_form_field ('flickr_captions', $options['captions'], 'radio', array('on' => 'on','off' => 'off'));
-		$this->print_form_field ('flickr_autoplay', $options['autoplay'], 'radio', array('on' => 'on','off' => 'off'));
-		$this->print_form_field ('flickr_delay', $options['delay'], 'text', array(), array('maxlength' => 4, 'size' => 4, 'suffix' => 'seconds'));
-		$this->print_form_field ('flickr_transition', $options['transition'], 'text', array(), array('maxlength' => 4, 'size' => 4, 'suffix' => 'seconds'));
-		$this->print_form_field ('flickr_responsive', $options['responsive'], 'checkbox');
+	function general_panel($options) {		
+	 	return
+		$this->fetch_form_field ('flickr_items', $options['items'], 'text', array(), array('maxlength' => 4, 'size' => 4)).
+		$this->fetch_form_field ('flickr_type', $options['type'], 'select', $this->types).
+		$this->fetch_form_field ('flickr_size', $options['size'], 'select', $this->sizes).
+		$this->fetch_form_field ('flickr_captions', $options['captions'], 'radio', array('on' => 'on','off' => 'off')).
+		$this->fetch_form_field ('flickr_autoplay', $options['autoplay'], 'radio', array('on' => 'on','off' => 'off')).
+		$this->fetch_form_field ('flickr_delay', $options['delay'], 'text', array(), array('maxlength' => 4, 'size' => 4, 'suffix' => 'seconds')).
+		$this->fetch_form_field ('flickr_transition', $options['transition'], 'text', array(), array('maxlength' => 4, 'size' => 4, 'suffix' => 'seconds')).
+		$this->fetch_form_field ('flickr_responsive', $options['responsive'], 'checkbox');
 	}
 
-	function advanced_panel($post, $metabox) {		
-		$options = $metabox['args']['options'];	 			
-		$this->print_form_field ('flickr_scripts_in_footer', $options['scripts_in_footer'], 'checkbox');
+	function no_photos_panel($options) {		
+ 		return	
+		$this->fetch_form_field ('flickr_silent', $options['silent'], 'checkbox').
+		$this->fetch_form_field ('flickr_message', $options['message'], 'text', array(), array( 'size' => 50));
 	}
 
-	function galleria_panel($post, $metabox) {		
-		$options = $metabox['args']['options'];	 	
-		$this->print_form_field ('flickr_galleria', $options['galleria'], 'select', $this->galleria_versions);
-		$this->print_form_field ('flickr_galleria_theme', $options['galleria_theme'], 'text', array(), array('maxlength' => 20, 'size' => 12));
-		$this->print_form_field ('flickr_galleria_theme_loading', $options['galleria_theme_loading'], 'select', array('static' => 'Static','dynamic' => 'Dynamic'));
-		$this->print_form_field ('flickr_galleria_themes_folder', $options['galleria_themes_folder'], 'text', array(), array('maxlength' => 50, 'size' => 30));
-		$this->print_form_field ('flickr_galleria_options', $options['galleria_options'], 'textarea', array(), array('cols' => 60, 'rows' => 4));
+
+	function advanced_panel($options) {		
+ 		return	
+		$this->fetch_form_field ('flickr_scripts_in_footer', $options['scripts_in_footer'], 'checkbox');
 	}
 
-	function lightbox_panel($post, $metabox) {		
-		$options = $metabox['args']['options'];	 	
-		$this->print_form_field ('flickr_lightbox', $options['lightbox'], 'select', $this->lightboxes);
-		$this->print_form_field ('flickr_thumbnail_border', $options['thumbnail_border'], 'text', array(), array('size' => 7, 'class' => 'color-picker'));
+	function galleria_panel($options) {		
+      return
+		$this->fetch_form_field ('flickr_galleria', $options['galleria'], 'select', $this->galleria_versions).
+		$this->fetch_form_field ('flickr_galleria_theme', $options['galleria_theme'], 'text', array(), array('maxlength' => 20, 'size' => 12)).
+		$this->fetch_form_field ('flickr_galleria_theme_loading', $options['galleria_theme_loading'], 'select', array('static' => 'Static','dynamic' => 'Dynamic')).
+		$this->fetch_form_field ('flickr_galleria_themes_folder', $options['galleria_themes_folder'], 'text', array(), array('maxlength' => 50, 'size' => 30)).
+		$this->fetch_form_field ('flickr_galleria_options', $options['galleria_options'], 'textarea', array(), array('cols' => 60, 'rows' => 4));
 	}
 
-	function lightboxes_panel($post, $metabox) {	
-		$options = $metabox['args']['options'];	 		
-		print <<< COMPAT_LIGHTBOX_PANEL
+	function lightbox_panel($options) {		
+      return
+		$this->fetch_form_field ('flickr_lightbox', $options['lightbox'], 'select', $this->lightboxes).
+		$this->fetch_form_field ('flickr_thumbnail_border', $options['thumbnail_border'], 'text', array(), array('size' => 7, 'class' => 'color-picker'));
+	}
+
+	function lightboxes_panel() {	 		
+		return <<< COMPAT_LIGHTBOX_PANEL
 <ul>
-<li><a href="http://s3.envato.com/files/1099520/index.html" rel="external">Evolution Lightbox</a></li>
-<li><a href="http://wordpress.org/extend/plugins/easy-fancybox/" rel="external">FancyBoxBox</a></li>
-<li><a href="http://wordpress.org/extend/plugins/lightbox-plus/" rel="external">Lightbox Plus (ColorBox) for WordPress</a></li>
-<li><a href="http://wordpress.org/extend/plugins/responsive-lightbox/" rel="external">Responsive Lightbox</a></li>
-<li><a href="http://wordpress.org/extend/plugins/shutter-reloaded/" rel="external">Shutter Lightbox for WordPress</a></li>
-<li><a href="http://wordpress.org/extend/plugins/slimbox/" rel="external">SlimBox</a></li>
+<li><a href="http://s3.envato.com/files/1099520/index.html" rel="external" target="_blank">Evolution Lightbox</a></li>
+<li><a href="http://wordpress.org/extend/plugins/easy-fancybox/" rel="external" target="_blank">FancyBoxBox</a></li>
+<li><a href="http://wordpress.org/extend/plugins/lightbox-plus/" rel="external" target="_blank">Lightbox Plus (ColorBox) for WordPress</a></li>
+<li><a href="http://wordpress.org/extend/plugins/responsive-lightbox/" rel="external" target="_blank">Responsive Lightbox</a></li>
+<li><a href="http://wordpress.org/extend/plugins/shutter-reloaded/" rel="external" target="_blank">Shutter Lightbox for WordPress</a></li>
+<li><a href="http://wordpress.org/extend/plugins/slimbox/" rel="external" target="_blank">SlimBox</a></li>
 </ul>
 COMPAT_LIGHTBOX_PANEL;
 	}
 
-	function cache_panel($post, $metabox) {
-		$options = $metabox['args']['options'];	 	
-	
+	function cache_panel() {
 		$url = $_SERVER['REQUEST_URI'];	
-		print <<< CACHE_PANEL
-<h4>Clear RSS Cache</h4>
+		return <<< CACHE_PANEL
 <p>If you have a RSS caching issue where your Flickr updates have not yet appeared on Wordpress then click the button below to clear the RSS cache</p>
 <form id="slickr_flickr_cache" method="post" action="{$url}" >
 <fieldset>
@@ -171,22 +195,10 @@ COMPAT_LIGHTBOX_PANEL;
 CACHE_PANEL;
 	}
 
- 	function news_panel($post,$metabox){	
-		Slickr_Flickr_Feed_Widget::display_feeds();
-	}
-
- 	function help_panel($post, $metabox) {
-		$options = $metabox['args']['options'];	 	
+ 	function tutorials_panel($post,$metabox) {	
 		$images_url = plugins_url('images/',dirname(__FILE__));	
 		$home = SLICKR_FLICKR_HOME;
 		print <<< HELP_PANEL
-<ul>
-<li><a href="{$home}" rel="external">Plugin Home Page</a></li>
-<li><a href="{$home}/40/how-to-use-slickr-flickr-admin-settings/" rel="external">How To Use Admin Settings</a></li>
-<li><a href="{$home}/56/how-to-use-slickr-flickr-to-create-a-slideshow-or-gallery/" rel="external">How To Use The Plugin</a></li>
-<li><a href="{$home}/slickr-flickr-help/" rel="external">Get Help</a></li>
-<li><a href="{$home}/slickr-flickr-videos/" rel="external">Get FREE Video Tutorials</a></li>
-</ul>
 <p><img src="{$images_url}free-video-tutorials-banner.png" alt="Slickr Flickr Tutorials Signup" /></p>
 <form id="slickr_flickr_signup" method="post" action="{$home}"
 onsubmit="return slickr_flickr_validate_form(this)">
@@ -204,19 +216,33 @@ onsubmit="return slickr_flickr_validate_form(this)">
 </form>
 HELP_PANEL;
 	}	
-	
-	function links_panel($post, $metabox) {	
-		$options = $metabox['args']['options'];	 
-		$home = SLICKR_FLICKR_HOME;				
-        $pro = SLICKR_FLICKR_PRO;
-		print <<< LINKS_PANEL
+
+ 	function starting_panel() {	
+		$images_url = plugins_url('images/',dirname(__FILE__));	
+		$home = SLICKR_FLICKR_HOME;
+		return <<< STARTING_PANEL
 <ul>
-<li><a rel="external" href="http://idgettr.com/">Find your Flickr ID</a></li>
-<li><a rel="external" href="http://www.flickr.com/services/api/keys/">Get Your Flickr API Keys</a></li>
-<li><a rel="external" href="{$home}/1717/using-slickr-flickr-with-other-lightboxes">Using Slickr Flickr with other lightboxes</a></li>
-<li><a rel="external" href="http://galleria.aino.se/themes/">Premium Galleria Themes</a></li>
-<li><a rel="external" href="{$home}/2328/load-javascript-in-footer-for-earlier-page-display/">Loading Slickr Flickr scripts in the footer</a></li>
-<li><a rel="external" href="{$home}/pro/">Slickr Flickr Pro Bonus Features</a></li>
+<li><a href="{$home}/40/how-to-use-slickr-flickr-admin-settings/" rel="external" target="_blank">How To Use Admin Settings</a></li>
+<li><a href="http://idgettr.com/" rel="external" target="_blank">Find your Flickr ID</a></li>
+<li><a href="http://www.flickr.com/services/api/keys/" rel="external" target="_blank">Get Your Flickr API Keys</a></li>
+<li><a href="{$home}/56/how-to-use-slickr-flickr-to-create-a-slideshow-or-gallery/" rel="external" target="_blank">How To Use The Plugin</a></li>
+<li><a href="{$home}/slickr-flickr-videos/" rel="external" target="_blank">Get FREE Video Tutorials</a></li>
+</ul>
+STARTING_PANEL;
+	}	
+
+	
+	function links_panel() {	 
+		$home = SLICKR_FLICKR_HOME;				
+      $pro = SLICKR_FLICKR_PRO;
+		return <<< LINKS_PANEL
+<ul>
+<li><a href="{$home}" rel="external" target="_blank">Plugin Home Page</a></li>
+<li><a href="{$home}/1717/using-slickr-flickr-with-other-lightboxes" rel="external" target="_blank">Using Slickr Flickr with other lightboxes</a></li>
+<li><a href="http://galleria.aino.se/themes/" rel="external" target="_blank">Premium Galleria Themes</a></li>
+<li><a href="{$home}/2328/load-javascript-in-footer-for-earlier-page-display/" rel="external" target="_blank">Loading Slickr Flickr scripts in the footer</a></li>
+<li><a href="{$home}/slickr-flickr-help/" rel="external" target="_blank">Get Help</a></li>
+<li><a href="{$home}/pro/" rel="external" target="_blank">Slickr Flickr Pro Bonus Features</a></li>
 </ul>
 LINKS_PANEL;
 	}	
@@ -231,7 +257,7 @@ LINKS_PANEL;
 INTRO_PANEL;
 	}
  
-   	function clear_cache() {
+   function clear_cache() {
    		Slickr_Flickr_Cache::clear_cache();
    		$class = "updated fade";
    		$message = __("WordPress RSS cache has been cleared successfully",SLICKR_FLICKR_DOMAIN);
@@ -276,3 +302,4 @@ INTRO_PANEL;
 	} 
 	
 }
+ 

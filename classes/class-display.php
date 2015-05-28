@@ -23,8 +23,8 @@ class Slickr_Flickr_Display {
   		$rand_id = rand(1,10000);
   		$this->id = empty($this->params['element_id']) ? $this->get_unique_id($attr,$rand_id) : $this->params['element_id'];
 
-      	$photos = $this->fetch_photos();
-      	if (! is_array($photos)) return $photos; //return error message if an array of photos is not returned
+      $photos = $this->fetch_photos();
+      if (! is_array($photos)) return $this->no_photos($photos); //return if an array of photos is not returned. then show error message if not in silent mode
 
   		$divclear = '<div style="clear:both"></div>';
   		$attribution = empty($this->params['attribution'])?"":('<p class="slickr-flickr-attribution align'.$this->params['align'].'">'.$this->params['attribution'].'</p>');
@@ -99,6 +99,10 @@ NAV;
 		$class= $this->params['class'] ? sprintf(' class="%1$s"',$this->params['class']) : ''; 
 		return sprintf('<div id="%1$s"%2$s>%3$s%4$s%5$s%6$s%7$s</div>', 
 			$this->id, $class, $divstart, $content, $divend, $pagination, $divclear);
+	}
+	
+	function no_photos($error) {
+      return $this->params['silent'] ? '' : ($this->params['message'] ? $this->params['message'] : $error);
 	}
 
 	function wrap_photos ($photos) {

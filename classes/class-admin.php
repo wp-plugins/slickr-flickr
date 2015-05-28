@@ -12,13 +12,18 @@ abstract class Slickr_Flickr_Admin {
 		$this->version = $version;
 		$this->path = $path;
 		$this->parent_slug = $parent_slug;
-		if (empty($slug))
-			$this->slug = $this->parent_slug;
-		else
-			$this->slug = $this->parent_slug.'-'.$slug;
+		$this->slug = empty($slug) ? $this->parent_slug : ( $this->parent_slug.'-'.$slug );
 		$this->tooltips = new Slickr_Flickr_Tooltip($this->tips);
 		$this->init();
 	}
+
+	abstract function init() ;
+
+	abstract function admin_menu() ;
+
+	abstract function page_content(); 
+
+	abstract function load_page();	
 	
     function get_screen_id(){
 		return $this->screen_id;
@@ -103,17 +108,10 @@ abstract class Slickr_Flickr_Admin {
 		add_action('admin_print_footer_scripts', array($this, 'enable_color_picker'));
  	}
 
-    function enable_color_picker() {
-	    print <<< SCRIPT
-	<script type="text/javascript">
-		//<![CDATA[
-		jQuery(document).ready( function($) {
-	        $('.color-picker').wpColorPicker();
-		});
-		//]]>
-	</script>
-SCRIPT;
-    }
+   function enqueue_metabox_scripts() {
+ 		wp_enqueue_style($this->get_code('tabs'), plugins_url('styles/tabs.css',dirname(__FILE__)), array(),$this->get_version());
+ 		wp_enqueue_script($this->get_code('tabs'), plugins_url('scripts/jquery.tabs.js',dirname(__FILE__)), array(),$this->get_version());
+  }
 
 	function enqueue_postbox_scripts() {
 		wp_enqueue_script('common');
@@ -121,21 +119,7 @@ SCRIPT;
 		wp_enqueue_script('postbox');	
 		add_action('admin_footer-'.$this->get_screen_id(), array($this, 'toggle_postboxes'));
  	}
- 		
-	function toggle_postboxes() {
-		$hook = $this->get_screen_id();
-    	print <<< SCRIPT
-<script type="text/javascript">
-//<![CDATA[
-jQuery(document).ready( function($) {
-	$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
-	postboxes.add_postbox_toggles('{$hook}');
-});
-//]]>
-</script>
-SCRIPT;
-    }	
-
+		
  	function add_meta_box($code, $title, $callback_func, $callback_params = null, $context = 'normal', $priority = 'core', $post_type = false ) {
 		if (empty($post_type)) $post_type = $this->get_screen_id();
 		add_meta_box($this->get_code($code), __($title), array($this, $callback_func), $post_type, $context, $priority, $callback_params);
@@ -144,76 +128,56 @@ SCRIPT;
 	function form_field($id, $name, $label, $value, $type, $options = array(), $args = array(), $wrap = false) {
 		if (!$label) $label = $id;
 		$label_args = (is_array($args) && array_key_exists('label_args', $args)) ? $args['label_args'] : false;
- 		return Slickr_Flickr_Utils::form_field($id, $name, $this->tooltips->tip($label, $label_args), $value, $type, $options, $args, $wrap);
+ 		return Genesis_Club_Utils::form_field($id, $name, $this->tooltips->tip($label, $label_args), $value, $type, $options, $args, $wrap);
+ 	}	
+
+	function meta_form_field($meta, $key, $type, $options=array(), $args=array()) {
+		return $this->form_field( $meta[$key]['id'], $meta[$key]['name'], false, 
+			$meta[$key]['value'], $type, $options, $args);
+	}  
+
+	function fetch_form_field($fld, $value, $type, $options = array(), $args = array(), $wrap = false) {
+ 		return $this->form_field($fld, $fld, false, $value, $type, $options, $args, $wrap);
  	}	
 
 	function print_form_field($fld, $value, $type, $options = array(), $args = array(), $wrap = false) {
  		print $this->form_field($fld, $fld, false, $value, $type, $options, $args, $wrap);
  	}	
 
+	function fetch_text_field($fld, $value, $args = array()) {
+ 		return $this->fetch_form_field($fld, $value, 'text', array(), $args);
+ 	}
+ 	
 	function print_text_field($fld, $value, $args = array()) {
  		$this->print_form_field($fld, $value, 'text', array(), $args);
  	}
  	
-	function admin_heading($title = '', $icon_class = '') {
-		if (empty($title)) $title = sprintf('%1$s %2$s', ucwords(str_replace('-',' ',$this->slug)), $this->get_version());
-		$icon = empty($icon_class) ? '' : sprintf('<i class="%1$s"></i>',
-			'dashicons-'==substr($icon_class,0,10) ? ('dashicons '.$icon_class) : $icon_class) ;
-    	return sprintf('<h2 class="title">%2$s%1$s</h2>', $title, $icon);				
-	}
-
-	function print_admin_form_with_sidebar_start($title) {
-    	print <<< ADMIN_START
-<div class="wrap">
-{$title}
-<div id="poststuff" class="metabox-holder has-right-sidebar">
-<div id="side-info-column" class="inner-sidebar">
-ADMIN_START;
-	}
-
-	function print_admin_form_with_sidebar_middle($enctype = false) {
-		$this_url = $_SERVER['REQUEST_URI'];
-	 	$enctype = $enctype ? 'enctype="multipart/form-data" ' : '';
-	    print <<< ADMIN_MIDDLE
-</div>
-<div id="post-body" class="has-sidebar"><div id="post-body-content" class="has-sidebar-content diy-wrap">
-<form id="diy_options" method="post" {$enctype}action="{$this_url}">
-ADMIN_MIDDLE;
-	}
-	
-	function print_admin_form_start($title, $enctype = false) {
-	 	$this_url = $_SERVER['REQUEST_URI'];
-	 	$enctype = $enctype ? 'enctype="multipart/form-data" ' : '';
-    	print <<< ADMIN_START
-<div class="wrap">
-{$title}
-<div id="poststuff" {$enctype}class="metabox-holder"><div id="post-body"><div id="post-body-content">
-<form id="diy_options" method="post" {$enctype}action="{$this_url}">
-ADMIN_START;
-	}
-	
-	function print_admin_form_end($referer = false, $keys = false, $button_text = 'Save Changes') {
-		$nonces = $referer ? $this->get_nonces($referer) : '';
-		$page_options = $button = '';
-		if ($keys) {
-			$keys = is_array($keys) ? implode(',', $keys) : $keys;
-			$page_options = sprintf('<input type="hidden" name="page_options" value="%1$s" />', $keys);
-			$button = $this->submit_button($button_text);
+ 	function get_meta_form_data($metakey, $prefix, $values ) {
+      $content = array();
+		if (($post_id = Slickr_Flickr_Utils::get_post_id())
+		&& ($meta = Slickr_Flickr_Utils::get_meta($post_id, $metakey)))
+			$values = Slickr_Flickr_Options::validate_options($values, $meta);	
+		foreach ($values as $key => $val) {
+			$content[$key] = array();
+			$content[$key]['value'] = $val;
+			$content[$key]['id'] = $prefix.$key;
+			$content[$key]['name'] = $metakey. '[' . $key . ']';
 		}
-		print <<< ADMIN_END
-<p class="submit">{$button}{$page_options}{$nonces}</p>
-</form></div></div><br class="clear"/></div></div>
-ADMIN_END;
+		return $content;
+ 	}	
+
+ 	function news_panel($post,$metabox){	
+		Slickr_Flickr_Feed_Widget::display_feeds(Slickr_Flickr_Options::get_feeds());
 	}
-	
+
 	function get_nonces($referer) {
 		return wp_nonce_field($referer, '_wpnonce', true, false).
 			wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false, false ).
 			wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false, false);
 	}
 	
- 	function submit_button($button_text='Save Changes') {	
-		return sprintf('<input type="submit" name="options_update" value="%1$s" class="button-primary" />', $button_text);
+ 	function submit_button($button_text='Save Changes', $name = 'options_update') {	
+		return sprintf('<p class="save"><input type="submit" name="%1$s" value="%2$s" class="button-primary" /></p>',  $name, $button_text);
 	}
  	
 	function save_options($options_class, $settings_name, $trim_option_prefix = false) {
@@ -265,12 +229,88 @@ ADMIN_END;
 		return $columns;
 	}
 
-	abstract function init() ;
+	function admin_heading($title = '', $icon_class = '') {
+		if (empty($title)) $title = sprintf('%1$s %2$s', ucwords(str_replace('-',' ',$this->slug)), $this->get_version());
+		$icon = empty($icon_class) ? '' : sprintf('<i class="%1$s"></i>',
+			'dashicons-'==substr($icon_class,0,10) ? ('dashicons '.$icon_class) : $icon_class) ;
+    	return sprintf('<h2 class="title">%2$s%1$s</h2>', $title, $icon);				
+	}
 
-	abstract function admin_menu() ;
+	function print_admin_form_start($title, $referer = false, $keys = false, $enctype = false, $with_sidebar = false, $preamble = false) {
+	 	$this_url = $_SERVER['REQUEST_URI'];
+	 	$enctype = $enctype ? 'enctype="multipart/form-data" ' : '';
+		$nonces = $referer ? $this->get_nonces($referer) : '';
+		$page_options = '';
+		if ($keys) {
+			$keys = is_array($keys) ? implode(',', $keys) : $keys;
+			$page_options = sprintf('<input type="hidden" name="page_options" value="%1$s" />', $keys);
+		}
+      $class = $with_sidebar ? ' columns-2' : '';
+    	printf('<div class="wrap">%1$s<form id="diy_options" method="post" %2$saction="%3$s"><p>%4$s%5$s</p><div id="poststuff"><div id="post-body" class="metabox-holder%6$s"><div id="post-body-content">%7$s',
+         $title, $enctype, $this_url, $page_options, $nonces, $class, $preamble ? $preamble : '');
+	}
 
-	abstract function page_content(); 
+	function print_admin_form_with_sidebar_middle() {
+	   print '</div><div id="postbox-container-1" class="postbox-container">';
+	}
 
-	abstract function load_page();
+	function print_admin_form_end() {
+		print '</div></div><br class="clear"/></div></form></div>';
+	}
+
+   function print_admin_form_with_sidebar($title, $referer = false, $keys = false, $enctype = false, $preamble = false) {
+      $this->print_admin_form_start ($title, $referer, $keys, $enctype, true, $preamble);
+		do_meta_boxes($this->get_screen_id(), 'normal', null); 
+		if ($keys) print $this->submit_button();		
+		$this->print_admin_form_with_sidebar_middle();
+		do_meta_boxes($this->get_screen_id(), 'side', null); 
+		$this->print_admin_form_end();
+	}
+
+   function print_admin_form ($title, $referer = false, $keys = false, $enctype = false, $preamble = false) {
+      $this->print_admin_form_start ($title, $referer, $keys, $enctype, false, $preamble);
+		do_meta_boxes($this->get_screen_id(), 'normal', null); 
+		if ($keys) print $this->submit_button();	
+		$this->print_admin_form_end();
+	} 
+
+
+	function display_metabox($tabs) {
+      $labels = $contents = '';
+      $t=0;
+      $tab = isset($_REQUEST['tabselect']) ? $_REQUEST['tabselect'] : 'tab1';
+      foreach ($tabs as $label => $content) {
+         $t++;
+         $labels .=  sprintf('<li class="tab tab%1$s"><a href="#">%2$s</a></li>', $t, $label);
+         $contents .=  sprintf('<div class="tab%1$s"><div class="tab-content">%2$s</div></div>', $t, $content);
+      }
+      printf('<div class="slickr-flickr-metabox"><ul class="slickr-flickr-metabox-tabs">%1$s</ul><div class="metabox-content">%2$s</div><input type="hidden" id="tabselect" name="tabselect" value="%3$s" /></div>', $labels, $contents, $tab);
+   }
+
+	function toggle_postboxes() {
+		$hook = $this->get_screen_id();
+    	print <<< SCRIPT
+<script type="text/javascript">
+//<![CDATA[
+jQuery(document).ready( function($) {
+	$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+	postboxes.add_postbox_toggles('{$hook}');
+});
+//]]>
+</script>
+SCRIPT;
+    }	
+
+   function enable_color_picker() {
+	    print <<< SCRIPT
+	<script type="text/javascript">
+		//<![CDATA[
+		jQuery(document).ready( function($) {
+	        $('.color-picker').wpColorPicker();
+		});
+		//]]>
+	</script>
+SCRIPT;
+    }
 
 }
