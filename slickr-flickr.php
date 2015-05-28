@@ -3,13 +3,13 @@
  * Plugin Name: Slickr Flickr
  * Plugin URI: http://www.slickrflickr.com
  * Description: Displays photos from Flickr in slideshows and galleries
- * Version: 2.5.1
+ * Version: 2.5.2
  * Author: Russell Jamieson
  * Author URI: http://www.diywebmastery.com/about/
  * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
-define('SLICKR_FLICKR_VERSION','2.5.1');
+define('SLICKR_FLICKR_VERSION','2.5.2');
 define('SLICKR_FLICKR_PLUGIN_NAME', 'Slickr Flickr');
 define('SLICKR_FLICKR_SLUG', 'slickr-flickr');
 define('SLICKR_FLICKR_PATH', SLICKR_FLICKR_SLUG.'/slickr-flickr.php');
