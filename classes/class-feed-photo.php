@@ -19,7 +19,7 @@ class Slickr_Flickr_Photo {
 
     $data = $item->get_description();
     preg_match_all('/<img src="([^"]*)"([^>]*)>/i', $data, $m);
-    $this->url = $m[1][0];
+    $this->url = set_url_scheme($m[1][0], 'https');
 
     preg_match_all('/<a href="([^"]*)"([^>]*)>/i', $data, $m);
     $this->link = $m[1][1];

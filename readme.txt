@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, slideshow lightbox, flickr widget, flickr rss, flickr api
 Requires at least: 3.0
 Tested up to: 4.2.2
-Stable tag: 2.5
+Stable tag: 2.5.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -51,16 +51,18 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 2.5.2 = Fetch all Flickr photos over HTTPS to prevent Mixed Content warning on SSL only sites
+= 2.5.1 = Fix fatal error - many apologies
+
 = 2.5 =  
 * Added option to hide error message when no photos are found
 * Added option to have your own error message when no photos are found
 * New admin settings page with tabs
+* Updated for WordPress 4.2.2
 
 = 2.4.1 = Added fix for searching by text across Flickr
-
 = 2.4 = Added support for single photos using search=single photo_id=yourphotoid
 = 2.3.3 = Fixed phpFlickr custom caching bug
-
 = 2.3.2 = Fixed phpFlickr error by setting CURLOPT_SSL_VERIFYPEER to false - this affected the display of photosets 
 
 = 2.3 = 
@@ -76,7 +78,7 @@ See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 2.5 =  Optional:  inludes option to hide error message when no photos are found
+= 2.5.2 = Optional:  Fetch all Flickr photos over HTTPS to prevent Mixed Content warning on SSL only sites
 
 == How to Use The Plugin ==
 
