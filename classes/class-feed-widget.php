@@ -5,7 +5,7 @@ if (!class_exists('Slickr_Flickr_Feed_Widget')) {
 	function __construct() {
 		$widget_ops = array( 'description' => __('Displays Featured image in place of title in any RSS or Atom feed.') );
 		$control_ops = array( 'width' => 400, 'height' => 200 );
-		parent::__construct( 'genesis-club-feed', __('Genesis Club Feed'), $widget_ops, $control_ops );
+		parent::__construct( 'slickr-flickr-feed', __('Slickr Flickr Feed'), $widget_ops, $control_ops );
 	}
 
 	function widget($args, $instance) {
