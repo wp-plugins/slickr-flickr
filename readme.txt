@@ -4,7 +4,7 @@ Donate link: http://www.slickrflickr.com/donate/
 Tags: wordpress flickr plugin, flickr wordpress plugin, flickr slideshow, flickr gallery, flickr galleria, flickr photo gallery, slideshow lightbox, flickr widget, flickr rss, flickr api
 Requires at least: 3.5
 Tested up to: 4.2.2
-Stable tag: 2.5.2
+Stable tag: 2.5.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -51,6 +51,7 @@ See http://www.slickrflickr.com/slickr-flickr-help/ for the full list of questio
 
 == Changelog ==
 
+= 2.5.3 = Fix issue with reading checkbox options
 = 2.5.2 = Fetch all Flickr photos over HTTPS to prevent Mixed Content warning on SSL only sites
 = 2.5.1 = Fix fatal error - many apologies
 
@@ -78,7 +79,7 @@ See full version history at http://www.slickrflickr.com/about/
 
 == Upgrade Notice ==
 
-= 2.5.2 = Optional:  Fetch all Flickr photos over HTTPS to prevent Mixed Content warning on SSL only sites
+= 2.5.3 = Mandatory:   Fix issue with reading checkbox options - specifically load scripts in footer
 
 == How to Use The Plugin ==
 
